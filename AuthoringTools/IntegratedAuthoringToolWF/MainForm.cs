@@ -63,8 +63,8 @@ namespace IntegratedAuthoringToolWF
 
             var rpcAsset = RolePlayCharacterAsset.LoadFromFile(asset.AssetFilePath);
          
-            FormHelper.ShowFormInContainerControl(this.tabControl1.TabPages[1], _rpcForm);
-            this.tabControl1.SelectTab(1);
+            FormHelper.ShowFormInContainerControl(this.tabControlIAT.TabPages[1], _rpcForm);
+            this.tabControlIAT.SelectTab(1);
             _rpcForm.LoadedAsset = rpcAsset;
 
 
@@ -133,7 +133,7 @@ namespace IntegratedAuthoringToolWF
 		private void ShowAbout()
 		{
 			var form = new AboutForm();
-			form.ShowDialog();
+			form.ShowDialog(this);
 		}
 
 		#endregion
@@ -147,8 +147,8 @@ namespace IntegratedAuthoringToolWF
                 _rpcForm.Close();
                 _rpcForm = new RolePlayCharacterWF.MainForm();
                 _rpcForm.LoadedAsset = rpc;
-                FormHelper.ShowFormInContainerControl(this.tabControl1.TabPages[1], _rpcForm);
-                this.tabControl1.SelectTab(1);
+                FormHelper.ShowFormInContainerControl(this.tabControlIAT.TabPages[1], _rpcForm);
+                this.tabControlIAT.SelectTab(1);
                 
                 buttonRemoveCharacter.Enabled = true;
             }
@@ -166,7 +166,7 @@ namespace IntegratedAuthoringToolWF
 
         private void buttonAddDialogueAction_Click_1(object sender, EventArgs e)
         {
-            new AddOrEditDialogueActionForm(this, true).ShowDialog();
+            new AddOrEditDialogueActionForm(this).ShowDialog(this);
             RefreshDialogs();
         }
 
@@ -175,7 +175,7 @@ namespace IntegratedAuthoringToolWF
             if (dataGridViewDialogueActions.SelectedRows.Count == 1)
             {
                 var item = ((ObjectView<DialogueStateActionDTO>)dataGridViewDialogueActions.SelectedRows[0].DataBoundItem).Object;
-                new AddOrEditDialogueActionForm(this, true, item.Id).ShowDialog();
+                new AddOrEditDialogueActionForm(this, true, item.Id).ShowDialog(this);
                 RefreshDialogs();
             }
         }
@@ -692,6 +692,50 @@ namespace IntegratedAuthoringToolWF
         private void computeEmotions_Click(object sender, EventArgs e)
         {
             CalculateEmotions(sender, e);
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+       
+        }
+
+        private void dataGridViewDialogueActions_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dataGridViewDialogueActions_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+           
+        }
+
+        private void dataGridViewDialogueActions_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex != -1) //exclude header cells
+            {
+                this.buttonEditDialogueAction_Click(sender, e);
+            }
+        }
+
+        private void dataGridViewDialogueActions_KeyPress(object sender, KeyPressEventArgs e)
+        {
+           
+        }
+
+        private void dataGridViewDialogueActions_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Enter:
+                     this.buttonEditDialogueAction_Click(sender, e);
+                     break;
+                case Keys.D:
+                    if(e.Control) this.buttonDuplicateDialogueAction_Click(sender, e);
+                    break;
+                case Keys.Delete:
+                    this.buttonRemoveDialogueAction_Click(sender, e);
+                    break;
+            }
         }
     }
 }

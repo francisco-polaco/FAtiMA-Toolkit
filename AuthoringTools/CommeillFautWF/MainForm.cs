@@ -18,42 +18,25 @@ namespace CommeillFautWF
     public partial class MainForm : BaseCIFForm
     {
         private SocialExchangesVM _socialExchangesVM;
-        //   private ClaimsVM _claimsVM;
-        //   private ConferralsVM _conferralsVM;
-
-        private TriggerRulesVM _triggerRules;
-
 
         public MainForm()
         {
-
             InitializeComponent();
-            _socialExchangesVM = new SocialExchangesVM(this);
-            _triggerRules = new TriggerRulesVM(this);
-
         }
 
         protected override void OnAssetDataLoaded(CommeillFautAsset asset)
         {
             
-            _socialExchangesVM = new SocialExchangesVM(this, asset);
+            _socialExchangesVM = new SocialExchangesVM(this);
             genericPropertyDataGridControler1.DataController = _socialExchangesVM;
             genericPropertyDataGridControler1.OnSelectionChanged += OnRuleSelectionChanged;
-            genericPropertyDataGridControler1.GetColumnByName("Social Exchange")
             genericPropertyDataGridControler1.GetColumnByName("Initiator").Visible = false;
             genericPropertyDataGridControler1.GetColumnByName("Target").Visible = false;
             genericPropertyDataGridControler1.GetColumnByName("Id").Visible = false;
             genericPropertyDataGridControler1.GetColumnByName("Conditions").Visible = false;
-            genericPropertyDataGridControler1.GetColumnByName("Priority").Visible = false;
+            //genericPropertyDataGridControler1.GetColumnByName("Priority").Visible = false;
+            genericPropertyDataGridControler1.GetColumnByName("Type").Visible = false;
             genericPropertyDataGridControler1.GetColumnByName("InfluenceRule").Visible = false;
-
-
-            _triggerRules = new TriggerRulesVM(this, asset);
-            genericPropertyDataGridControler2.DataController = _triggerRules;
-            genericPropertyDataGridControler2.OnSelectionChanged += OnRuleSelectionChanged;
-            conditionSetEditorControl1.View = _triggerRules.ConditionSetView;
-
-
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -177,6 +160,22 @@ namespace CommeillFautWF
         private void genericPropertyDataGridControler2_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void genericPropertyDataGridControler1_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+               /* case Keys.Enter:
+                    this.butt(sender, e);
+                    break;
+                case Keys.D:
+                    if (e.Control) this.buttonDuplicateDialogueAction_Click(sender, e);
+                    break;
+                case Keys.Delete:
+                    this.buttonRemoveDialogueAction_Click(sender, e);
+                    break;*/
+            }
         }
     }
 
