@@ -43,7 +43,7 @@ namespace MCTS.MCTS {
             this.CurrentIterationsInFrame = 0;
             CurrentStateWorldModel = new CurrentWorldModel(knowledgeBase);
             this.CurrentStateWorldModel.Initialize();
-            this.InitialNode = new MCTSNode(this.CurrentStateWorldModel.GenerateChildWorldModel()) {
+            this.InitialNode = new MCTSNode(CurrentStateWorldModel) {
                 Action = null,
                 Parent = null,
                 PlayerID = 0
