@@ -37,7 +37,7 @@ namespace MCTS.MCTS {
 
 
         public void InitializeDecisionMakingProcess(KB knowledgeBase) {
-           this.MaxPlayoutDepthReached = 0;
+            this.MaxPlayoutDepthReached = 0;
             this.MaxSelectionDepthReached = 0;
             this.CurrentIterations = 0;
             this.CurrentIterationsInFrame = 0;

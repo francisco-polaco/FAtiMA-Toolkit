@@ -1,9 +1,11 @@
-﻿using KnowledgeBase;
+﻿using System;
+using KnowledgeBase;
 using SerializationUtilities;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using MCTS.MCTS;
+using MCTS.MCTS.WorldModels;
 using WellFormedNames;
 
 namespace MCTS
@@ -59,12 +61,13 @@ namespace MCTS
 
             var mctsAlgorithm = new MCTSAlgorithm();
             mctsAlgorithm.InitializeDecisionMakingProcess(kbCloned);
-            var action = mctsAlgorithm.ChooseAction();
+            //var action = "PICK(" + CurrentWorldModel.guid + ")";
+           // var action = mctsAlgorithm.ChooseAction();
 
 
             //This is just an example of how to always return the action "Pick" with target "Wood1"
-            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Pick")));
-            var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName("Wood1")));
+            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(PICK, -, -, -, -)")));
+            var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(CurrentWorldModel.guid)));
 
             foreach (var subSet in context.Constraints)
             {
