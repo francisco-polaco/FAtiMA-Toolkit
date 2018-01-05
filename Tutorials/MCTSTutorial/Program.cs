@@ -16,7 +16,7 @@ namespace MCTSTutorial
             var action = actions.FirstOrDefault();
             foreach (var a in actions)
             {
-                Console.WriteLine("Action: " + a.Name.ToString() + " Utility: " + a.Utility);
+                Console.WriteLine("Action: " + a.Name.ToString()+";" + " Target:" + a.Target.ToString()+ ";" + " Utility: " + a.Utility);
             }
             Console.ReadLine();
         }

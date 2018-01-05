@@ -47,6 +47,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MCTS\Actions\Action.cs" />
+    <Compile Include="MCTS\Reward.cs" />
+    <Compile Include="MCTS\WorldModels\CurrentWorldModel.cs" />
+    <Compile Include="MCTS\WorldModels\WorldModel.cs" />
+    <Compile Include="MCTS\MCTSNode.cs" />
+    <Compile Include="MCTS\MCTSAlgorithm.cs" />
     <Compile Include="MCTSAsset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
