@@ -2,6 +2,8 @@
 using SerializationUtilities;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using MCTS.MCTS;
 using WellFormedNames;
 
 namespace MCTS
@@ -53,7 +55,13 @@ namespace MCTS
             var memStream = new MemoryStream();
             var json = jsonSerializer.SerializeToJson(this.m_kb);
             var kbCloned = jsonSerializer.DeserializeFromJson<KB>(json);
-            
+            //var deepKbClone = DeepClone(m_kb);
+
+            var mctsAlgorithm = new MCTSAlgorithm();
+            mctsAlgorithm.InitializeDecisionMakingProcess(kbCloned);
+            var action = mctsAlgorithm.ChooseAction();
+
+
             //This is just an example of how to always return the action "Pick" with target "Wood1"
             var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Pick")));
             var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName("Wood1")));
@@ -66,5 +74,22 @@ namespace MCTS
                 yield return new DynamicPropertyResult(new ComplexValue(Name.BuildName(true),1.0f), subSet);
             }
         }
+
+        /// <summary>
+        /// Deep copies an object in memory
+        /// </summary>
+        /// <param name="obj">Object to be copied.</param>
+        private static T DeepClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+
     }
 }

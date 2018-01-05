@@ -1,8 +1,6 @@
-﻿
+﻿using MCTS.MCTS.Actions;
 
-using MCTS.Actions;
-
-namespace MCTS {
+namespace MCTS.MCTS.WorldModels {
     public class WorldModel {
         public WorldModel() {
 

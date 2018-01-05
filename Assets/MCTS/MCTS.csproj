@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MCTS\Actions\Action.cs" />
+    <Compile Include="MCTS\Actions\PickAction.cs" />
     <Compile Include="MCTS\Reward.cs" />
     <Compile Include="MCTS\WorldModels\CurrentWorldModel.cs" />
     <Compile Include="MCTS\WorldModels\WorldModel.cs" />
