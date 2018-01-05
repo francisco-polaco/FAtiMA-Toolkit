@@ -32,7 +32,7 @@ namespace MCTS {
             this.InProgress = false;
             this.CurrentStateWorldModel = currentStateWorldModel;
             this.MaxIterations = 30000;
-            this.MaxIterationsProcessedPerFrame = 400;
+            this.MaxIterationsProcessedPerFrame = MaxIterations;
             this.RandomGenerator = new System.Random();
             this.TotalProcessingTime = 0;
 
