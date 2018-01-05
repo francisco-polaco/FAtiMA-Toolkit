@@ -1,0 +1,1 @@
+ExportDlls.bat debug ..\dll-fatima
