@@ -10,6 +10,7 @@ namespace MCTS.MCTS.WorldModels {
         public static string guid;
         public CurrentWorldModel(KB knowledgeBase)
         {
+            guid = null;
             try
             {       
                 var beliefs = knowledgeBase.GetAllBeliefs();
@@ -21,8 +22,10 @@ namespace MCTS.MCTS.WorldModels {
                         var properties = GetBeliefProperties(belief.Name.ToString());
                         if (properties.Item1.Equals("Pickable"))
                         {
-                            guid = properties.Item2;
-                            Console.WriteLine("This one is " + properties.Item2.ToString());
+                            if (guid == null) {
+                                Console.WriteLine("setting guid " + guid);
+                                guid = properties.Item2;
+                            }
                         }
                         else if (belief.Value.Equals((Name)"False"))
                         {
@@ -30,6 +33,11 @@ namespace MCTS.MCTS.WorldModels {
                         }
                         else
                         {
+                            if (guid != null) {
+                                if (belief.Name.ToString().Contains(guid) && belief.Name.ToString().Contains("Entity")) {
+                                    Console.WriteLine(belief.Name + " - " + belief.Value);
+                                }
+                            }
                             //Some other stuff, may be relevant
                         }
                     }
