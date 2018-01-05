@@ -1,12 +1,10 @@
-﻿
-
-using Action = MCTS.Actions.Action;
-using System;
-using MCTS.MCTS.WorldModels;
-using MCTS.MCTS;
+﻿using System;
 using System.Collections.Generic;
+using KnowledgeBase;
+using MCTS.MCTS.WorldModels;
+using Action = MCTS.MCTS.Actions.Action;
 
-namespace MCTS {
+namespace MCTS.MCTS {
     public class MCTSAlgorithm {
         public const float C = 1.4f;
         public bool InProgress { get; private set; }
@@ -28,28 +26,22 @@ namespace MCTS {
         private MCTSNode InitialNode { get; set; }
         protected System.Random RandomGenerator { get; set; }
 
-        public MCTSAlgorithm(CurrentWorldModel currentStateWorldModel) {
+        public MCTSAlgorithm() {
             this.InProgress = false;
-            this.CurrentStateWorldModel = currentStateWorldModel;
+           // this.CurrentStateWorldModel = currentStateWorldModel;
             this.MaxIterations = 30000;
             this.MaxIterationsProcessedPerFrame = 400;
             this.RandomGenerator = new System.Random();
             this.TotalProcessingTime = 0;
-
-            
         }
 
 
-        public void InitializeDecisionMakingProcess() {
-            //foreach( var a in this.CurrentStateWorldModel.GetExecutableActions()) {
-            //    Debug.Log(a);
-            //}
-
-
-            this.MaxPlayoutDepthReached = 0;
+        public void InitializeDecisionMakingProcess(KB knowledgeBase) {
+           this.MaxPlayoutDepthReached = 0;
             this.MaxSelectionDepthReached = 0;
             this.CurrentIterations = 0;
             this.CurrentIterationsInFrame = 0;
+            CurrentStateWorldModel = new CurrentWorldModel(knowledgeBase);
             this.CurrentStateWorldModel.Initialize();
             this.InitialNode = new MCTSNode(this.CurrentStateWorldModel.GenerateChildWorldModel()) {
                 Action = null,

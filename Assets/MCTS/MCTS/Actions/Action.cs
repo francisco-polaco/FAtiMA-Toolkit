@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MCTS.MCTS.WorldModels;
 
-namespace MCTS.Actions {
+namespace MCTS.MCTS.Actions {
     public class Action {
         public string xmlName = "";
         private static int ActionID = 0;
