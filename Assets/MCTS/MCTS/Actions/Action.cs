@@ -22,8 +22,14 @@ namespace MCTS.MCTS.Actions {
 
         public virtual float GetDuration(WorldModel worldModel)
         {
-            var objPosition = worldModel.GetPosition();
-            var walterPosition = worldModel.GetPosition();
+            //TODO FIXME 
+            //TODO FIXME 
+            string guid = "1";
+            //TODO FIXME 
+            //TODO FIXME 
+
+            var objPosition = worldModel.GetPosition(guid);
+            var walterPosition = worldModel.GetWalterPosition();
             return (walterPosition - objPosition).Length();
         }
 

@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Numerics;
 using MCTS.MCTS.Actions;
 
 namespace MCTS.MCTS.WorldModels {
     public class WorldModel {
+        protected Vector2 walterPosition = new Vector2(); 
+
         private readonly Dictionary<string, GameObject> _knownObjects;
         public WorldModel() {
             _knownObjects = new Dictionary<string, GameObject>();
@@ -29,6 +32,10 @@ namespace MCTS.MCTS.WorldModels {
 
         public virtual bool IsTerminal() {
             return true;
+        }
+
+        internal Vector3 GetWalterPosition() {
+            throw new NotImplementedException();
         }
 
         public virtual float GetScore() {
