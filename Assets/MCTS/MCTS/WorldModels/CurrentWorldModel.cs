@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using KnowledgeBase;
+using MCTS.MCTS.Actions;
 using Utilities;
 using WellFormedNames;
 
@@ -8,6 +9,7 @@ namespace MCTS.MCTS.WorldModels {
     public class CurrentWorldModel : WorldModel
     {
         public static string guid;
+        private List<GameObject> _woodObjects = new List<GameObject>();
         public CurrentWorldModel(KB knowledgeBase)
         {
             guid = null;
@@ -30,6 +32,8 @@ namespace MCTS.MCTS.WorldModels {
                         else if (belief.Value.Equals((Name)"False"))
                         {
                             //Ignore the False
+                            guid = null;
+
                         }
                         else
                         {

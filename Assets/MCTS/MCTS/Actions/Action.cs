@@ -1,4 +1,6 @@
-﻿using MCTS.MCTS.WorldModels;
+﻿using System.Collections.Specialized;
+using System.Numerics;
+using MCTS.MCTS.WorldModels;
 
 namespace MCTS.MCTS.Actions {
     public class Action {
@@ -11,17 +13,21 @@ namespace MCTS.MCTS.Actions {
         public Action(string name) {
             this.ID = Action.ActionID++;
             this.Name = name;
+
         }
 
         public virtual float GetDuration() {
             return this.Duration;
         }
 
-        public virtual float GetDuration(WorldModel worldModel) {
-            return this.Duration;
+        public virtual float GetDuration(WorldModel worldModel)
+        {
+            var objPosition = worldModel.GetPosition();
+            var walterPosition = worldModel.GetPosition();
+            return (walterPosition - objPosition).Length();
         }
 
-        public virtual bool CanExecute(WorldModel woldModel) {
+        public virtual bool CanExecute(WorldModel worldModel) {
             return true;
         }
 
@@ -34,6 +40,20 @@ namespace MCTS.MCTS.Actions {
 
         public virtual void ApplyActionEffects(WorldModel worldModel) {
         }
+    }
+
+    public abstract class GameObject
+    {
+        protected string _guid;
+        protected Vector3 _position;
+        public string Guid => _guid;
+        public Vector3 Position => _position;
+
+        protected GameObject(string guid)
+        {
+            _guid = guid;
+        }
+
     }
 }
 

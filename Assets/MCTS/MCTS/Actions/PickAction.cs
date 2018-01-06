@@ -4,18 +4,21 @@ namespace MCTS.MCTS.Actions
 {
     class PickAction : Action
     {
-        public PickAction(string name) : base(name)
+        private string _guid;
+        public PickAction(string name, string guid) : base(name)
         {
+            _guid = guid;
         }
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            base.ApplyActionEffects(worldModel);
+            worldModel.RemoveObject(_guid);
         }
 
-        public override bool CanExecute(WorldModel woldModel)
+        public override bool CanExecute(WorldModel worldModel)
         {
-            return base.CanExecute(woldModel);
+
+            return base.CanExecute(worldModel);
         }
 
         public override bool CanExecute()
@@ -36,6 +39,13 @@ namespace MCTS.MCTS.Actions
         public override float GetDuration(WorldModel worldModel)
         {
             return base.GetDuration(worldModel);
+        }
+    }
+
+    internal class PickableObject : GameObject
+    {
+        public PickableObject(string guid) : base(guid)
+        {
         }
     }
 }

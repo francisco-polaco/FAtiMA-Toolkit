@@ -1,13 +1,18 @@
-﻿using MCTS.MCTS.Actions;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Numerics;
+using MCTS.MCTS.Actions;
 
 namespace MCTS.MCTS.WorldModels {
     public class WorldModel {
+        private readonly Dictionary<string, GameObject> _knownObjects;
         public WorldModel() {
-
+            _knownObjects = new Dictionary<string, GameObject>();
         }
 
-        public WorldModel(WorldModel wm) {
-
+        public WorldModel(WorldModel wm)
+        {
+            _knownObjects = wm._knownObjects;
         }
 
         public virtual WorldModel GenerateChildWorldModel() {
@@ -37,6 +42,15 @@ namespace MCTS.MCTS.WorldModels {
         public virtual void CalculateNextPlayer() {
         }
 
+        public void RemoveObject(string guid)
+        {
+            _knownObjects.Remove(guid);
+        }
+
+        public Vector3 GetPosition(string guid)
+        {
+            return _knownObjects[guid].Position;
+        }
     }
 
     public class Stats {

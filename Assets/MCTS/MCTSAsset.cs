@@ -66,7 +66,7 @@ namespace MCTS
 
 
             //This is just an example of how to always return the action "Pick" with target "Wood1"
-            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(WALKTO, -, -, -, -)")));
+            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(PICK, -, -, -, -)")));
             var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(CurrentWorldModel.guid)));
 
             foreach (var subSet in context.Constraints)
