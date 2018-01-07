@@ -1,63 +1,71 @@
-﻿using System;
-using System.Numerics;
+﻿using MCTS.Math;
 
-namespace MCTS.DST.Objects {
-    public class PickableObject {
+namespace MCTS.DST.Objects
+{
+    public class PickableObject
+    {
+        private string entityType;
 
-        public Boolean Pickable { get; set; } = false;
+        private int posX;
 
-        private Boolean PosXSet { get; set; } = false;
-        private Boolean PosZSet { get; set; } = false;
-        private Boolean EntitySet { get; set; } = false;
+        private int posZ;
+
+        public PickableObject(string guid)
+        {
+            Guid = guid;
+        }
+
+        public bool Pickable { get; set; } = false;
+        private bool PosXSet { get; set; }
+        private bool PosZSet { get; set; }
+        private bool EntitySet { get; set; }
 
         public int SquaredDistance { get; private set; }
 
         public string Guid { get; }
 
-        private int posX;
-
-        public int GetPosX() {
+        public int GetPosX()
+        {
             return posX;
         }
 
-        public void SetPosX(int value) {
+        public void SetPosX(int value)
+        {
             PosXSet = true;
             posX = value;
         }
 
-        private int posZ;
-
-        public int GetPosZ() {
+        public int GetPosZ()
+        {
             return posZ;
         }
 
-        public void SetPosZ(int value) {
+        public void SetPosZ(int value)
+        {
             PosZSet = true;
             posZ = value;
         }
 
-        private string entityType;
-
-        public string GetEntityType() {
+        public string GetEntityType()
+        {
             return entityType;
         }
 
-        public void SetEntityType(string value) {
+        public void SetEntityType(string value)
+        {
             EntitySet = true;
             entityType = value;
         }
 
-        public PickableObject(string guid) {
-            Guid = guid;
-        }
-
-        public bool isPickableComplete() {
+        public bool isPickableComplete()
+        {
             return Pickable && EntitySet && PosXSet && PosZSet;
         }
 
-        public void calculateDistanceToChar(Vector2 walterPosition) {
-            var x = (int)walterPosition.X - posX;
-            var y = (int)walterPosition.Y - posZ;
+        public void calculateDistanceToChar(Vector2d walterPosition)
+        {
+            var x = (int) walterPosition.x - posX;
+            var y = (int) walterPosition.y - posZ;
             SquaredDistance = x * x + y * y;
         }
     }

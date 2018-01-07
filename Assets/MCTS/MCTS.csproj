@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MCTS</RootNamespace>
     <AssemblyName>MCTS</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -39,7 +39,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -58,8 +57,12 @@
     <Compile Include="DST\WorldModels\WorldModel.cs" />
     <Compile Include="DST\MCTSNode.cs" />
     <Compile Include="DST\MCTSAlgorithm.cs" />
+    <Compile Include="Math\MathUtil.cs" />
     <Compile Include="MCTSAsset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Math\Vector2d.cs" />
+    <Compile Include="Math\Vector2f.cs" />
+    <Compile Include="Math\Vector2i.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Components\KnowledgeBase\KnowledgeBase.csproj">

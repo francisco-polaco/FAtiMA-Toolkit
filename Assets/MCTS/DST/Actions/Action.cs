@@ -1,65 +1,71 @@
-﻿using System.Collections.Specialized;
-using System.Numerics;
-using MCTS.DST.WorldModels;
+﻿using MCTS.DST.WorldModels;
+using MCTS.Math;
 
-namespace MCTS.DST.Actions {
-    public class Action {
+namespace MCTS.DST.Actions
+{
+    public class Action
+    {
+        private static int ActionID;
         public string xmlName = "";
-        private static int ActionID = 0;
+
+        public Action(string name)
+        {
+            ID = ActionID++;
+            Name = name;
+        }
+
         public string Name { get; set; }
         public int ID { get; set; }
-        public float Duration { get; set; }
+        public double Duration { get; set; }
 
-        public Action(string name) {
-            this.ID = Action.ActionID++;
-            this.Name = name;
-
+        public virtual double GetDuration()
+        {
+            return Duration;
         }
 
-        public virtual float GetDuration() {
-            return this.Duration;
-        }
-
-        public virtual float GetDuration(WorldModel worldModel)
+        public virtual double GetDuration(WorldModel worldModel)
         {
             //TODO FIXME 
             //TODO FIXME 
-            string guid = "1";
+            var guid = "1";
             //TODO FIXME 
             //TODO FIXME 
 
             var objPosition = worldModel.GetPosition(guid);
             var walterPosition = worldModel.GetWalterPosition();
-            return (walterPosition - objPosition).Length();
+            return (walterPosition - objPosition).Length;
         }
 
-        public virtual bool CanExecute(WorldModel worldModel) {
+        public virtual bool CanExecute(WorldModel worldModel)
+        {
             return true;
         }
 
-        public virtual bool CanExecute() {
+        public virtual bool CanExecute()
+        {
             return true;
         }
 
-        public virtual void Execute() {
+        public virtual void Execute()
+        {
         }
 
-        public virtual void ApplyActionEffects(WorldModel worldModel) {
+        public virtual void ApplyActionEffects(WorldModel worldModel)
+        {
         }
     }
 
     public abstract class GameObject
     {
         protected string _guid;
-        protected Vector3 _position;
-        public string Guid => _guid;
-        public Vector3 Position => _position;
+        protected Vector2d _position;
 
         protected GameObject(string guid)
         {
             _guid = guid;
         }
 
+        public string Guid => _guid;
+        public Vector2d Position => _position;
     }
 }
-

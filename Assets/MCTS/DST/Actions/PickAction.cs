@@ -2,9 +2,10 @@
 
 namespace MCTS.DST.Actions
 {
-    class PickAction : Action
+    internal class PickAction : Action
     {
-        private string _guid;
+        private readonly string _guid;
+
         public PickAction(string name, string guid) : base(name)
         {
             _guid = guid;
@@ -17,7 +18,6 @@ namespace MCTS.DST.Actions
 
         public override bool CanExecute(WorldModel worldModel)
         {
-
             return base.CanExecute(worldModel);
         }
 
@@ -31,12 +31,12 @@ namespace MCTS.DST.Actions
             base.Execute();
         }
 
-        public override float GetDuration()
+        public override double GetDuration()
         {
             return base.GetDuration();
         }
 
-        public override float GetDuration(WorldModel worldModel)
+        public override double GetDuration(WorldModel worldModel)
         {
             return base.GetDuration(worldModel);
         }
