@@ -77,8 +77,14 @@ namespace MCTS.DST.WorldModels {
                 foreach( var pair_key_value in _temporaryHolders) {
                     var holder = pair_key_value.Value;
                     if (holder.isPickableComplete()) {
-
-
+                        var objType = holder.GetEntityType();
+                        List<PickableObject> objsList = null;
+                        _knownObjects.TryGetValue(objType, out objsList);
+                        if (objsList == null) {
+                            objsList = new List<PickableObject>();
+                        }
+                        holder.calculateDistanceToChar(walterPosition);
+                        objsList.Add(holder);
                     }
                 }
             }
@@ -89,7 +95,17 @@ namespace MCTS.DST.WorldModels {
             }
         }
 
-        //private void insertOrderedByDistance
+        private void insertSorted(List<PickableObject> list, PickableObject toInsert) {
+
+            for(var i = 0; i < list.Count; i++) {
+                var obj = list[i];
+                if (obj.SquaredDistance > toInsert.SquaredDistance) {
+                    break;
+                }
+            }
+                    
+
+        }
 
         public PickableObject FindOrCreatePickable(string guid) {
             PickableObject holder = null;
