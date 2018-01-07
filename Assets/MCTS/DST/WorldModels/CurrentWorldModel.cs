@@ -64,7 +64,6 @@ namespace MCTS.DST.WorldModels {
                             //ITEM2 -> guid
                             var pickable = FindOrCreatePickable(guid);
                             pickable.SetPosZ(Int32.Parse(getPositionFromString(belief.Value.ToString())));
-
                         }
                         //if (guid != null) {
                         //    if (belief.Name.ToString().Contains(guid) && belief.Name.ToString().Contains("Entity")) {
