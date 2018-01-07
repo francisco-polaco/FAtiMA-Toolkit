@@ -84,7 +84,7 @@ namespace MCTS.DST.WorldModels {
                             objsList = new List<PickableObject>();
                         }
                         holder.calculateDistanceToChar(walterPosition);
-                        objsList.Add(holder);
+                        insertSorted(objsList, holder);
                     }
                 }
             }
@@ -100,10 +100,11 @@ namespace MCTS.DST.WorldModels {
             for(var i = 0; i < list.Count; i++) {
                 var obj = list[i];
                 if (obj.SquaredDistance > toInsert.SquaredDistance) {
-                    break;
+                    list.Insert(i, toInsert);
+                    return;
                 }
             }
-                    
+            list.Add(toInsert);
 
         }
 
