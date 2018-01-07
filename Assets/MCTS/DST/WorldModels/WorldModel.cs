@@ -57,7 +57,8 @@ namespace MCTS.DST.WorldModels {
 
         public Vector3 GetPosition(string guid)
         {
-            return _knownObjects[guid].Position;
+            return new Vector3(0,0,0);
+            //return _knownObjects[guid].Position;
         }
     }
 

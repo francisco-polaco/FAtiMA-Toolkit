@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase", "Components\KnowledgeBase\KnowledgeBase.csproj", "{A632A90A-0EE6-430F-ACF2-25BB7CED21E7}"
 EndProject
@@ -238,5 +238,8 @@ Global
 		{DE99BF53-F11C-4148-A98E-5054B46004D1} = {C929932E-8ED8-4B6E-960E-4C4695E39CC1}
 		{C4592114-A95A-45AE-AAFC-4738F39FD4A7} = {2C13F768-C122-4B7F-A08A-9E8AB520F6D2}
 		{EFBDB6B1-5BA2-42DC-89EA-3EF49391E04C} = {C929932E-8ED8-4B6E-960E-4C4695E39CC1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45B2937A-662A-49B1-BB09-468DBB7DD5F8}
 	EndGlobalSection
 EndGlobal

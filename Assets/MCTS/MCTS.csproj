@@ -50,13 +50,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MCTS\Actions\Action.cs" />
-    <Compile Include="MCTS\Actions\PickAction.cs" />
-    <Compile Include="MCTS\Reward.cs" />
-    <Compile Include="MCTS\WorldModels\CurrentWorldModel.cs" />
-    <Compile Include="MCTS\WorldModels\WorldModel.cs" />
-    <Compile Include="MCTS\MCTSNode.cs" />
-    <Compile Include="MCTS\MCTSAlgorithm.cs" />
+    <Compile Include="DST\Actions\Action.cs" />
+    <Compile Include="DST\Actions\PickAction.cs" />
+    <Compile Include="DST\Objects\PickableObject.cs" />
+    <Compile Include="DST\Reward.cs" />
+    <Compile Include="DST\WorldModels\CurrentWorldModel.cs" />
+    <Compile Include="DST\WorldModels\WorldModel.cs" />
+    <Compile Include="DST\MCTSNode.cs" />
+    <Compile Include="DST\MCTSAlgorithm.cs" />
     <Compile Include="MCTSAsset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
