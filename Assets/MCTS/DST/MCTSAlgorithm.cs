@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using KnowledgeBase;
-using MCTS.MCTS.WorldModels;
-using Action = MCTS.MCTS.Actions.Action;
+using MCTS.DST.WorldModels;
+using Action = MCTS.DST.Actions.Action;
 
-namespace MCTS.MCTS {
+namespace MCTS.DST {
     public class MCTSAlgorithm {
         public const float C = 1.4f;
         public bool InProgress { get; private set; }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.Numerics;
-using MCTS.MCTS.WorldModels;
+using MCTS.DST.WorldModels;
 
-namespace MCTS.MCTS.Actions {
+namespace MCTS.DST.Actions {
     public class Action {
         public string xmlName = "";
         private static int ActionID = 0;

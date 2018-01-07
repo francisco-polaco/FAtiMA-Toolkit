@@ -1,6 +1,6 @@
-﻿using MCTS.MCTS.WorldModels;
+﻿using MCTS.DST.WorldModels;
 
-namespace MCTS.MCTS.Actions
+namespace MCTS.DST.Actions
 {
     class PickAction : Action
     {
@@ -42,10 +42,10 @@ namespace MCTS.MCTS.Actions
         }
     }
 
-    internal class PickableObject : GameObject
-    {
-        public PickableObject(string guid) : base(guid)
-        {
-        }
-    }
+    //internal class PickableObject : GameObject
+    //{
+    //    public PickableObject(string guid) : base(guid)
+    //    {
+    //    }
+    //}
 }

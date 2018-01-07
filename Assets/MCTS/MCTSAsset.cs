@@ -4,8 +4,8 @@ using SerializationUtilities;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using MCTS.MCTS;
-using MCTS.MCTS.WorldModels;
+using MCTS.DST;
+using MCTS.DST.WorldModels;
 using WellFormedNames;
 
 namespace MCTS

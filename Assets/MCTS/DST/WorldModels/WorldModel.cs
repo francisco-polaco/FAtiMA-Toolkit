@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Numerics;
-using MCTS.MCTS.Actions;
+using MCTS.DST.Actions;
+using MCTS.DST.Objects;
 
-namespace MCTS.MCTS.WorldModels {
+namespace MCTS.DST.WorldModels {
     public class WorldModel {
         protected Vector2 walterPosition = new Vector2(); 
+        protected Dictionary<string, List<PickableObject>> _knownObjects;
 
-        private readonly Dictionary<string, GameObject> _knownObjects;
         public WorldModel() {
-            _knownObjects = new Dictionary<string, GameObject>();
+            _knownObjects = new Dictionary<string, List<PickableObject>>();
         }
 
         public WorldModel(WorldModel wm)
@@ -22,11 +23,11 @@ namespace MCTS.MCTS.WorldModels {
             return new WorldModel(this);
         }
 
-        public virtual Action[] GetExecutableActions() {
+        public virtual Actions.Action[] GetExecutableActions() {
             return null;
         }
 
-        public virtual Action GetNextAction() {
+        public virtual Actions.Action GetNextAction() {
             return null;
         }
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using MCTS.MCTS.WorldModels;
-using Action = MCTS.MCTS.Actions.Action;
+using MCTS.DST.WorldModels;
+using Action = MCTS.DST.Actions.Action;
 
-namespace MCTS.MCTS {
+namespace MCTS.DST {
     public class MCTSNode {
         public WorldModel State { get; private set; }
         public MCTSNode Parent { get; set; }
