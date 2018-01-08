@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MCTS.DST.Objects;
 using MCTS.Math;
 using Action = MCTS.DST.Actions.Action;
@@ -42,10 +43,21 @@ namespace MCTS.DST.WorldModels
             }
             calculateActions();
             Console.WriteLine("All possible actions: size " + possibleActions.Length );
+            
             foreach(var i in possibleActions) {
                 Console.WriteLine(i.getDSTInterpretableAction() + " "+ i.getTarget());
             }
             Console.WriteLine(possibleActions);
+            if (possibleActions.Length == 0)
+            {
+                // lets wonder a bit
+                // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
+                // agr so anda ao calhas e vai para narnia
+                Console.WriteLine("no action lets wonder");
+                var r = new Random();
+                
+                return new Action[] { new WanderAction(new Vector2d(r.NextDouble(), r.NextDouble())) };
+            }
             return possibleActions;
         }
 

@@ -72,6 +72,7 @@ namespace MCTS
             } catch (Exception e) {
                 Console.WriteLine(e);
                 Console.ReadLine();
+                throw e;
 
             }
 
