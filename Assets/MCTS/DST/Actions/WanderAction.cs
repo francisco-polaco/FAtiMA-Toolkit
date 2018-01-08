@@ -6,9 +6,9 @@ namespace MCTS.DST.Actions
     internal class WanderAction : Action
     {
         //private readonly string _guid;
-        private readonly Vector2d _position;
+        private readonly Vector2i _position;
 
-        public WanderAction(Vector2d position) : base("WALKTO")
+        public WanderAction(Vector2i position) : base("WALKTO")
         {
            // _guid = guid;
             this._position = position;

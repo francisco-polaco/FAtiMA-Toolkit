@@ -56,7 +56,7 @@ namespace MCTS.DST.WorldModels
                 Console.WriteLine("no action lets wonder");
                 var r = new Random();
                 
-                return new Action[] { new WanderAction(new Vector2d(r.NextDouble(), r.NextDouble())) };
+                return new Action[] { new WanderAction(new Vector2i(r.Next(), r.Next())) };
             }
             return possibleActions;
         }
