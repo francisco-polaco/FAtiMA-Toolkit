@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DST\Actions\Action.cs" />
-    <Compile Include="DST\Actions\WanderAction.cs" />
+    <Compile Include="DST\Actions\WalktoAction.cs" />
     <Compile Include="DST\Actions\PickAction.cs" />
     <Compile Include="DST\Objects\PickableObject.cs" />
     <Compile Include="DST\Reward.cs" />

@@ -54,9 +54,7 @@ namespace MCTS.DST.WorldModels
                 // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
                 // agr so anda ao calhas e vai para narnia
                 Console.WriteLine("no action lets wonder");
-                var r = new Random();
-                
-                return new Action[] { new WanderAction(new Vector2i(r.Next(), r.Next())) };
+                return new Action[] { new WanderAction(walterPosition) };
             }
             return possibleActions;
         }
