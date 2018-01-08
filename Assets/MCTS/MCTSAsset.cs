@@ -59,15 +59,27 @@ namespace MCTS
             var kbCloned = jsonSerializer.DeserializeFromJson<KB>(json);
             //var deepKbClone = DeepClone(m_kb);
 
-            var mctsAlgorithm = new MCTSAlgorithm();
-            mctsAlgorithm.InitializeDecisionMakingProcess(kbCloned);
-            //var action = "PICK(" + CurrentWorldModel.guid + ")";
-           // var action = mctsAlgorithm.ChooseAction();
+            DST.Actions.Action action = null;
+            try {
 
+                var mctsAlgorithm = new MCTSAlgorithm();
+                mctsAlgorithm.InitializeDecisionMakingProcess(kbCloned);
+                //var action = "PICK(" + CurrentWorldModel.guid + ")";
+                // var action = mctsAlgorithm.ChooseAction();
+
+                action = mctsAlgorithm.ChooseAction();
+
+            } catch (Exception e) {
+                Console.WriteLine(e);
+                Console.ReadLine();
+
+            }
 
             //This is just an example of how to always return the action "Pick" with target "Wood1"
-            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(PICK, -, -, -, -)")));
-            var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(CurrentWorldModel.guid)));
+            //var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(PICK, -, -, -, -)")));
+            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName(action.getDSTInterpretableAction())));
+            //var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(CurrentWorldModel.guid)));
+            var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(action.getTarget())));
 
             foreach (var subSet in context.Constraints)
             {

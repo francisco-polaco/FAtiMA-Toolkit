@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using MCTS.DST.Objects;
 using MCTS.Math;
 using Action = MCTS.DST.Actions.Action;
+using MCTS.DST.Actions;
 
 namespace MCTS.DST.WorldModels
 {
     public class WorldModel
     {
         protected Dictionary<string, List<PickableObject>> _knownObjects;
-        protected Vector2d walterPosition = new Vector2d();
+        protected Vector2i walterPosition = new Vector2i();
+        private int actionIndex = 0;
+        private bool possibleActionsCalculated = false;
+        private Action[] possibleActions = null;
+        protected double walkedDistance = 0;
+
 
         public WorldModel()
         {
@@ -18,7 +24,10 @@ namespace MCTS.DST.WorldModels
 
         public WorldModel(WorldModel wm)
         {
+            actionIndex = 0;
             _knownObjects = wm._knownObjects;
+            walterPosition = wm.walterPosition;
+            Console.WriteLine("WorldModel creation: knownObjects size " + _knownObjects.Keys.Count + " Walter position: " + walterPosition);
         }
 
         public virtual WorldModel GenerateChildWorldModel()
@@ -28,22 +37,53 @@ namespace MCTS.DST.WorldModels
 
         public virtual Action[] GetExecutableActions()
         {
-            return null;
+            if (possibleActions!=null) {
+                return possibleActions;
+            }
+            calculateActions();
+            Console.WriteLine("All possible actions: size " + possibleActions.Length );
+            foreach(var i in possibleActions) {
+                Console.WriteLine(i.getDSTInterpretableAction() + " "+ i.getTarget());
+            }
+            Console.WriteLine(possibleActions);
+            return possibleActions;
         }
 
+        private void calculateActions() {
+             
+            possibleActions = new Action[_knownObjects.Keys.Count];
+            var i = 0;
+            foreach (var objHolder in _knownObjects) {
+                Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
+                var actionTempHolder = new PickAction(objHolder.Value[0].Guid, objHolder.Value[0].GetPosition());
+                possibleActions[i] = actionTempHolder;
+                i++;
+            }
+        }
+
+        //For Selection
         public virtual Action GetNextAction()
         {
-            return null;
+            Action action = null;
+            var actions = GetExecutableActions();
+            if (actionIndex < actions.Length) {
+                action = actions[actionIndex];
+                actionIndex++;
+                Console.WriteLine("Action: " + action.getDSTInterpretableAction() + " " + action.getTarget());
+            }
+            return action;
+
         }
 
+        //Stops Playout
         public virtual bool IsTerminal()
         {
-            return true;
+            return false;
         }
 
-        internal Vector2d GetWalterPosition()
+        internal Vector2i GetWalterPosition()
         {
-            throw new NotImplementedException();
+             return walterPosition;
         }
 
         public virtual float GetScore()
@@ -65,10 +105,25 @@ namespace MCTS.DST.WorldModels
             _knownObjects.Remove(guid);
         }
 
-        public Vector2d GetPosition(string guid)
+        public Vector2i GetPosition(string guid)
         {
-            return new Vector2d(0, 0);
+            return new Vector2i(0, 0);
             //return _knownObjects[guid].Position;
+        }
+
+        public int getSquaredDistanceToWalter(Vector2i obj) {
+            var x = (int)walterPosition.x - obj.x;
+            var y = (int)walterPosition.y - obj.y;
+            return x * x + y * y;
+        }
+
+        public double getRealDistanceToWalter(Vector2i obj) {
+            return System.Math.Sqrt(getSquaredDistanceToWalter(obj));
+        }
+
+        public virtual void walkedDistanced(Vector2i positionWalkedTo) {
+            walkedDistance += getRealDistanceToWalter(positionWalkedTo);
+            walterPosition = positionWalkedTo;
         }
     }
 

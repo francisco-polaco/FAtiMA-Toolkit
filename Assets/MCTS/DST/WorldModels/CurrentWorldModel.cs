@@ -8,7 +8,7 @@ using WellFormedNames;
 
 namespace MCTS.DST.WorldModels
 {
-    public class CurrentWorldModel : WorldModel
+    public class CurrentWorldModel : FutureWorldModel
     {
         public static string guid;
 
@@ -21,58 +21,48 @@ namespace MCTS.DST.WorldModels
         public CurrentWorldModel(KB knowledgeBase)
         {
             //guid = null;
-            try
-            {
-                var walterZ = knowledgeBase.AskProperty((Name) "PosZ(Walter)");
+            try {
+                var walterZ = knowledgeBase.AskProperty((Name)"PosZ(Walter)");
+                Console.WriteLine(walterZ.ToString());
                 updateWalterZ(walterZ.ToString());
-                var walterX = knowledgeBase.AskProperty((Name) "PosX(Walter)");
+                var walterX = knowledgeBase.AskProperty((Name)"PosX(Walter)");
+                Console.WriteLine(walterX.ToString());
                 updateWalterX(walterX.ToString());
 
                 var beliefs = knowledgeBase.GetAllBeliefs();
-                foreach (var belief in beliefs)
-                    //Console.WriteLine(belief.Name + " - " + belief.Value);
-                    if (belief.Value.Equals((Name) "True"))
-                    {
+                foreach (var belief in beliefs) {
+                    Console.WriteLine(belief.Name + " - " + belief.Value);
+                    if (belief.Value.Equals((Name)"True")) {
                         var properties = GetBeliefName_InsideParentesis(belief.Name.ToString());
-                        if (properties.Item1.Equals("Pickable"))
-                        {
+                        if (properties.Item1.Equals("Pickable")) {
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.Pickable = true;
                         }
-                    }
-                    else if (belief.Value.Equals((Name) "False"))
-                    {
+                    } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
                         //guid = null;
-                    }
-                    else
-                    {
+                    } else {
                         var pairBeliefName_Parentisis = GetBeliefName_InsideParentesis(belief.Name.ToString());
-                        if (pairBeliefName_Parentisis.Item1.Equals("Entity"))
-                        {
+                        if (pairBeliefName_Parentisis.Item1.Equals("Entity")) {
                             //ITEM1 -> "Entity"
                             //ITEM2 -> type,guid
                             var pairEntityTypeGuid = GetPairEntityNameGuid(pairBeliefName_Parentisis.Item2);
                             var pickable = FindOrCreatePickable(pairEntityTypeGuid.Item2);
                             pickable.SetEntityType(pairEntityTypeGuid.Item1);
-                        }
-                        else if (pairBeliefName_Parentisis.Item1.Equals("PosX"))
-                        {
+                        } else if (pairBeliefName_Parentisis.Item1.Equals("PosX")) {
                             var guid = pairBeliefName_Parentisis.Item2;
                             //"PosX(117209)": "212, 1",
                             //ITEM1 -> "PosX"
                             //ITEM2 -> guid
                             var pickable = FindOrCreatePickable(guid);
-                            pickable.SetPosX(int.Parse(getPositionFromString(belief.Value.ToString())));
-                        }
-                        else if (pairBeliefName_Parentisis.Item1.Equals("PosZ"))
-                        {
+                            pickable.SetPosX(int.Parse(belief.Value.ToString()));
+                        } else if (pairBeliefName_Parentisis.Item1.Equals("PosZ")) {
                             var guid = pairBeliefName_Parentisis.Item2;
                             //"PosZ(117209)": "212, 1",
                             //ITEM1 -> "PosZ"
                             //ITEM2 -> guid
                             var pickable = FindOrCreatePickable(guid);
-                            pickable.SetPosZ(int.Parse(getPositionFromString(belief.Value.ToString())));
+                            pickable.SetPosZ(int.Parse(belief.Value.ToString()));
                         }
 
                         //if (guid != null) {
@@ -82,24 +72,24 @@ namespace MCTS.DST.WorldModels
                         //}
                         //Some other stuff, may be relevant
                     }
-
-                foreach (var pair_key_value in _temporaryHolders)
-                {
+                }
+                foreach (var pair_key_value in _temporaryHolders) {
                     var holder = pair_key_value.Value;
-                    if (holder.isPickableComplete())
-                    {
+                    //Console.WriteLine(holder.ToString());
+                    if (holder.isPickableComplete()) {
                         var objType = holder.GetEntityType();
                         List<PickableObject> objsList = null;
                         _knownObjects.TryGetValue(objType, out objsList);
                         if (objsList == null) objsList = new List<PickableObject>();
                         holder.calculateDistanceToChar(walterPosition);
                         insertSorted(objsList, holder);
+                        _knownObjects[objType] = objsList;
                     }
                 }
-            }
-            catch (Exception e)
-            {
+
+            } catch (Exception e) {
                 Console.WriteLine(e);
+                Console.ReadLine();
                 throw;
             }
         }
@@ -157,6 +147,7 @@ namespace MCTS.DST.WorldModels
 
         private string getPositionFromString(string pos)
         {
+            //return pos;
             var stringEnd = pos.IndexOf(",", StringComparison.Ordinal);
             return pos.Substring(0, stringEnd);
         }

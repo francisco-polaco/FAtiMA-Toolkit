@@ -1,5 +1,7 @@
-﻿using MCTS.DST.WorldModels;
+﻿using System;
+using MCTS.DST.WorldModels;
 using MCTS.Math;
+using WellFormedNames;
 
 namespace MCTS.DST.Actions
 {
@@ -32,8 +34,10 @@ namespace MCTS.DST.Actions
             //TODO FIXME 
 
             var objPosition = worldModel.GetPosition(guid);
-            var walterPosition = worldModel.GetWalterPosition();
-            return (walterPosition - objPosition).Length;
+            //var walterPosition = worldModel.GetWalterPosition();
+
+
+            return worldModel.getRealDistanceToWalter(objPosition);
         }
 
         public virtual bool CanExecute(WorldModel worldModel)
@@ -52,6 +56,15 @@ namespace MCTS.DST.Actions
 
         public virtual void ApplyActionEffects(WorldModel worldModel)
         {
+        }
+
+        public virtual string getDSTInterpretableAction() {
+            //            return "Action("+Name+", "+invobject + ", " + [posx] + ", " + [posz] + ", " + [recipe]+")";
+            return "Action("+Name+", -, -, -, -)";
+        }
+
+        public virtual string getTarget() {
+            return "-";
         }
     }
 

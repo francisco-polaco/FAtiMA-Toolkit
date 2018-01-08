@@ -16,7 +16,7 @@ namespace MCTS.DST
             InProgress = false;
             // this.CurrentStateWorldModel = currentStateWorldModel;
             MaxIterations = 30000;
-            MaxIterationsProcessedPerFrame = MaxIterations;
+            MaxIterationsProcessedPerFrame = MaxIterations +1;
             RandomGenerator = new Random();
             TotalProcessingTime = 0;
         }
@@ -43,18 +43,21 @@ namespace MCTS.DST
 
         public void InitializeDecisionMakingProcess(KB knowledgeBase)
         {
+            Console.WriteLine("InitializeDecisionMakingProcess");
+
             MaxPlayoutDepthReached = 0;
             MaxSelectionDepthReached = 0;
             CurrentIterations = 0;
             CurrentIterationsInFrame = 0;
             CurrentStateWorldModel = new CurrentWorldModel(knowledgeBase);
             CurrentStateWorldModel.Initialize();
-            InitialNode = new MCTSNode(CurrentStateWorldModel)
+            InitialNode = new MCTSNode(CurrentStateWorldModel.GenerateChildWorldModel())
             {
                 Action = null,
                 Parent = null,
                 PlayerID = 0
             };
+            //Console.WriteLine(InitialNode.State.depth);
             InProgress = true;
             BestFirstChild = null;
             //this.ParcialProcessingTime = 0;
@@ -64,6 +67,8 @@ namespace MCTS.DST
 
         public Action ChooseAction()
         {
+            Console.WriteLine("ChooseAction");
+
             //var frameBegin = Time.realtimeSinceStartup;
 
             MCTSNode selectedNode;
@@ -72,16 +77,20 @@ namespace MCTS.DST
             CurrentIterationsInFrame = 0;
             var rootNode = InitialNode;
             //MCTSNode rootNode =  new MCTSNode(CurrentStateWorldModel.GenerateChildWorldModel());
-
-            while (CurrentIterationsInFrame < MaxIterationsProcessedPerFrame
-                   && CurrentIterations < MaxIterations)
-            {
-                selectedNode = Selection(rootNode);
-                reward = Playout(selectedNode.State);
-                Backpropagate(selectedNode, reward);
-                CurrentIterations++;
-                CurrentIterationsInFrame++;
-            }
+            //Console.WriteLine("0");
+                while (CurrentIterationsInFrame < MaxIterationsProcessedPerFrame
+                       && CurrentIterations < MaxIterations) {
+                    //Console.WriteLine("1");
+                    selectedNode = Selection(rootNode);
+                    //Console.WriteLine("2");
+                    reward = Playout(selectedNode.State);
+                    //Console.WriteLine("3");
+                    Backpropagate(selectedNode, reward);
+                    CurrentIterations++;
+                    CurrentIterationsInFrame++;
+                    //Console.WriteLine("++");
+                }
+            
             //var frameEnd = Time.realtimeSinceStartup;
             //var thisFrameTime = frameEnd - frameBegin;
 
@@ -106,12 +115,16 @@ namespace MCTS.DST
                 if (toReturn != null)
                 {
                     BestAction = toReturn.Action;
+                    Console.WriteLine("BestAction");
+
                     return BestAction;
                 }
 
+                Console.WriteLine("NULL_1");
                 return null;
             }
 
+            Console.WriteLine("NULL_2");
             return null;
         }
 
@@ -137,6 +150,8 @@ namespace MCTS.DST
                 {
                     currentNode = BestUCTChild(currentNode);
                 }
+
+                
             }
 
             return currentNode;

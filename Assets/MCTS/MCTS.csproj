@@ -54,6 +54,7 @@
     <Compile Include="DST\Objects\PickableObject.cs" />
     <Compile Include="DST\Reward.cs" />
     <Compile Include="DST\WorldModels\CurrentWorldModel.cs" />
+    <Compile Include="DST\WorldModels\FutureWorldModel.cs" />
     <Compile Include="DST\WorldModels\WorldModel.cs" />
     <Compile Include="DST\MCTSNode.cs" />
     <Compile Include="DST\MCTSAlgorithm.cs" />
