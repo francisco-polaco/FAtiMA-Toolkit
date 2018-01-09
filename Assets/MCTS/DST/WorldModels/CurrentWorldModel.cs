@@ -79,11 +79,11 @@ namespace MCTS.DST.WorldModels
                     if (holder.isPickableComplete()) {
                         var objType = holder.GetEntityType();
                         List<PickableObject> objsList = null;
-                        _knownObjects.TryGetValue(objType, out objsList);
+                        _knownPickableObjects.TryGetValue(objType, out objsList);
                         if (objsList == null) objsList = new List<PickableObject>();
                         holder.calculateDistanceToChar(walterPosition);
                         insertSorted(objsList, holder);
-                        _knownObjects[objType] = objsList;
+                        _knownPickableObjects[objType] = objsList;
                     }
                 }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using MCTS.DST.WorldModels;
+﻿using MCTS.DST.WorldModels;
 using MCTS.Math;
 
 namespace MCTS.DST.Actions
@@ -17,7 +16,7 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            //worldModel.RemoveObject(_guid);
+            //worldModel.RemovePickableObject(_guid);
             worldModel.walkedDistanced(_position);
         }
 
@@ -28,21 +27,4 @@ namespace MCTS.DST.Actions
 
     }
 
-    class WanderAction : WalktoAction
-    {
-        public WanderAction(Vector2i walterPosition) : base(walterPosition)
-        {
-            var r = new Random();
-            var x = r.Next(100) >= 50 ? r.Next(10) : -r.Next(10);
-            var y = r.Next(100) >= 50 ? r.Next(10) : -r.Next(10);
-            _position = walterPosition + new Vector2i(x, y);
-        }
-    }
-
-    //internal class PickableObject : GameObject
-    //{
-    //    public PickableObject(string guid) : base(guid)
-    //    {
-    //    }
-    //}
 }

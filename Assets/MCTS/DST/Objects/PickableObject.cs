@@ -1,10 +1,11 @@
 ﻿using System;
 using MCTS.Math;
 using System.Collections.Generic;
+using MCTS.DST.Actions;
 
 namespace MCTS.DST.Objects
 {
-    public class PickableObject
+    public class PickableObject 
     {
         private string entityType;
 

@@ -16,7 +16,7 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            worldModel.RemoveObject(_guid);
+            worldModel.RemovePickableObject(_guid);
             worldModel.walkedDistanced(position);
         }
 

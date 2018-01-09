@@ -10,25 +10,27 @@ namespace MCTS.DST.WorldModels
 {
     public class WorldModel
     {
-        protected Dictionary<string, List<PickableObject>> _knownObjects;
+        protected Dictionary<string, List<PickableObject>> _knownPickableObjects;
         protected Vector2i walterPosition = new Vector2i();
         private int actionIndex = 0;
         private bool possibleActionsCalculated = false;
         private Action[] possibleActions = null;
         protected double walkedDistance = 0;
+        protected EquipableObject _equipedObject = EquipableObject.None;
 
 
         public WorldModel()
         {
-            _knownObjects = new Dictionary<string, List<PickableObject>>();
+            _knownPickableObjects = new Dictionary<string, List<PickableObject>>();
         }
 
         public WorldModel(WorldModel wm)
         {
             actionIndex = 0;
-            _knownObjects = wm._knownObjects;
+            _knownPickableObjects = wm._knownPickableObjects;
             walterPosition = wm.walterPosition;
-            Console.WriteLine("WorldModel creation: knownObjects size " + _knownObjects.Keys.Count + " Walter position: " + walterPosition);
+            _equipedObject = wm._equipedObject;
+            Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + walterPosition);
         }
 
         public virtual WorldModel GenerateChildWorldModel()
@@ -61,9 +63,9 @@ namespace MCTS.DST.WorldModels
 
         private void calculateActions() {
              
-            possibleActions = new Action[_knownObjects.Keys.Count];
+            possibleActions = new Action[_knownPickableObjects.Keys.Count];
             var i = 0;
-            foreach (var objHolder in _knownObjects) {
+            foreach (var objHolder in _knownPickableObjects) {
                 Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
                 var actionTempHolder = new PickAction(objHolder.Value[0].Guid, objHolder.Value[0].GetPosition());
                 possibleActions[i] = actionTempHolder;
@@ -110,15 +112,15 @@ namespace MCTS.DST.WorldModels
         {
         }
 
-        public void RemoveObject(string guid)
+        public void RemovePickableObject(string guid)
         {
-            _knownObjects.Remove(guid);
+            _knownPickableObjects.Remove(guid);
         }
 
         public Vector2i GetPosition(string guid)
         {
             return new Vector2i(0, 0);
-            //return _knownObjects[guid].Position;
+            //return _knownPickableObjects[guid].Position;
         }
 
         public int getSquaredDistanceToWalter(Vector2i obj) {
@@ -134,6 +136,21 @@ namespace MCTS.DST.WorldModels
         public virtual void walkedDistanced(Vector2i positionWalkedTo) {
             walkedDistance += getRealDistanceToWalter(positionWalkedTo);
             walterPosition = positionWalkedTo;
+        }
+
+        public void EquipObject(EquipableObject equipable)
+        {
+            _equipedObject = equipable;
+        }
+
+        public bool GotAxeEquiped()
+        {
+            return _equipedObject == EquipableObject.Axe;
+        }
+
+        public void AddPickableObject(PickableObject obj)
+        {
+            _knownPickableObjects[obj.GetEntityType()].Add(obj);
         }
     }
 

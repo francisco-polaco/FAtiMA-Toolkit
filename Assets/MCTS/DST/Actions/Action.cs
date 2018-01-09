@@ -1,6 +1,5 @@
 ﻿using System;
 using MCTS.DST.WorldModels;
-using MCTS.Math;
 using WellFormedNames;
 
 namespace MCTS.DST.Actions
@@ -66,19 +65,5 @@ namespace MCTS.DST.Actions
         public virtual string getTarget() {
             return "-";
         }
-    }
-
-    public abstract class GameObject
-    {
-        protected string _guid;
-        protected Vector2d _position;
-
-        protected GameObject(string guid)
-        {
-            _guid = guid;
-        }
-
-        public string Guid => _guid;
-        public Vector2d Position => _position;
     }
 }
