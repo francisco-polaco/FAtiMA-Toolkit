@@ -5,6 +5,7 @@ using MCTS.DST.Actions;
 using MCTS.DST.Objects;
 using Utilities;
 using WellFormedNames;
+using System.Linq;
 
 namespace MCTS.DST.WorldModels
 {
@@ -13,8 +14,8 @@ namespace MCTS.DST.WorldModels
         public static string guid;
 
         //Key is GUID
-        private readonly Dictionary<string, PickableObject>
-            _temporaryHolders = new Dictionary<string, PickableObject>();
+        private readonly Dictionary<string, DSTObject>
+            _temporaryHolders = new Dictionary<string, DSTObject>();
 
         private List<GameObject> _woodObjects = new List<GameObject>();
 
@@ -23,20 +24,37 @@ namespace MCTS.DST.WorldModels
             //guid = null;
             try {
                 var walterZ = knowledgeBase.AskProperty((Name)"PosZ(Walter)");
-                Console.WriteLine(walterZ.ToString());
                 updateWalterZ(walterZ.ToString());
                 var walterX = knowledgeBase.AskProperty((Name)"PosX(Walter)");
-                Console.WriteLine(walterX.ToString());
                 updateWalterX(walterX.ToString());
+                Console.WriteLine("aaaaheya!");
+                var array = knowledgeBase.AskPossibleProperties((Name) "Entity([x],[y])", Name.SELF_SYMBOL, null)
+                    .SelectMany(p => p.Item2).ToArray();
+                foreach (var a in array) {
+                    Console.WriteLine("A - " + a.ToString());
+
+                    foreach (var sub in a) {
+                        Console.Write("sub - ");
+                        Console.WriteLine(sub.SubValue.Value.GetNTerm(0));
+                    }
+                }
+                //knowledgeBase.AskPossibleProperties((Name)"PosX([x])"
+                Console.WriteLine("aaaaheya222222!");
 
                 var beliefs = knowledgeBase.GetAllBeliefs();
                 foreach (var belief in beliefs) {
-                    Console.WriteLine(belief.Name + " - " + belief.Value);
+                    #if _PRINT_ALL_BELIEFS
+                        //Console.WriteLine(belief.Name + " - " + belief.Value);
+                    #endif
                     if (belief.Value.Equals((Name)"True")) {
                         var properties = GetBeliefName_InsideParentesis(belief.Name.ToString());
                         if (properties.Item1.Equals("Pickable")) {
                             var pickable = FindOrCreatePickable(properties.Item2);
-                            pickable.Pickable = true;
+                            pickable.PickWorkable = true;
+                        }
+                        if (properties.Item1.Equals("ChopWorkable")) {
+                            var pickable = FindOrCreatePickable(properties.Item2);
+                            pickable.ChopWorkable  = true;
                         }
                     } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
@@ -64,37 +82,75 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreatePickable(guid);
                             pickable.SetPosZ(int.Parse(belief.Value.ToString()));
                         }
-
-                        //if (guid != null) {
-                        //    if (belief.Name.ToString().Contains(guid) && belief.Name.ToString().Contains("Entity")) {
-                        //        Console.WriteLine(belief.Name + " - " + belief.Value);
-                        //    }
-                        //}
-                        //Some other stuff, may be relevant
                     }
                 }
+                //--------------
+                //--PARSE DONE--
+                //--------------
                 foreach (var pair_key_value in _temporaryHolders) {
                     var holder = pair_key_value.Value;
-                    //Console.WriteLine(holder.ToString());
-                    if (holder.isPickableComplete()) {
-                        var objType = holder.GetEntityType();
-                        List<PickableObject> objsList = null;
-                        _knownPickableObjects.TryGetValue(objType, out objsList);
-                        if (objsList == null) objsList = new List<PickableObject>();
-                        holder.calculateDistanceToChar(walterPosition);
-                        insertSorted(objsList, holder);
-                        _knownPickableObjects[objType] = objsList;
+                    var flagIsAnything = false;
+                    if (holder.isComplete())
+                    {
+                        if (holder.PickWorkable && !holder.GetEntityType().Equals("robin")) {
+                            toBeNamed(holder, _knownPickableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.ChopWorkable) {
+                            toBeNamed(holder, _knownChopableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.HammerWorkable) {
+                            toBeNamed(holder, _knownHammerableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.DigWorkable) {
+                            toBeNamed(holder, _knownDiggableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.MineWorkable) {
+                            toBeNamed(holder, _knownMineableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.InInventory) {
+                            toBeNamed(holder, _knownInInventoryObjects);
+                            flagIsAnything = true;
+                        }
+
+                        if (!flagIsAnything)
+                        {
+
+                            Console.WriteLine("ERROR: OBJ Aint Nothing: " + holder.ToString());
+                            //Console.WriteLine("..Enter to continue execution..");
+                            //Console.ReadLine();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERROR: OBJ not Complete");
+                        //Console.WriteLine("..Enter to continue execution..");
+                        //Console.ReadLine();
                     }
                 }
-
             } catch (Exception e) {
                 Console.WriteLine(e);
+                Console.WriteLine("..Enter to continue execution..");
                 Console.ReadLine();
                 throw;
             }
         }
 
-        private void insertSorted(List<PickableObject> list, PickableObject toInsert)
+        private void toBeNamed(DSTObject objToInsert, Dictionary<string, List<DSTObject>> dictionaryWhereToInsert) {
+            var objType = objToInsert.GetEntityType();
+            dictionaryWhereToInsert.TryGetValue(objType, out var objsList);
+            if (objsList == null) objsList = new List<DSTObject>();
+            objToInsert.calculateDistanceToChar(Walter.WalterPosition);
+            insertSorted(objsList, objToInsert);
+            dictionaryWhereToInsert[objType] = objsList;
+        }
+
+
+        private void insertSorted(List<DSTObject> list, DSTObject toInsert)
         {
             for (var i = 0; i < list.Count; i++)
             {
@@ -109,13 +165,13 @@ namespace MCTS.DST.WorldModels
             list.Add(toInsert);
         }
 
-        public PickableObject FindOrCreatePickable(string guid)
+        public DSTObject FindOrCreatePickable(string guid)
         {
-            PickableObject holder = null;
+            DSTObject holder = null;
             _temporaryHolders.TryGetValue(guid, out holder);
             if (holder == null)
             {
-                holder = new PickableObject(guid);
+                holder = new DSTObject(guid);
                 _temporaryHolders[guid] = holder;
             }
 
@@ -154,12 +210,12 @@ namespace MCTS.DST.WorldModels
 
         private void updateWalterZ(string posZ)
         {
-            walterPosition.y = int.Parse(getPositionFromString(posZ));
+            Walter.WalterPosition.y = int.Parse(getPositionFromString(posZ));
         }
 
         private void updateWalterX(string posX)
         {
-            walterPosition.x = int.Parse(getPositionFromString(posX));
+            Walter.WalterPosition.x = int.Parse(getPositionFromString(posX));
         }
     }
 }

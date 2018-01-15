@@ -115,16 +115,10 @@ namespace MCTS.DST
                 if (toReturn != null)
                 {
                     BestAction = toReturn.Action;
-                    Console.WriteLine("BestAction");
-
                     return BestAction;
                 }
-
-                Console.WriteLine("NULL_1");
                 return null;
             }
-
-            Console.WriteLine("NULL_2");
             return null;
         }
 

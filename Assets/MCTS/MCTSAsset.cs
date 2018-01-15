@@ -57,6 +57,12 @@ namespace MCTS
             var memStream = new MemoryStream();
             var json = jsonSerializer.SerializeToJson(this.m_kb);
             var kbCloned = jsonSerializer.DeserializeFromJson<KB>(json);
+
+            #if PRINTKB
+                Console.WriteLine(json.ToString());
+                Console.ReadLine();
+            #endif
+
             //var deepKbClone = DeepClone(m_kb);
 
             DST.Actions.Action action = null;
@@ -71,16 +77,18 @@ namespace MCTS
 
             } catch (Exception e) {
                 Console.WriteLine(e);
+                Console.WriteLine("..Enter to continue execution..");
                 Console.ReadLine();
                 throw e;
+
 
             }
 
             //This is just an example of how to always return the action "Pick" with target "Wood1"
             //var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(PICK, -, -, -, -)")));
-            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName(action.getDSTInterpretableAction())));
+            var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName(action.GetDstInterpretableAction())));
             //var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(CurrentWorldModel.guid)));
-            var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(action.getTarget())));
+            var targetSub = new Substitution(targetVar, new ComplexValue(Name.BuildName(action.GetTarget())));
 
             foreach (var subSet in context.Constraints)
             {

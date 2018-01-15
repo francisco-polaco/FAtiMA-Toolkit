@@ -23,7 +23,6 @@ namespace MCTS.DST.WorldModels
 
         public override WorldModel GenerateChildWorldModel()
         {
-            Console.WriteLine("Generate");
             return new FutureWorldModel(this);
         }
 
@@ -36,7 +35,7 @@ namespace MCTS.DST.WorldModels
 
         public override float GetScore()
         {
-            return 1 / (float) walkedDistance;
+            return 1 / (float) Walter.WalkedDistance;
         }
 
 

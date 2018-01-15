@@ -1,1 +1,1 @@
-ExportDlls.bat debug ..\FAtiMA-DST\packages\FATIMA
+.\ExportDlls.bat debug ..\FAtiMA-DST\packages\FATIMA

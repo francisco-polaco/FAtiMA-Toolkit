@@ -10,37 +10,45 @@ namespace MCTS.DST.Actions
         Evergreen,
         Birchnut //etc
     }
-    internal class ChopAction : Action
+    internal class ChopAction : WalktoAction
     {
-        private readonly string _targetGuid;
-        private readonly Vector2i _positionToGo;
-        private readonly int _numberOfDroppedLogs;
 
-        public ChopAction(string targetGuid, Vector2i positionToGo, Tree kind) : base("CHOP")
+        private readonly int _numberOfDroppedLogs;
+        //private readonly string _typeOfTree;
+
+        public ChopAction(Vector2i positionToGo, string guid, string typeOfTree) : base(positionToGo,guid,typeOfTree)
         {
-            _targetGuid = targetGuid;
-            this._positionToGo = positionToGo;
-            // no idea from the values xD
-            // age could also be considered, but it may explode the number of actions
-            if (kind == Tree.Evergreen)
-            {
-                _numberOfDroppedLogs = 2;
-            }else if (kind == Tree.Birchnut)
-            {
-                _numberOfDroppedLogs = 3;
-            }
+            // TODO age MUST also be considered, but it may explode the number of actions
+            _numberOfDroppedLogs = 2;
+
+
+            //Evergreen
+            //Birchnut
+            //Spiky
+            //Mushtree
+            //Lumpy
+            //"Normal"
+            //Palm
+            //Jungle
+            //Mangrove
+            //"Regular"
+            //Ash
+            //Twiggy
         }
 
+        
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            worldModel.RemovePickableObject(_targetGuid);
-            worldModel.walkedDistanced(_positionToGo);
+            base.ApplyActionEffects(worldModel);
+            worldModel.RemoveChopableObject(EntityType ,TargetGuid);
+            
             for (int i = 0; i < _numberOfDroppedLogs; i++)
             {
-                var pickable = new PickableObject(Guid.NewGuid().ToString());
-                pickable.SetPosX(_positionToGo.x);
-                pickable.SetPosZ(_positionToGo.y);
+                var pickable = new DSTObject(Guid.NewGuid().ToString());
+                pickable.SetPosX(TargetPosition.x);
+                pickable.SetPosZ(TargetPosition.y);
                 pickable.SetEntityType("log"); // tronco
+                pickable.ChopWorkable = true;
                 worldModel.AddPickableObject(pickable);
             }
         }
@@ -48,35 +56,34 @@ namespace MCTS.DST.Actions
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            if (!base.CanExecute(worldModel)) return false;
-            return worldModel.GotAxeEquiped();
-        }
-
-        public override bool CanExecute()
-        {
-            if (!base.CanExecute()) return false;
             // todo: ver se tenho machado no mundo
-            return base.CanExecute();
+            return base.CanExecute(worldModel) && worldModel.GotAxeEquiped();
         }
 
-        public override void Execute()
-        {
-            base.Execute();
-        }
+        //public override bool CanExecute()
+        //{
+        //    if (!base.CanExecute()) return false;
+        //    // todo: ver se tenho machado no mundo
+        //    return base.CanExecute();
+        //}
 
-        public override double GetDuration()
-        {
-            return base.GetDuration();
-        }
+        //public override void Execute()
+        //{
+        //    base.Execute();
+        //}
+
+        //public override double GetDuration()
+        //{
+        //    return base.GetDuration();
+        //}
 
         public override double GetDuration(WorldModel worldModel)
         {
             return base.GetDuration(worldModel);
         }
 
-        public override string getTarget()
-        {
-            return _targetGuid;
+        public override string GetDstInterpretableAction() {
+            return "Action(CHOP, -, -, -, -)";
         }
     }
 }

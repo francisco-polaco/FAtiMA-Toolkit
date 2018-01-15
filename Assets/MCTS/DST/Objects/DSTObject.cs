@@ -5,20 +5,24 @@ using MCTS.DST.Actions;
 
 namespace MCTS.DST.Objects
 {
-    public class PickableObject 
+    public class DSTObject 
     {
         private string entityType;
-
         private int posX;
-
         private int posZ;
 
-        public PickableObject(string guid)
+        public DSTObject(string guid)
         {
             Guid = guid;
         }
 
-        public bool Pickable { get; set; } = false;
+        public bool PickWorkable { get; set; } = false;
+        public bool ChopWorkable { get; set; } = false;
+        public bool HammerWorkable { get; set; } = false;
+        public bool DigWorkable { get; set; } = false;
+        public bool MineWorkable { get; set; } = false;
+        public bool InInventory { get; set; } = false;
+
         private bool PosXSet { get; set; }
         private bool PosZSet { get; set; }
         private bool EntitySet { get; set; }
@@ -60,9 +64,9 @@ namespace MCTS.DST.Objects
             entityType = value;
         }
 
-        public bool isPickableComplete()
+        public bool isComplete()
         {
-            return Pickable && EntitySet && PosXSet && PosZSet;
+            return EntitySet && PosXSet && PosZSet;
         }
 
         public void calculateDistanceToChar(Vector2i walterPosition)
@@ -77,22 +81,13 @@ namespace MCTS.DST.Objects
         }
 
         public override string ToString() {
-            return "PICKABLE OBJ - " + entityType + " :x: " + posX + " :z: " + posZ + " :picakble: " + Pickable + " :complete: " + isPickableComplete();
+            return "PICKABLE OBJ - " + entityType + " :x: " + posX + " :z: " + posZ + " :picakble: " + PickWorkable + " :complete: " + isComplete();
         }
 
-        //public override bool Equals(object obj) {
-        //    var @object = obj as PickableObject;
-        //    return @object != null &&
-        //           entityType == @object.entityType &&
-        //           posX == @object.posX &&
-        //           posZ == @object.posZ &&
-        //           Pickable == @object.Pickable &&
-        //           PosXSet == @object.PosXSet &&
-        //           PosZSet == @object.PosZSet &&
-        //           EntitySet == @object.EntitySet &&
-        //           SquaredDistance == @object.SquaredDistance &&
-        //           Guid == @object.Guid;
-        //}
+        public override bool Equals(object obj) {
+            return obj is DSTObject @object &&
+                   Guid == @object.Guid;
+        }
 
         //public override int GetHashCode() {
         //    var hashCode = -698353903;

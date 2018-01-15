@@ -3,26 +3,24 @@ using MCTS.Math;
 
 namespace MCTS.DST.Actions
 {
-    internal class PickAction : Action
+    internal class PickAction : WalktoAction
     {
-        private readonly string _guid;
-        private readonly Vector2i position;
 
-        public PickAction(string guid, Vector2i position) : base("PICK")
+        public PickAction(string entityType, string guid, Vector2i position) : base(position, guid, entityType)
         {
-            _guid = guid;
-            this.position = position;
         }
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            worldModel.RemovePickableObject(_guid);
-            worldModel.walkedDistanced(position);
+            base.ApplyActionEffects(worldModel);
+            worldModel.RemovePickableObject(EntityType, TargetGuid);
+            worldModel.Walter.AddInventory(TargetGuid);
         }
+
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            return base.CanExecute(worldModel);
+            return base.CanExecute(worldModel) && worldModel.Walter.IsInventoryFull();
         }
 
         public override bool CanExecute()
@@ -45,8 +43,8 @@ namespace MCTS.DST.Actions
             return base.GetDuration(worldModel);
         }
 
-        public override string getTarget() {
-            return _guid;
+        public override string GetDstInterpretableAction() {
+                return "Action(" + "PICKUP" + ", -, -, -, -)";
         }
     }
 

@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GAIPS.Serialization, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\GAIPS.Serialization.1.5.0\lib\net35\GAIPS.Serialization.dll</HintPath>
@@ -52,14 +55,15 @@
     <Compile Include="DST\Actions\Action.cs" />
     <Compile Include="DST\Actions\ChopAction.cs" />
     <Compile Include="DST\Actions\WanderAction.cs" />
+    <Compile Include="DST\Objects\DSTObject.cs" />
     <Compile Include="DST\Objects\GameObject.cs" />
     <Compile Include="DST\Actions\WalktoAction.cs" />
     <Compile Include="DST\Actions\PickAction.cs" />
     <Compile Include="DST\Objects\EquipableObject.cs" />
-    <Compile Include="DST\Objects\PickableObject.cs" />
     <Compile Include="DST\Reward.cs" />
     <Compile Include="DST\WorldModels\CurrentWorldModel.cs" />
     <Compile Include="DST\WorldModels\FutureWorldModel.cs" />
+    <Compile Include="DST\WorldModels\Character.cs" />
     <Compile Include="DST\WorldModels\WorldModel.cs" />
     <Compile Include="DST\MCTSNode.cs" />
     <Compile Include="DST\MCTSAlgorithm.cs" />
@@ -85,7 +89,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\ExportDlls.bat debug $(SolutionDir)\..\FAtiMA-DST\packages\FATIMA</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)\ExportDlls.bat debug $(SolutionDir)..\FAtiMA-DST\packages\FATIMA
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

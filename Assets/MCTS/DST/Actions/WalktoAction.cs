@@ -5,24 +5,38 @@ namespace MCTS.DST.Actions
 {
     internal class WalktoAction : Action
     {
-        //private readonly string _guid;
-        protected Vector2i _position;
+        protected Vector2i TargetPosition;
 
         public WalktoAction(Vector2i position) : base("WALKTO")
         {
            // _guid = guid;
-            this._position = position;
+            this.TargetPosition = position;
+        }
+
+        public WalktoAction(Vector2i position,string targetGuid,string entityType) : base("WALKTO",targetGuid,entityType) {
+            this.TargetPosition = position;
         }
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
             //worldModel.RemovePickableObject(_guid);
-            worldModel.walkedDistanced(_position);
+            worldModel.walkedDistanced(TargetPosition);
         }
 
-        public override string getDSTInterpretableAction()
+        public override string GetDstInterpretableAction()
         {
-            return "Action(" + Name + ", -, " + _position.x + ", " + _position.y + ", -)";
+            if (TargetGuid == null)
+            {
+                return "Action(" + Name + ", -, " + TargetPosition.x + ", " + TargetPosition.y + ", -)";
+            }
+            else
+            {
+                return "Action(" + Name + ", -, -, -, -)";
+            }
+        }
+
+        public override string GetTarget() {
+            return TargetGuid ?? "-";
         }
 
     }

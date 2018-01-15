@@ -10,27 +10,45 @@ namespace MCTS.DST.WorldModels
 {
     public class WorldModel
     {
-        protected Dictionary<string, List<PickableObject>> _knownPickableObjects;
-        protected Vector2i walterPosition = new Vector2i();
-        private int actionIndex = 0;
-        private bool possibleActionsCalculated = false;
-        private Action[] possibleActions = null;
-        protected double walkedDistance = 0;
-        protected EquipableObject _equipedObject = EquipableObject.None;
+        protected Dictionary<string, List<DSTObject>> _knownPickableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownChopableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownHammerableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownDiggableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownMineableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownInInventoryObjects;
+
+        private int _actionIndex = 0;
+        private Action[] _possibleActions = null;
+
+
+        public Character Walter { get; } = new Character();
 
 
         public WorldModel()
         {
-            _knownPickableObjects = new Dictionary<string, List<PickableObject>>();
+            _knownPickableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownChopableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownHammerableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownDiggableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownMineableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>();
+
         }
 
         public WorldModel(WorldModel wm)
         {
-            actionIndex = 0;
+            _actionIndex = 0;
             _knownPickableObjects = wm._knownPickableObjects;
-            walterPosition = wm.walterPosition;
-            _equipedObject = wm._equipedObject;
-            Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + walterPosition);
+            _knownChopableObjects = wm._knownChopableObjects;
+            _knownHammerableObjects = wm._knownHammerableObjects;
+            _knownDiggableObjects = wm._knownDiggableObjects;
+            _knownMineableObjects = wm._knownMineableObjects;
+            _knownInInventoryObjects = wm._knownInInventoryObjects;
+
+            Walter.WalterPosition = wm.Walter.WalterPosition;
+            Walter.EquipedObject = wm.Walter.EquipedObject;
+            Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count +
+                              " Walter position: " + Walter.WalterPosition);
         }
 
         public virtual WorldModel GenerateChildWorldModel()
@@ -40,35 +58,45 @@ namespace MCTS.DST.WorldModels
 
         public virtual Action[] GetExecutableActions()
         {
-            if (possibleActions!=null) {
-                return possibleActions;
+            if (_possibleActions!=null) {
+                return _possibleActions;
             }
             calculateActions();
-            Console.WriteLine("All possible actions: size " + possibleActions.Length );
+            Console.WriteLine("All possible actions: size " + _possibleActions.Length );
             
-            foreach(var i in possibleActions) {
-                Console.WriteLine(i.getDSTInterpretableAction() + " "+ i.getTarget());
-            }
-            Console.WriteLine(possibleActions);
-            if (possibleActions.Length == 0)
+            //foreach(var i in possibleActions) {
+            //    Console.WriteLine(i.getDSTInterpretableAction() + " "+ i.getTarget());
+            //}
+            //Console.WriteLine(possibleActions);
+            if (_possibleActions.Length == 0)
             {
                 // lets wonder a bit
                 // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
                 // agr so anda ao calhas e vai para narnia
-                Console.WriteLine("no action lets wonder");
-                return new Action[] { new WanderAction(walterPosition) };
+                Console.WriteLine("no action -> lets wonder");
+                return new Action[] { new WanderAction(Walter.WalterPosition) };
             }
-            return possibleActions;
+            return _possibleActions;
         }
 
-        private void calculateActions() {
-             
-            possibleActions = new Action[_knownPickableObjects.Keys.Count];
+        private void calculateActions()
+        {
+            var numberActions = _knownPickableObjects.Keys.Count + _knownChopableObjects.Keys.Count;
+
+            _possibleActions = new Action[numberActions];
             var i = 0;
-            foreach (var objHolder in _knownPickableObjects) {
-                Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
-                var actionTempHolder = new PickAction(objHolder.Value[0].Guid, objHolder.Value[0].GetPosition());
-                possibleActions[i] = actionTempHolder;
+            foreach (var objHolder in _knownPickableObjects)
+            {
+                //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
+                var actionTempHolder = new PickAction(objHolder.Value[0].GetEntityType(), objHolder.Value[0].Guid ,objHolder.Value[0].GetPosition());
+                _possibleActions[i] = actionTempHolder;
+                i++;
+            }
+            foreach (var objHolder in _knownChopableObjects)
+            {
+                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(),  objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                _possibleActions[i] = actionTempHolder;
                 i++;
             }
         }
@@ -78,13 +106,12 @@ namespace MCTS.DST.WorldModels
         {
             Action action = null;
             var actions = GetExecutableActions();
-            if (actionIndex < actions.Length) {
-                action = actions[actionIndex];
-                actionIndex++;
-                Console.WriteLine("Action: " + action.getDSTInterpretableAction() + " " + action.getTarget());
+            if (_actionIndex < actions.Length) {
+                action = actions[_actionIndex];
+                _actionIndex++;
+                //Console.WriteLine("Action: " + action.getDSTInterpretableAction() + " " + action.getTarget());
             }
             return action;
-
         }
 
         //Stops Playout
@@ -95,7 +122,7 @@ namespace MCTS.DST.WorldModels
 
         internal Vector2i GetWalterPosition()
         {
-             return walterPosition;
+             return Walter.WalterPosition;
         }
 
         public virtual float GetScore()
@@ -112,20 +139,56 @@ namespace MCTS.DST.WorldModels
         {
         }
 
-        public void RemovePickableObject(string guid)
+
+
+        public void RemovePickableObject(string entityType, string guid) {
+            RemoveGuidFromKnownObject(_knownPickableObjects,entityType,guid);
+        }
+        public void RemoveChopableObject(string entityType, string guid) {
+            RemoveGuidFromKnownObject(_knownChopableObjects, entityType, guid);
+        }
+        //public void RemovePickableObject(string entityType, string guid) {
+        //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
+        //}
+        //public void RemovePickableObject(string entityType, string guid) {
+        //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
+        //}
+        //public void RemovePickableObject(string entityType, string guid) {
+        //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
+        //}
+        //public void RemovePickableObject(string entityType, string guid) {
+        //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
+        //}
+
+        private void RemoveGuidFromKnownObject(Dictionary<string, List<DSTObject>> listOfObjects, string entityType, string guid) {
+            var lista = listOfObjects[entityType];
+            if (lista.Count == 1) {
+                listOfObjects.Remove(entityType);
+            } else {
+                RemoveFromListGuid(lista, guid);
+            }
+        }
+
+
+        public void RemoveFromListGuid(List<DSTObject> list, string guid)
         {
-            _knownPickableObjects.Remove(guid);
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (!list[i].Guid.Equals(guid)) continue;
+                list.RemoveAt(i);
+                break;
+            }
         }
 
         public Vector2i GetPosition(string guid)
         {
             return new Vector2i(0, 0);
-            //return _knownPickableObjects[guid].Position;
+            //return _knownPickableObjects[guid][0].GetPosition();
         }
 
         public int getSquaredDistanceToWalter(Vector2i obj) {
-            var x = (int)walterPosition.x - obj.x;
-            var y = (int)walterPosition.y - obj.y;
+            var x = (int)Walter.WalterPosition.x - obj.x;
+            var y = (int)Walter.WalterPosition.y - obj.y;
             return x * x + y * y;
         }
 
@@ -134,23 +197,30 @@ namespace MCTS.DST.WorldModels
         }
 
         public virtual void walkedDistanced(Vector2i positionWalkedTo) {
-            walkedDistance += getRealDistanceToWalter(positionWalkedTo);
-            walterPosition = positionWalkedTo;
+            Walter.WalkedDistance += getRealDistanceToWalter(positionWalkedTo);
+            Walter.WalterPosition = positionWalkedTo;
         }
 
         public void EquipObject(EquipableObject equipable)
         {
-            _equipedObject = equipable;
+            Walter.EquipedObject = equipable;
         }
 
         public bool GotAxeEquiped()
         {
-            return _equipedObject == EquipableObject.Axe;
+            return true;
+            //return _equipedObject == EquipableObject.Axe;
         }
 
-        public void AddPickableObject(PickableObject obj)
+        public void AddPickableObject(DSTObject obj)
         {
-            _knownPickableObjects[obj.GetEntityType()].Add(obj);
+            _knownPickableObjects.TryGetValue(obj.GetEntityType(), out var orderedList);
+            if (orderedList == null)
+            {
+                Console.WriteLine("usefull shit");
+                orderedList = new List<DSTObject>();
+            }
+            orderedList.Insert(0,obj);
         }
     }
 
