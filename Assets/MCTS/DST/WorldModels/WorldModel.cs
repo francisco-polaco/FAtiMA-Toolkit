@@ -81,24 +81,37 @@ namespace MCTS.DST.WorldModels
 
         private void calculateActions()
         {
-            var numberActions = _knownPickableObjects.Keys.Count + _knownChopableObjects.Keys.Count;
+            //var numberActions = _knownPickableObjects.Keys.Count + _knownChopableObjects.Keys.Count;
+            var possibleActions = new List<Action>();
 
-            _possibleActions = new Action[numberActions];
-            var i = 0;
+            //_possibleActions = new Action[numberActions];
+            //var i = 0;
             foreach (var objHolder in _knownPickableObjects)
             {
                 //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
                 var actionTempHolder = new PickAction(objHolder.Value[0].GetEntityType(), objHolder.Value[0].Guid ,objHolder.Value[0].GetPosition());
-                _possibleActions[i] = actionTempHolder;
-                i++;
+                possibleActions.Add(actionTempHolder);
+                //_possibleActions[i] = actionTempHolder;
+                //i++;
             }
             foreach (var objHolder in _knownChopableObjects)
             {
-                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
                 var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(),  objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
-                _possibleActions[i] = actionTempHolder;
-                i++;
+                possibleActions.Add(actionTempHolder);
+                //_possibleActions[i] = actionTempHolder;
+                //i++;
             }
+            foreach (var objHolder in _knownMineableObjects) {
+                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                possibleActions.Add(actionTempHolder);
+
+                //_possibleActions[i] = actionTempHolder;
+                //i++;
+            }
+
+            _possibleActions = possibleActions.ToArray();
         }
 
         //For Selection
@@ -147,9 +160,9 @@ namespace MCTS.DST.WorldModels
         public void RemoveChopableObject(string entityType, string guid) {
             RemoveGuidFromKnownObject(_knownChopableObjects, entityType, guid);
         }
-        //public void RemovePickableObject(string entityType, string guid) {
-        //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
-        //}
+        public void RemoveMineableObject(string entityType, string guid) {
+            RemoveGuidFromKnownObject(_knownMineableObjects, entityType, guid);
+        }
         //public void RemovePickableObject(string entityType, string guid) {
         //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
         //}
@@ -217,7 +230,6 @@ namespace MCTS.DST.WorldModels
             _knownPickableObjects.TryGetValue(obj.GetEntityType(), out var orderedList);
             if (orderedList == null)
             {
-                Console.WriteLine("usefull shit");
                 orderedList = new List<DSTObject>();
             }
             orderedList.Insert(0,obj);

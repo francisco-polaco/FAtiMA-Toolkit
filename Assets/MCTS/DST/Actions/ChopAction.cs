@@ -48,7 +48,7 @@ namespace MCTS.DST.Actions
                 pickable.SetPosX(TargetPosition.x);
                 pickable.SetPosZ(TargetPosition.y);
                 pickable.SetEntityType("log"); // tronco
-                pickable.ChopWorkable = true;
+                pickable.PickWorkable = true;
                 worldModel.AddPickableObject(pickable);
             }
         }

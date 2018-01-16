@@ -53,8 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DST\Actions\Action.cs" />
+    <Compile Include="DST\Actions\MineAction.cs" />
     <Compile Include="DST\Actions\ChopAction.cs" />
     <Compile Include="DST\Actions\WanderAction.cs" />
+    <Compile Include="DST\DSTHelper.cs" />
     <Compile Include="DST\Objects\DSTObject.cs" />
     <Compile Include="DST\Objects\GameObject.cs" />
     <Compile Include="DST\Actions\WalktoAction.cs" />

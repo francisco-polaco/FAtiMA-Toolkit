@@ -27,6 +27,7 @@ namespace MCTS.DST.WorldModels
                 updateWalterZ(walterZ.ToString());
                 var walterX = knowledgeBase.AskProperty((Name)"PosX(Walter)");
                 updateWalterX(walterX.ToString());
+#if GOOD_FATIMA_PARSE
                 Console.WriteLine("aaaaheya!");
                 var array = knowledgeBase.AskPossibleProperties((Name) "Entity([x],[y])", Name.SELF_SYMBOL, null)
                     .SelectMany(p => p.Item2).ToArray();
@@ -40,12 +41,12 @@ namespace MCTS.DST.WorldModels
                 }
                 //knowledgeBase.AskPossibleProperties((Name)"PosX([x])"
                 Console.WriteLine("aaaaheya222222!");
-
+#endif
                 var beliefs = knowledgeBase.GetAllBeliefs();
                 foreach (var belief in beliefs) {
-                    #if _PRINT_ALL_BELIEFS
+#if _PRINT_ALL_BELIEFS
                         //Console.WriteLine(belief.Name + " - " + belief.Value);
-                    #endif
+#endif
                     if (belief.Value.Equals((Name)"True")) {
                         var properties = GetBeliefName_InsideParentesis(belief.Name.ToString());
                         if (properties.Item1.Equals("Pickable")) {
@@ -55,6 +56,10 @@ namespace MCTS.DST.WorldModels
                         if (properties.Item1.Equals("ChopWorkable")) {
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.ChopWorkable  = true;
+                        }
+                        if (properties.Item1.Equals("MineWorkable")) {
+                            var pickable = FindOrCreatePickable(properties.Item2);
+                            pickable.MineWorkable = true;
                         }
                     } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
