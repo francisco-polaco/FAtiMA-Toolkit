@@ -17,6 +17,7 @@ namespace MCTS.DST.Objects
         }
 
         public bool PickWorkable { get; set; } = false;
+        public bool CollectWorkable { get; set; } = false;
         public bool ChopWorkable { get; set; } = false;
         public bool HammerWorkable { get; set; } = false;
         public bool DigWorkable { get; set; } = false;

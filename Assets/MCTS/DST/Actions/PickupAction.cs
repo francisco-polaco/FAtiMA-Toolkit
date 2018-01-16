@@ -3,10 +3,10 @@ using MCTS.Math;
 
 namespace MCTS.DST.Actions
 {
-    internal class PickAction : WalktoAction
+    internal class PickupAction : WalktoAction
     {
 
-        public PickAction(string entityType, string guid, Vector2i position) : base(position, guid, entityType)
+        public PickupAction(Vector2i position, string guid, string entityType) : base(position, guid, entityType)
         {
         }
 

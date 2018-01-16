@@ -11,6 +11,7 @@ namespace MCTS.DST.WorldModels
     public class WorldModel
     {
         protected Dictionary<string, List<DSTObject>> _knownPickableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownCollectableObjects;
         protected Dictionary<string, List<DSTObject>> _knownChopableObjects;
         protected Dictionary<string, List<DSTObject>> _knownHammerableObjects;
         protected Dictionary<string, List<DSTObject>> _knownDiggableObjects;
@@ -27,6 +28,7 @@ namespace MCTS.DST.WorldModels
         public WorldModel()
         {
             _knownPickableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownCollectableObjects = new Dictionary<string, List<DSTObject>>();
             _knownChopableObjects = new Dictionary<string, List<DSTObject>>();
             _knownHammerableObjects = new Dictionary<string, List<DSTObject>>();
             _knownDiggableObjects = new Dictionary<string, List<DSTObject>>();
@@ -39,6 +41,7 @@ namespace MCTS.DST.WorldModels
         {
             _actionIndex = 0;
             _knownPickableObjects = wm._knownPickableObjects;
+            _knownCollectableObjects = wm._knownCollectableObjects;
             _knownChopableObjects = wm._knownChopableObjects;
             _knownHammerableObjects = wm._knownHammerableObjects;
             _knownDiggableObjects = wm._knownDiggableObjects;
@@ -89,7 +92,14 @@ namespace MCTS.DST.WorldModels
             foreach (var objHolder in _knownPickableObjects)
             {
                 //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
-                var actionTempHolder = new PickAction(objHolder.Value[0].GetEntityType(), objHolder.Value[0].Guid ,objHolder.Value[0].GetPosition());
+                var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                possibleActions.Add(actionTempHolder);
+                //_possibleActions[i] = actionTempHolder;
+                //i++;
+            }
+            foreach (var objHolder in _knownCollectableObjects) {
+                //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
+                var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
                 //_possibleActions[i] = actionTempHolder;
                 //i++;
@@ -163,6 +173,9 @@ namespace MCTS.DST.WorldModels
         public void RemoveMineableObject(string entityType, string guid) {
             RemoveGuidFromKnownObject(_knownMineableObjects, entityType, guid);
         }
+        public void RemoveCollectableObject(string entityType, string guid) {
+            RemoveGuidFromKnownObject(_knownCollectableObjects, entityType, guid);
+        }
         //public void RemovePickableObject(string entityType, string guid) {
         //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
         //}
@@ -173,12 +186,19 @@ namespace MCTS.DST.WorldModels
         //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
         //}
 
-        private void RemoveGuidFromKnownObject(Dictionary<string, List<DSTObject>> listOfObjects, string entityType, string guid) {
-            var lista = listOfObjects[entityType];
-            if (lista.Count == 1) {
+        private void RemoveGuidFromKnownObject(Dictionary<string, List<DSTObject>> listOfObjects, string entityType, string guid)
+        {
+            listOfObjects.TryGetValue(entityType, out var lista);
+            if (lista == null)
+            {
+                Console.WriteLine(entityType + " does not exist in here");
+                return;
+            }
+            RemoveFromListGuid(lista, guid);
+
+
+            if (lista.Count == 0) {
                 listOfObjects.Remove(entityType);
-            } else {
-                RemoveFromListGuid(lista, guid);
             }
         }
 

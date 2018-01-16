@@ -53,6 +53,10 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.PickWorkable = true;
                         }
+                        if (properties.Item1.Equals("Collectable")) {
+                            var pickable = FindOrCreatePickable(properties.Item2);
+                            pickable.CollectWorkable = true;
+                        }
                         if (properties.Item1.Equals("ChopWorkable")) {
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.ChopWorkable  = true;
@@ -97,8 +101,17 @@ namespace MCTS.DST.WorldModels
                     var flagIsAnything = false;
                     if (holder.isComplete())
                     {
-                        if (holder.PickWorkable && !holder.GetEntityType().Equals("robin")) {
+                        if (holder.GetEntityType().Equals("robin") || holder.GetEntityType().Equals("crow"))
+                        {
+                            continue;
+                        }
+
+                        if (holder.PickWorkable) {
                             toBeNamed(holder, _knownPickableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.CollectWorkable) {
+                            toBeNamed(holder, _knownCollectableObjects);
                             flagIsAnything = true;
                         }
                         if (holder.ChopWorkable) {
