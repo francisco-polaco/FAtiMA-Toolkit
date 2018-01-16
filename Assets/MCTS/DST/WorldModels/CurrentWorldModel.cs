@@ -27,6 +27,7 @@ namespace MCTS.DST.WorldModels
                 updateWalterZ(walterZ.ToString());
                 var walterX = knowledgeBase.AskProperty((Name)"PosX(Walter)");
                 updateWalterX(walterX.ToString());
+#if GOOD_FATIMA_PARSE
                 Console.WriteLine("aaaaheya!");
                 var array = knowledgeBase.AskPossibleProperties((Name) "Entity([x],[y])", Name.SELF_SYMBOL, null)
                     .SelectMany(p => p.Item2).ToArray();
@@ -40,21 +41,29 @@ namespace MCTS.DST.WorldModels
                 }
                 //knowledgeBase.AskPossibleProperties((Name)"PosX([x])"
                 Console.WriteLine("aaaaheya222222!");
-
+#endif
                 var beliefs = knowledgeBase.GetAllBeliefs();
                 foreach (var belief in beliefs) {
-                    #if _PRINT_ALL_BELIEFS
+#if _PRINT_ALL_BELIEFS
                         //Console.WriteLine(belief.Name + " - " + belief.Value);
-                    #endif
+#endif
                     if (belief.Value.Equals((Name)"True")) {
                         var properties = GetBeliefName_InsideParentesis(belief.Name.ToString());
                         if (properties.Item1.Equals("Pickable")) {
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.PickWorkable = true;
                         }
+                        if (properties.Item1.Equals("Collectable")) {
+                            var pickable = FindOrCreatePickable(properties.Item2);
+                            pickable.CollectWorkable = true;
+                        }
                         if (properties.Item1.Equals("ChopWorkable")) {
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.ChopWorkable  = true;
+                        }
+                        if (properties.Item1.Equals("MineWorkable")) {
+                            var pickable = FindOrCreatePickable(properties.Item2);
+                            pickable.MineWorkable = true;
                         }
                     } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
@@ -92,8 +101,17 @@ namespace MCTS.DST.WorldModels
                     var flagIsAnything = false;
                     if (holder.isComplete())
                     {
-                        if (holder.PickWorkable && !holder.GetEntityType().Equals("robin")) {
+                        if (holder.GetEntityType().Equals("robin") || holder.GetEntityType().Equals("crow"))
+                        {
+                            continue;
+                        }
+
+                        if (holder.PickWorkable) {
                             toBeNamed(holder, _knownPickableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.CollectWorkable) {
+                            toBeNamed(holder, _knownCollectableObjects);
                             flagIsAnything = true;
                         }
                         if (holder.ChopWorkable) {
