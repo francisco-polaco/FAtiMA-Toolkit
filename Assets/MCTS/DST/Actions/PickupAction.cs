@@ -14,13 +14,13 @@ namespace MCTS.DST.Actions
         {
             base.ApplyActionEffects(worldModel);
             worldModel.RemovePickableObject(EntityType, TargetGuid);
-            worldModel.Walter.AddInventory(TargetGuid);
+            worldModel.Walter.AddToInventory(TargetGuid);
         }
 
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            return base.CanExecute(worldModel) && worldModel.Walter.IsInventoryFull();
+            return base.CanExecute(worldModel) && worldModel.Walter.IsInventoryFull(base.EntityType);
         }
 
         public override bool CanExecute()
