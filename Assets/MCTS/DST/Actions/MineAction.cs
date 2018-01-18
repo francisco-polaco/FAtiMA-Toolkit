@@ -10,7 +10,7 @@ namespace MCTS.DST.Actions
     internal class MineAction : WalktoAction
     {
 
-        private readonly MineableStuff _toMine;
+        private readonly EmptyMineableStuff _toMine;
          
         public MineAction(Vector2i positionToGo, string guid, string entityType ) : base(positionToGo,guid, entityType)
         {
@@ -20,7 +20,8 @@ namespace MCTS.DST.Actions
             }
             else
             {
-                Console.WriteLine(entityType + " unknown in here");
+                _toMine = new EmptyMineableStuff();
+                Console.WriteLine("TO_MINE: " +entityType + " unknown");
             }
         }
 
@@ -56,7 +57,7 @@ namespace MCTS.DST.Actions
     }
 
 
-    abstract class MineableStuff
+    class EmptyMineableStuff
     {
         public virtual int numberHits()
         {
@@ -69,7 +70,7 @@ namespace MCTS.DST.Actions
         }
     }
 
-    class Boulder : MineableStuff
+    class Boulder : EmptyMineableStuff
     {
         public override List<DSTObject> drops()
         {
@@ -96,7 +97,7 @@ namespace MCTS.DST.Actions
         }
     }
 
-    class GoldVein : MineableStuff
+    class GoldVein : EmptyMineableStuff
     {
         public override List<DSTObject> drops()
         {
@@ -123,7 +124,7 @@ namespace MCTS.DST.Actions
         }
     }
 
-    class Flintless : MineableStuff {
+    class Flintless : EmptyMineableStuff {
         public override List<DSTObject> drops() {
             var obj1 = new DSTObject(DSTHelper.GenerateNewGuid());
             obj1.SetEntityType("Rocks");

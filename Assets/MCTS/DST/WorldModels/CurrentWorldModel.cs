@@ -42,6 +42,35 @@ namespace MCTS.DST.WorldModels
                 //knowledgeBase.AskPossibleProperties((Name)"PosX([x])"
                 Console.WriteLine("aaaaheya222222!");
 #endif
+
+                Console.WriteLine("Clock4");
+                var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToArray();//.SelectMany(p => p.Item2).ToArray();
+                foreach (var single_pair in pair)
+                {
+                    var a = single_pair.Item2;
+                    //               foreach (var a in array) {
+                    Console.WriteLine("World-> " + a.ToString());
+
+                    foreach (var sub in a)
+                    {
+
+                        Console.WriteLine(sub.ToString());
+//                        Console.WriteLine(sub.SubValue.Value.GetNTerm(0));
+                    }
+                }
+
+                Console.WriteLine("Walter Atempt");
+                var array2 = knowledgeBase.AskPossibleProperties((Name)"[x](Walter)", Name.SELF_SYMBOL, null).SelectMany(p => p.Item2).ToArray();
+                foreach (var a in array2) {
+                    Console.WriteLine("Walter - " + a.ToString());
+
+                    foreach (var sub in a) {
+                        Console.Write("sub - ");
+                        Console.WriteLine(sub.SubValue.Value.GetNTerm(0));
+                    }
+                }
+                //knowledgeBase.AskPossibleProperties((Name)"PosX([x])"
+
                 var beliefs = knowledgeBase.GetAllBeliefs();
                 foreach (var belief in beliefs) {
 #if _PRINT_ALL_BELIEFS

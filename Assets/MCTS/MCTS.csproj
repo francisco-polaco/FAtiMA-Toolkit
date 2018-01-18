@@ -92,7 +92,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\ExportDlls.bat debug $(SolutionDir)..\FAtiMA-DST\FAtiMA-toolkit
+    <PostBuildEvent>rd /s /q "$(SolutionDir)\..\FAtiMA-DST\FAtiMA-toolkit\"
+if not exist "$(SolutionDir)\..\FAtiMA-DST\FAtiMA-toolkit\" mkdir "$(SolutionDir)\..\FAtiMA-DST\FAtiMA-toolkit\"
+$(SolutionDir)\ExportDlls.bat debug $(SolutionDir)..\FAtiMA-DST\FAtiMA-toolkit
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

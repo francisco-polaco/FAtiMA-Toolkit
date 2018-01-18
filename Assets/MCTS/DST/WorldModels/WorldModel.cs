@@ -191,7 +191,8 @@ namespace MCTS.DST.WorldModels
             listOfObjects.TryGetValue(entityType, out var lista);
             if (lista == null)
             {
-                Console.WriteLine(entityType + " does not exist in here");
+                // Pickable herda de Collectable por isso esta condicao as vezes acontece #HACK
+                // Nao precisa de herdar, mas e preciso refazer a classe
                 return;
             }
             RemoveFromListGuid(lista, guid);

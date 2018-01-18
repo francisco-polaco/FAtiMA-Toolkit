@@ -1,0 +1,1 @@
+Remove-Item ..\FAtiMA-DST\FAtiMA-toolkit\*
