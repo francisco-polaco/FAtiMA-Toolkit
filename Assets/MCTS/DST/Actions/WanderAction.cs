@@ -13,5 +13,7 @@ namespace MCTS.DST.Actions
             var y = r.Next(100) >= 50 ? -r.Next(150) : r.Next(150);
             TargetPosition = walterPosition + new Vector2i(x, y);
         }
+
+        
     }
 }

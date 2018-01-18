@@ -19,6 +19,7 @@ namespace MCTS.DST.WorldModels
         protected Dictionary<string, List<DSTObject>> _knownInInventoryObjects;
 
         private int _actionIndex = 0;
+        private List<Action> _canExecuteActions = null;
         private Action[] _possibleActions = null;
 
 
@@ -61,25 +62,37 @@ namespace MCTS.DST.WorldModels
 
         public virtual Action[] GetExecutableActions()
         {
-            if (_possibleActions!=null) {
-                return _possibleActions;
-            }
-            calculateActions();
-            Console.WriteLine("All possible actions: size " + _possibleActions.Length );
             
-            //foreach(var i in possibleActions) {
-            //    Console.WriteLine(i.getDSTInterpretableAction() + " "+ i.getTarget());
-            //}
-            //Console.WriteLine(possibleActions);
-            if (_possibleActions.Length == 0)
-            {
+            
+            //Console.WriteLine("All possible actions: size " + _possibleActions.Length);
+
+            
+
+
+            if (_canExecuteActions == null) {
+                if (_possibleActions == null) {
+                    calculateActions();
+                }
+                _canExecuteActions = new List<Action>();
+                foreach (Action a in _possibleActions) {
+                    if (a.CanExecute(this)) {
+                        _canExecuteActions.Add(a);
+                    }
+                }
+                foreach(Action a in _canExecuteActions.ToArray()) {
+                    Console.WriteLine(a);
+                }
+            }
+
+            if (_canExecuteActions.ToArray().Length == 0) {
                 // lets wonder a bit
                 // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
                 // agr so anda ao calhas e vai para narnia
                 Console.WriteLine("no action -> lets wonder");
-                return new Action[] { new WanderAction(Walter.WalterPosition) };
+                _canExecuteActions.Add(new WanderAction(Walter.WalterPosition));
             }
-            return _possibleActions;
+
+            return _canExecuteActions.ToArray();
         }
 
         private void calculateActions()
@@ -127,8 +140,14 @@ namespace MCTS.DST.WorldModels
         //For Selection
         public virtual Action GetNextAction()
         {
+            //Console.WriteLine("GetNextAction");
             Action action = null;
             var actions = GetExecutableActions();
+            foreach(Action a in actions) {
+              //  Console.WriteLine(a);
+            }
+            //Console.WriteLine(_actionIndex);
+            //Console.WriteLine(actions.Length);
             if (_actionIndex < actions.Length) {
                 action = actions[_actionIndex];
                 _actionIndex++;
@@ -242,7 +261,7 @@ namespace MCTS.DST.WorldModels
 
         public bool GotAxeEquiped()
         {
-            return true;
+            return false;
             //return _equipedObject == EquipableObject.Axe;
         }
 

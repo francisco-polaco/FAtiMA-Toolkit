@@ -20,13 +20,13 @@ namespace MCTS.DST.Actions
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            return base.CanExecute(worldModel) && worldModel.Walter.IsInventoryFull(base.EntityType);
+            return base.CanExecute(worldModel);// && worldModel.Walter.IsInventoryFull(base.EntityType);
         }
 
-        public override bool CanExecute()
-        {
-            return base.CanExecute();
-        }
+        //public override bool CanExecute()
+        //{
+        //    return base.CanExecute();
+        //}
 
         public override void Execute()
         {

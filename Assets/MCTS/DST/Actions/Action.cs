@@ -50,10 +50,11 @@ namespace MCTS.DST.Actions
             return true;
         }
 
-        public virtual bool CanExecute()
-        {
-            return true;
-        }
+
+        //Should not be needed
+        //public virtual bool CanExecute() {
+        //    return true;
+        //}
 
         public virtual void Execute()
         {

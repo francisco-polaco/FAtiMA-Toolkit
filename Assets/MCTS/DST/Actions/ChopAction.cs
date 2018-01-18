@@ -57,6 +57,7 @@ namespace MCTS.DST.Actions
         public override bool CanExecute(WorldModel worldModel)
         {
             // todo: ver se tenho machado no mundo
+            Console.WriteLine("Entrei aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+worldModel.GotAxeEquiped());
             return base.CanExecute(worldModel) && worldModel.GotAxeEquiped();
         }
 

@@ -130,7 +130,8 @@ namespace MCTS.DST.WorldModels
                     var flagIsAnything = false;
                     if (holder.isComplete())
                     {
-                        if (holder.GetEntityType().Equals("robin") || holder.GetEntityType().Equals("crow"))
+                        if (holder.GetEntityType().Equals("robin") || holder.GetEntityType().Equals("crow") || holder.GetEntityType().Equals("butterfly") || holder.GetEntityType().Equals("mole")
+                            || holder.GetEntityType().Equals("fireflies"))
                         {
                             continue;
                         }
