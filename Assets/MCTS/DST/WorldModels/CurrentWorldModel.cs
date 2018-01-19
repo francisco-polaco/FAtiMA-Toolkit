@@ -43,33 +43,37 @@ namespace MCTS.DST.WorldModels
                 Console.WriteLine("aaaaheya222222!");
 #endif
 
-                Console.WriteLine("Clock4");
+                Console.WriteLine("Clock7");
                 var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToArray();//.SelectMany(p => p.Item2).ToArray();
                 foreach (var single_pair in pair)
                 {
-                    var a = single_pair.Item2;
-                    //               foreach (var a in array) {
-                    Console.WriteLine("World-> " + a.ToString());
-
-                    foreach (var sub in a)
-                    {
-
-                        Console.WriteLine(sub.ToString());
-//                        Console.WriteLine(sub.SubValue.Value.GetNTerm(0));
+                    var belief_value = single_pair.Item1.Value.GetValue();
+                    string belief_property = "";
+                    foreach (var sub_array in single_pair.Item2) {
+                        foreach (var sub in sub_array)
+                        {
+                            //Console.WriteLine("new sub: " + sub.SubValue.Value.GetNTerm(0));
+                            belief_property = sub.SubValue.Value.GetNTerm(0).ToString();
+                            break;
+                        }
+                        break;
                     }
+
+                    Console.WriteLine("World[x] Property: " + belief_property);
+                    Console.WriteLine("World[x] Value: " + belief_value);
                 }
 
-                Console.WriteLine("Walter Atempt");
-                var array2 = knowledgeBase.AskPossibleProperties((Name)"[x](Walter)", Name.SELF_SYMBOL, null).SelectMany(p => p.Item2).ToArray();
-                foreach (var a in array2) {
-                    Console.WriteLine("Walter - " + a.ToString());
+                //Below Does not Work TODO
+                //Console.WriteLine("Walter Atempt");
+                //var array2 = knowledgeBase.AskPossibleProperties((Name)"[x](Walter)", Name.SELF_SYMBOL, null).SelectMany(p => p.Item2).ToArray();
+                //foreach (var a in array2) {
+                //    Console.WriteLine("Walter - " + a.ToString());
 
-                    foreach (var sub in a) {
-                        Console.Write("sub - ");
-                        Console.WriteLine(sub.SubValue.Value.GetNTerm(0));
-                    }
-                }
-                //knowledgeBase.AskPossibleProperties((Name)"PosX([x])"
+                //    foreach (var sub in a) {
+                //        Console.Write("sub - ");
+                //        Console.WriteLine(sub.SubValue.Value.GetNTerm(0));
+                //    }
+                //}
 
                 var beliefs = knowledgeBase.GetAllBeliefs();
                 foreach (var belief in beliefs) {
