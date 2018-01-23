@@ -95,6 +95,13 @@ namespace MCTS.DST.WorldModels
         {
             return _inventory.Find(p => p.Item1.Equals(entityType)) != null;
         }
+
+        public bool InventoryHasObject(string entityType, int quantity)
+        {
+            return NumberOfObjectsInInventory(entityType) >= quantity;
+        }
+
+
         //public bool InventoryHasAtLeast(string entityType, int quantity = 1)
         //{
         //    return quantity <= _inventory.FindAll(p => p.Item1.Equals(entityType))
