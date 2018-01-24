@@ -25,11 +25,6 @@ namespace MCTS.DST.Actions
         public int Id { get; set; }
         public double Duration { get; set; }
 
-        public virtual double GetDuration()
-        {
-            return Duration;
-        }
-
         public virtual double GetDuration(WorldModel worldModel)
         {
             //TODO FIXME 
@@ -62,6 +57,7 @@ namespace MCTS.DST.Actions
 
         public virtual void ApplyActionEffects(WorldModel worldModel)
         {
+            worldModel.Walter.WalkedDistance += this.GetDuration(worldModel);
         }
 
         public virtual string GetDstInterpretableAction() {

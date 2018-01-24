@@ -1,4 +1,5 @@
 ﻿using System;
+using MCTS.DST.Actions.Recipes;
 using MCTS.DST.WorldModels;
 using WellFormedNames;
 
@@ -8,34 +9,34 @@ namespace MCTS.DST.Actions
     {
         //Action(BUILD, -, [posx], [posz], [recipe]) = [target]
 
-        public BuildAction(string actionName, string targetGuid, string entityType)
+        private Recipe ToBuild;
+
+        public BuildAction(Recipe toBuild) : base("BUILD","-",toBuild.PrefabName)
         {
-            Id = _actionId++;
-            Name = actionName;
-            this.TargetGuid = targetGuid;
-            this.EntityType = entityType;
+            ToBuild = toBuild;
         }
 
-        public Action(string actionName) : this(actionName, "-", "-"){ }
+        //public Action(string actionName) : this(actionName, "-", "-"){ }
 
-        public string Name { get; set; }
-        public int Id { get; set; }
-        public double Duration { get; set; }
-
-        public virtual double GetDuration()
-        {
-            return Duration;
+        public override double GetDuration(WorldModel worldModel) {
+            //TODO
+            return 0.00001f;
         }
 
-        public virtual double GetDuration(WorldModel worldModel)
+        public override bool CanExecute(WorldModel worldModel)
         {
-
-
-            return 3;
-        }
-
-        public virtual bool CanExecute(WorldModel worldModel)
-        {
+            //Has Slot in Inventory
+            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName,1))
+            {
+                return false;
+            }
+            foreach (var ingredient in ToBuild.Ingredients)
+            {
+                if (!worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2))
+                {
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -49,17 +50,14 @@ namespace MCTS.DST.Actions
         //{
         //}
 
-        public virtual void ApplyActionEffects(WorldModel worldModel)
+        public override void ApplyActionEffects(WorldModel worldModel)
         {
+            base.ApplyActionEffects(worldModel);
         }
 
-        public virtual string GetDstInterpretableAction() {
+        public override string GetDstInterpretableAction() {
             //return "Action("+Name+", "+invobject + ", " + posx + ", " + posz + ", " + recipe+")";
-            return "Action("+Name+", -, -, -, -)";
-        }
-        
-        public virtual string GetTarget() {
-            return "-";
+            return "Action("+Name+", -, -, -, "+ToBuild.PrefabName+")";
         }
     }
 }

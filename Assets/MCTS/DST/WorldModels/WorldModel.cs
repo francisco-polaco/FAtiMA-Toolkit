@@ -5,6 +5,7 @@ using MCTS.DST.Objects;
 using MCTS.Math;
 using Action = MCTS.DST.Actions.Action;
 using MCTS.DST.Actions;
+using MCTS.DST.Actions.Recipes;
 
 namespace MCTS.DST.WorldModels
 {
@@ -21,9 +22,9 @@ namespace MCTS.DST.WorldModels
         private int _actionIndex = 0;
         private List<Action> _canExecuteActions = null;
         private Action[] _possibleActions = null;
+        private readonly RecipesManager _recipesManager = new RecipesManager();
 
-
-        public Character Walter { get; } = new Character();
+        public Character Walter { get; }
 
 
         public WorldModel()
@@ -35,7 +36,7 @@ namespace MCTS.DST.WorldModels
             _knownDiggableObjects = new Dictionary<string, List<DSTObject>>();
             _knownMineableObjects = new Dictionary<string, List<DSTObject>>();
             _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>();
-
+            Walter = new Character();
         }
 
         public WorldModel(WorldModel wm)
@@ -48,11 +49,11 @@ namespace MCTS.DST.WorldModels
             _knownDiggableObjects = wm._knownDiggableObjects;
             _knownMineableObjects = wm._knownMineableObjects;
             _knownInInventoryObjects = wm._knownInInventoryObjects;
-
-            Walter.WalterPosition = wm.Walter.WalterPosition;
-            Walter.EquipedObject = wm.Walter.EquipedObject;
-            Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count +
-                              " Walter position: " + Walter.WalterPosition);
+            Walter = wm.Walter;
+            //Walter.WalterPosition = wm.Walter.WalterPosition;
+            //Walter.EquipedObject = wm.Walter.EquipedObject;
+            
+            //Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + Walter.WalterPosition);
         }
 
         public virtual WorldModel GenerateChildWorldModel()
@@ -62,13 +63,7 @@ namespace MCTS.DST.WorldModels
 
         public virtual Action[] GetExecutableActions()
         {
-            
-            
             //Console.WriteLine("All possible actions: size " + _possibleActions.Length);
-
-            
-
-
             if (_canExecuteActions == null) {
                 if (_possibleActions == null) {
                     calculateActions();
@@ -82,24 +77,23 @@ namespace MCTS.DST.WorldModels
                 foreach(Action a in _canExecuteActions.ToArray()) {
                     Console.WriteLine(a);
                 }
-            }
 
-            if (_canExecuteActions.ToArray().Length == 0) {
-                // lets wonder a bit
-                // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
-                // agr so anda ao calhas e vai para narnia
-                Console.WriteLine("no action -> lets wonder");
-                _canExecuteActions.Add(new WanderAction(Walter.WalterPosition));
-            }
 
+                if (_canExecuteActions.ToArray().Length == 0) {
+                    // lets wonder a bit
+                    // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
+                    // agr so anda ao calhas e vai para narnia
+                    Console.WriteLine("no action -> lets wonder");
+                    _canExecuteActions.Add(new WanderAction(Walter.WalterPosition));
+                }
+            }
+            
             return _canExecuteActions.ToArray();
         }
 
         private void calculateActions()
         {
-            //var numberActions = _knownPickableObjects.Keys.Count + _knownChopableObjects.Keys.Count;
             var possibleActions = new List<Action>();
-
             //_possibleActions = new Action[numberActions];
             //var i = 0;
             foreach (var objHolder in _knownPickableObjects)
@@ -132,6 +126,13 @@ namespace MCTS.DST.WorldModels
 
                 //_possibleActions[i] = actionTempHolder;
                 //i++;
+            }
+
+            foreach (var recipe in _recipesManager.CraftRecipes)
+            {
+                var actionTempHolder = new BuildAction(recipe);
+                possibleActions.Add(actionTempHolder);
+
             }
 
             _possibleActions = possibleActions.ToArray();

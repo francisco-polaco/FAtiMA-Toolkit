@@ -5,10 +5,12 @@ using System.Text;
 
 namespace MCTS.DST.Actions.Recipes {
     class RecipesManager {
-        List<Recipe> craftRecipes = new List<Recipe>();
+        public readonly List<Recipe> CraftRecipes = new List<Recipe>();
         public RecipesManager()
         {
-            craftRecipes.Add(new Pickaxe());
+            CraftRecipes.Add(new Pickaxe());
+            CraftRecipes.Add(new Torch());
         }
+
     }
 }

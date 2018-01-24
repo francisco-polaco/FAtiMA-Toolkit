@@ -43,7 +43,7 @@ namespace MCTS.DST.WorldModels
                 Console.WriteLine("aaaaheya222222!");
 #endif
 
-                Console.WriteLine("Clock7");
+                //Console.WriteLine("Clock7");
                 var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToArray();//.SelectMany(p => p.Item2).ToArray();
                 foreach (var single_pair in pair)
                 {
@@ -59,8 +59,8 @@ namespace MCTS.DST.WorldModels
                         break;
                     }
 
-                    Console.WriteLine("World[x] Property: " + belief_property);
-                    Console.WriteLine("World[x] Value: " + belief_value);
+                    //Console.WriteLine("World[x] Property: " + belief_property);
+                    //Console.WriteLine("World[x] Value: " + belief_value);
                 }
 
                 //Below Does not Work TODO
@@ -98,6 +98,10 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreatePickable(properties.Item2);
                             pickable.MineWorkable = true;
                         }
+                        if (properties.Item1.Equals("InInventory")) {
+                            var pickable = FindOrCreatePickable(properties.Item2);
+                            pickable.InInventory = true;
+                        }
                     } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
                         //guid = null;
@@ -109,6 +113,8 @@ namespace MCTS.DST.WorldModels
                             var pairEntityTypeGuid = GetPairEntityNameGuid(pairBeliefName_Parentisis.Item2);
                             var pickable = FindOrCreatePickable(pairEntityTypeGuid.Item2);
                             pickable.SetEntityType(pairEntityTypeGuid.Item1);
+                            var quantity = int.Parse(belief.Value.ToString());
+                            pickable.quantity = quantity;
                         } else if (pairBeliefName_Parentisis.Item1.Equals("PosX")) {
                             var guid = pairBeliefName_Parentisis.Item2;
                             //"PosX(117209)": "212, 1",
@@ -135,7 +141,7 @@ namespace MCTS.DST.WorldModels
                     if (holder.isComplete())
                     {
                         if (holder.GetEntityType().Equals("robin") || holder.GetEntityType().Equals("crow") || holder.GetEntityType().Equals("butterfly") || holder.GetEntityType().Equals("mole")
-                            || holder.GetEntityType().Equals("fireflies"))
+                            || holder.GetEntityType().Equals("fireflies") || holder.GetEntityType().Equals("bee") || holder.GetEntityType().Equals("rabbit"))
                         {
                             continue;
                         }
@@ -165,16 +171,19 @@ namespace MCTS.DST.WorldModels
                             flagIsAnything = true;
                         }
                         if (holder.InInventory) {
-                            toBeNamed(holder, _knownInInventoryObjects);
+                            this.Walter.AddToInventory(holder.GetEntityType(),holder.quantity);
+                            //toBeNamed(holder, _knownInInventoryObjects);
                             flagIsAnything = true;
                         }
 
                         if (!flagIsAnything)
                         {
 
-                            Console.WriteLine("ERROR: OBJ Aint Nothing: " + holder.ToString());
-                            //Console.WriteLine("..Enter to continue execution..");
-                            //Console.ReadLine();
+                            //Console.WriteLine("ERROR: OBJ Aint Nothing: " + holder.ToString());
+
+
+                            //////Console.WriteLine("..Enter to continue execution..");
+                            //////Console.ReadLine();
                         }
                     }
                     else
@@ -190,6 +199,13 @@ namespace MCTS.DST.WorldModels
                 Console.ReadLine();
                 throw;
             }
+
+            //put stuff in inventory
+            //foreach (var VARIABLE in COLLECTION)
+            //{
+            //    
+            //}
+            
         }
 
         private void toBeNamed(DSTObject objToInsert, Dictionary<string, List<DSTObject>> dictionaryWhereToInsert) {

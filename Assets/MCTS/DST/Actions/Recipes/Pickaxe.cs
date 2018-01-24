@@ -8,8 +8,8 @@ namespace MCTS.DST.Actions.Recipes {
     class Pickaxe : Recipe{
         public Pickaxe()
         {
-            prefabName = "pickaxe";
-            ingredients = new Pair<string, int>[] {new Pair<string, int>("flint", 2), new Pair<string, int>("rock", 2) };
+            PrefabName = "pickaxe";
+            Ingredients = new Pair<string, int>[] {new Pair<string, int>("flint", 2), new Pair<string, int>("twigs", 2) };
 
         }
     }

@@ -99,7 +99,7 @@ namespace MCTS.DST
             if (CurrentIterations >= MaxIterations)
             {
                 InProgress = false;
-                //printXMLTree(rootNode);
+                printXMLTree(rootNode);
 
                 var temp = new List<Action>();
                 var currNode = rootNode;
@@ -251,7 +251,6 @@ namespace MCTS.DST
                     best = nodeChildNode;
                 }
             }
-
             return best;
         }
 

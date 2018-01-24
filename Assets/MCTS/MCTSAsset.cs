@@ -3,6 +3,7 @@ using KnowledgeBase;
 using SerializationUtilities;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using MCTS.DST;
 using MCTS.DST.WorldModels;
@@ -20,6 +21,11 @@ namespace MCTS
         public MCTSAsset()
         {
             m_kb = null;
+            var version = Assembly.GetEntryAssembly().GetName().Version;
+#if DEBUG
+            var buildDateTime = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Console.WriteLine("BUILD_: " + buildDateTime);
+#endif
         }
 
         /// <summary>

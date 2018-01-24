@@ -17,7 +17,7 @@ namespace MCTS.DST.WorldModels
 
         public FutureWorldModel(FutureWorldModel wm) : base (wm)
         {
-            Console.WriteLine("DEPTH: "+wm.depth);
+            //Console.WriteLine("DEPTH: "+wm.depth);
             depth = wm.depth + 1;
         }
 

@@ -17,15 +17,22 @@ namespace MCTS.DST.Actions
             this.TargetPosition = position;
         }
 
-        public override void ApplyActionEffects(WorldModel worldModel)
+        public override double GetDuration(WorldModel worldModel)
         {
-            //worldModel.RemovePickableObject(_guid);
-            worldModel.walkedDistanced(TargetPosition);
+            worldModel.Walter.WalterPosition = TargetPosition;
+            return worldModel.getRealDistanceToWalter(TargetPosition);
+            //return base.GetDuration(worldModel);
         }
+
+        //public override void ApplyActionEffects(WorldModel worldModel)
+        //{
+        //    //worldModel.RemovePickableObject(_guid);
+        //    //worldModel.walkedDistanced(TargetPosition);
+        //}
 
         public override string GetDstInterpretableAction()
         {
-            if (TargetGuid == null)
+            if (TargetGuid == null || TargetGuid != "-")
             {
                 return "Action(" + Name + ", -, " + TargetPosition.x + ", " + TargetPosition.y + ", -)";
             }
