@@ -16,6 +16,11 @@ namespace MCTS.DST.Actions
         private readonly int _numberOfDroppedLogs;
         //private readonly string _typeOfTree;
 
+        public override string GetXmlName() {
+            return "Chop " + TargetPosition;
+        }
+
+
         public ChopAction(Vector2i positionToGo, string guid, string typeOfTree) : base(positionToGo,guid,typeOfTree)
         {
             // TODO age MUST also be considered, but it may explode the number of actions

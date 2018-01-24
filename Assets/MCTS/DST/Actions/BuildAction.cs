@@ -18,6 +18,11 @@ namespace MCTS.DST.Actions
 
         //public Action(string actionName) : this(actionName, "-", "-"){ }
 
+        public override string GetXmlName()
+        {
+            return "BUILD " + ToBuild.PrefabName; 
+        }
+
         public override double GetDuration(WorldModel worldModel) {
             //TODO
             return 0.00001f;

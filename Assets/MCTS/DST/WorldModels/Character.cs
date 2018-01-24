@@ -15,13 +15,29 @@ namespace MCTS.DST.WorldModels
         public Vector2i WalterPosition = new Vector2i();
         public double WalkedDistance { get; set; } = 0;
         public EquipableObject EquipedObject { get; set; } = EquipableObject.None;
-        private readonly List<Pair<string, int>> _inventory = new List<Pair<string, int>>();
+        private List<Pair<string, int>> _inventory = new List<Pair<string, int>>();
         public int Hunger { get; set; }
         public int Health { get; set; }
         public int Sanity { get; set; }
 
+        //TODO update generateClone 
+        public Character GenerateClone() {
+            var toReturn = new Character();
+            toReturn.Health = this.Health;
+            toReturn.Hunger = this.Hunger;
+            toReturn.Sanity = this.Sanity;
+            toReturn.WalterPosition = new Vector2i(this.WalterPosition.x,this.WalterPosition.y);
+            toReturn.WalkedDistance = this.WalkedDistance;
+            toReturn.EquipedObject = this.EquipedObject;
+
+            toReturn._inventory = this._inventory.Select(slot => new Pair<string, int>(slot.Item1,slot.Item2)).ToList();
+
+
+            return toReturn;
+        }
+
         #region inventory
-        
+
         public bool IsInventoryFull(string entityType, int quantity = 1)
         {
             var hasObject = InventoryHasObject(entityType);
@@ -158,5 +174,7 @@ namespace MCTS.DST.WorldModels
         {
             EquipedObject = EquipableObject.Axe;
         }
+
+
     }
 }

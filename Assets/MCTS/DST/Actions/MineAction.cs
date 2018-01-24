@@ -24,8 +24,11 @@ namespace MCTS.DST.Actions
                 Console.WriteLine("TO_MINE: " +entityType + " unknown");
             }
         }
+        public override string GetXmlName() {
+            return "Mine " + TargetPosition;
+        }
 
-        
+
         public override void ApplyActionEffects(WorldModel worldModel)
         {
             base.ApplyActionEffects(worldModel);

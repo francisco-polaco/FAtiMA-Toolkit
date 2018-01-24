@@ -14,17 +14,19 @@ namespace MCTS
     public class MCTSAsset
     {
         private static readonly Name MCTS_DYNAMIC_PROPERTY_NAME = Name.BuildName("MCTS");
-
         private KB m_kb;
 
 
         public MCTSAsset()
         {
             m_kb = null;
-            var version = Assembly.GetEntryAssembly().GetName().Version;
 #if DEBUG
-            var buildDateTime = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var buildDateTime = version.ToString();
             Console.WriteLine("BUILD_: " + buildDateTime);
+
+            DateTime creationDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.MinorRevision * 2);
+            Console.WriteLine("TIME_: " + creationDate);
 #endif
         }
 

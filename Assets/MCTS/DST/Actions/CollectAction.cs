@@ -1,4 +1,5 @@
-﻿using MCTS.DST.WorldModels;
+﻿using System;
+using MCTS.DST.WorldModels;
 using MCTS.Math;
 
 namespace MCTS.DST.Actions
@@ -11,6 +12,7 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
+            Console.WriteLine("Apply Collect");
             base.ApplyActionEffects(worldModel);
             worldModel.RemoveCollectableObject(EntityType, TargetGuid);
         }

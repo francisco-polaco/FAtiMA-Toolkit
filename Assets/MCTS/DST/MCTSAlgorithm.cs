@@ -15,7 +15,7 @@ namespace MCTS.DST
         {
             InProgress = false;
             // this.CurrentStateWorldModel = currentStateWorldModel;
-            MaxIterations = 30000;
+            MaxIterations = 1000;
             MaxIterationsProcessedPerFrame = MaxIterations +1;
             RandomGenerator = new Random();
             TotalProcessingTime = 0;
@@ -163,7 +163,7 @@ namespace MCTS.DST
                         PlayerID = currentPlayoutState.GetNextPlayer(),
                         Value = 0
                     };
-                var childModel = currentPlayoutState.GenerateChildWorldModel();
+                var childModel = currentPlayoutState.RecycleWorldModel();
                 action.ApplyActionEffects(childModel);
                 childModel.CalculateNextPlayer();
                 currentPlayoutState = childModel;

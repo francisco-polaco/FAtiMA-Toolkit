@@ -35,7 +35,7 @@ namespace MCTS.DST.WorldModels
 
         public override float GetScore()
         {
-            return 1 / (float) Walter.WalkedDistance;
+            return 10 / (float) Walter.WalkedDistance;
         }
 
 

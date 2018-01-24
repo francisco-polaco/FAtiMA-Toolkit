@@ -5,6 +5,11 @@ namespace MCTS.DST.Actions
 {
     internal class WanderAction : WalktoAction
     {
+        public override string GetXmlName()
+        {
+            return "WANDER";
+        }
+
         public WanderAction(Vector2i walterPosition) : base(walterPosition)
         {
             //FIXME: acho que as coordenadas estao bue grandes

@@ -30,7 +30,7 @@ namespace MCTS.DST
             for (var i = 0; i < depth; i++) tabSpaces += " ";
 
             var toReturn = tabSpaces + "<Node>";
-            if (Action != null) toReturn += tabSpaces + " <Action> " + Action.xmlName + " </Action>";
+            if (Action != null) toReturn += tabSpaces + " <Action> " + Action.GetXmlName() + " </Action>";
             toReturn += tabSpaces + " <N>" + N + "</N>";
             toReturn += tabSpaces + " <Q>" + Q + "</Q>";
             toReturn += tabSpaces + " <Q_N_div>" + Q / N + "</Q_N_div>";

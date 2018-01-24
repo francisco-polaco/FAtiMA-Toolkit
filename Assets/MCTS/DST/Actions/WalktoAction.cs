@@ -1,4 +1,5 @@
-﻿using MCTS.DST.WorldModels;
+﻿using System;
+using MCTS.DST.WorldModels;
 using MCTS.Math;
 
 namespace MCTS.DST.Actions
@@ -17,15 +18,23 @@ namespace MCTS.DST.Actions
             this.TargetPosition = position;
         }
 
+        public override string GetXmlName()
+        {
+            return "WalktoAction " + TargetPosition + " " + EntityType??"" ;
+        }
+
         public override double GetDuration(WorldModel worldModel)
         {
             worldModel.Walter.WalterPosition = TargetPosition;
-            return worldModel.getRealDistanceToWalter(TargetPosition);
+            return base.GetDuration(worldModel) + worldModel.getRealDistanceToWalter(TargetPosition);
             //return base.GetDuration(worldModel);
         }
 
-        //public override void ApplyActionEffects(WorldModel worldModel)
-        //{
+        public override void ApplyActionEffects(WorldModel worldModel)
+        {
+            Console.WriteLine("Apply WalkToAction");
+            base.ApplyActionEffects(worldModel);
+        }
         //    //worldModel.RemovePickableObject(_guid);
         //    //worldModel.walkedDistanced(TargetPosition);
         //}

@@ -49,11 +49,16 @@ namespace MCTS.DST.WorldModels
             _knownDiggableObjects = wm._knownDiggableObjects;
             _knownMineableObjects = wm._knownMineableObjects;
             _knownInInventoryObjects = wm._knownInInventoryObjects;
-            Walter = wm.Walter;
+            Walter = wm.Walter.GenerateClone();
             //Walter.WalterPosition = wm.Walter.WalterPosition;
             //Walter.EquipedObject = wm.Walter.EquipedObject;
             
             //Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + Walter.WalterPosition);
+        }
+
+        public virtual WorldModel RecycleWorldModel()
+        {
+            return this;
         }
 
         public virtual WorldModel GenerateChildWorldModel()

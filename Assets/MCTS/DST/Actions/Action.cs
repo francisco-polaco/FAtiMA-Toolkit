@@ -4,10 +4,20 @@ using WellFormedNames;
 
 namespace MCTS.DST.Actions
 {
-    public class Action
+    public abstract class Action
     {
         private static int _actionId;
-        public string xmlName = "";
+        private string xmlName = "";
+
+        public abstract string GetXmlName();
+        //{
+        //    return GetDstInterpretableAction() + GetTarget();
+        //}
+
+        public void SetXmlName(string value) {
+            xmlName = value;
+        }
+
         protected string TargetGuid;
         protected string EntityType;
 
@@ -57,6 +67,8 @@ namespace MCTS.DST.Actions
 
         public virtual void ApplyActionEffects(WorldModel worldModel)
         {
+            Console.WriteLine("Apply Action");
+            Console.WriteLine("ACTION: " + this.GetDuration(worldModel));
             worldModel.Walter.WalkedDistance += this.GetDuration(worldModel);
         }
 
