@@ -36,7 +36,7 @@ namespace MCTS.DST.Actions
             base.Execute();
         }
 
-        public override double GetDuration(WorldModel worldModel)
+        public override int GetDuration(WorldModel worldModel)
         {
             return base.GetDuration(worldModel);
         }

@@ -25,7 +25,7 @@ namespace MCTS.DST.WorldModels
         private readonly RecipesManager _recipesManager = new RecipesManager();
 
         public Character Walter { get; }
-
+        public Clock clock { get; }
 
         public WorldModel()
         {
@@ -37,6 +37,7 @@ namespace MCTS.DST.WorldModels
             _knownMineableObjects = new Dictionary<string, List<DSTObject>>();
             _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>();
             Walter = new Character();
+            clock = new MCTS.DST.WorldModels.Clock();
         }
 
         public WorldModel(WorldModel wm)
@@ -50,9 +51,9 @@ namespace MCTS.DST.WorldModels
             _knownMineableObjects = wm._knownMineableObjects;
             _knownInInventoryObjects = wm._knownInInventoryObjects;
             Walter = wm.Walter.GenerateClone();
+            clock = wm.clock.deepCopy();
             //Walter.WalterPosition = wm.Walter.WalterPosition;
             //Walter.EquipedObject = wm.Walter.EquipedObject;
-            
             //Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + Walter.WalterPosition);
         }
 
@@ -69,22 +70,30 @@ namespace MCTS.DST.WorldModels
         public virtual Action[] GetExecutableActions()
         {
             //Console.WriteLine("All possible actions: size " + _possibleActions.Length);
-            if (_canExecuteActions == null) {
-                if (_possibleActions == null) {
+            if (_canExecuteActions == null)
+            {
+                if (_possibleActions == null)
+                {
                     calculateActions();
                 }
+
                 _canExecuteActions = new List<Action>();
-                foreach (Action a in _possibleActions) {
-                    if (a.CanExecute(this)) {
+                foreach (Action a in _possibleActions)
+                {
+                    if (a.CanExecute(this))
+                    {
                         _canExecuteActions.Add(a);
                     }
                 }
-                foreach(Action a in _canExecuteActions.ToArray()) {
+
+                foreach (Action a in _canExecuteActions.ToArray())
+                {
                     Console.WriteLine(a);
                 }
 
 
-                if (_canExecuteActions.ToArray().Length == 0) {
+                if (_canExecuteActions.ToArray().Length == 0)
+                {
                     // lets wonder a bit
                     // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
                     // agr so anda ao calhas e vai para narnia
@@ -92,7 +101,7 @@ namespace MCTS.DST.WorldModels
                     _canExecuteActions.Add(new WanderAction(Walter.WalterPosition));
                 }
             }
-            
+
             return _canExecuteActions.ToArray();
         }
 
@@ -104,29 +113,38 @@ namespace MCTS.DST.WorldModels
             foreach (var objHolder in _knownPickableObjects)
             {
                 //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
-                var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                    objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
                 //_possibleActions[i] = actionTempHolder;
                 //i++;
             }
-            foreach (var objHolder in _knownCollectableObjects) {
+
+            foreach (var objHolder in _knownCollectableObjects)
+            {
                 //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
-                var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                    objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
                 //_possibleActions[i] = actionTempHolder;
                 //i++;
             }
+
             foreach (var objHolder in _knownChopableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(),  objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                    objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
                 //_possibleActions[i] = actionTempHolder;
                 //i++;
             }
-            foreach (var objHolder in _knownMineableObjects) {
+
+            foreach (var objHolder in _knownMineableObjects)
+            {
                 Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid, objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                    objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
 
                 //_possibleActions[i] = actionTempHolder;
@@ -149,16 +167,20 @@ namespace MCTS.DST.WorldModels
             //Console.WriteLine("GetNextAction");
             Action action = null;
             var actions = GetExecutableActions();
-            foreach(Action a in actions) {
-              //  Console.WriteLine(a);
+            foreach (Action a in actions)
+            {
+                //  Console.WriteLine(a);
             }
+
             //Console.WriteLine(_actionIndex);
             //Console.WriteLine(actions.Length);
-            if (_actionIndex < actions.Length) {
+            if (_actionIndex < actions.Length)
+            {
                 action = actions[_actionIndex];
                 _actionIndex++;
                 //Console.WriteLine("Action: " + action.getDSTInterpretableAction() + " " + action.getTarget());
             }
+
             return action;
         }
 
@@ -170,7 +192,7 @@ namespace MCTS.DST.WorldModels
 
         internal Vector2i GetWalterPosition()
         {
-             return Walter.WalterPosition;
+            return Walter.WalterPosition;
         }
 
         public virtual float GetScore()
@@ -189,16 +211,23 @@ namespace MCTS.DST.WorldModels
 
 
 
-        public void RemovePickableObject(string entityType, string guid) {
-            RemoveGuidFromKnownObject(_knownPickableObjects,entityType,guid);
+        public void RemovePickableObject(string entityType, string guid)
+        {
+            RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
         }
-        public void RemoveChopableObject(string entityType, string guid) {
+
+        public void RemoveChopableObject(string entityType, string guid)
+        {
             RemoveGuidFromKnownObject(_knownChopableObjects, entityType, guid);
         }
-        public void RemoveMineableObject(string entityType, string guid) {
+
+        public void RemoveMineableObject(string entityType, string guid)
+        {
             RemoveGuidFromKnownObject(_knownMineableObjects, entityType, guid);
         }
-        public void RemoveCollectableObject(string entityType, string guid) {
+
+        public void RemoveCollectableObject(string entityType, string guid)
+        {
             RemoveGuidFromKnownObject(_knownCollectableObjects, entityType, guid);
         }
         //public void RemovePickableObject(string entityType, string guid) {
@@ -211,7 +240,8 @@ namespace MCTS.DST.WorldModels
         //    RemoveGuidFromKnownObject(_knownPickableObjects, entityType, guid);
         //}
 
-        private void RemoveGuidFromKnownObject(Dictionary<string, List<DSTObject>> listOfObjects, string entityType, string guid)
+        private void RemoveGuidFromKnownObject(Dictionary<string, List<DSTObject>> listOfObjects, string entityType,
+            string guid)
         {
             listOfObjects.TryGetValue(entityType, out var lista);
             if (lista == null)
@@ -220,10 +250,12 @@ namespace MCTS.DST.WorldModels
                 // Nao precisa de herdar, mas e preciso refazer a classe
                 return;
             }
+
             RemoveFromListGuid(lista, guid);
 
 
-            if (lista.Count == 0) {
+            if (lista.Count == 0)
+            {
                 listOfObjects.Remove(entityType);
             }
         }
@@ -245,17 +277,20 @@ namespace MCTS.DST.WorldModels
             //return _knownPickableObjects[guid][0].GetPosition();
         }
 
-        public int getSquaredDistanceToWalter(Vector2i obj) {
-            var x = (int)Walter.WalterPosition.x - obj.x;
-            var y = (int)Walter.WalterPosition.y - obj.y;
+        public int getSquaredDistanceToWalter(Vector2i obj)
+        {
+            var x = (int) Walter.WalterPosition.x - obj.x;
+            var y = (int) Walter.WalterPosition.y - obj.y;
             return x * x + y * y;
         }
 
-        public double getRealDistanceToWalter(Vector2i obj) {
+        public double getRealDistanceToWalter(Vector2i obj)
+        {
             return System.Math.Sqrt(getSquaredDistanceToWalter(obj));
         }
 
-        public virtual void walkedDistanced(Vector2i positionWalkedTo) {
+        public virtual void walkedDistanced(Vector2i positionWalkedTo)
+        {
             Walter.WalkedDistance += getRealDistanceToWalter(positionWalkedTo);
             Walter.WalterPosition = positionWalkedTo;
         }
@@ -278,11 +313,197 @@ namespace MCTS.DST.WorldModels
             {
                 orderedList = new List<DSTObject>();
             }
-            orderedList.Insert(0,obj);
+
+            orderedList.Insert(0, obj);
+        }
+
+        public void advanceTime(int actionDuration)
+        {
+            //verify stats are on max
+            //TODO
+
+            var amounts = this.clock.advanceTime(actionDuration);
+            var previousHunger = this.Walter.Hunger;
+
+            this.Walter.Hunger = this.Walter.Hunger - actionDuration * (9.375f/60);
+            if (this.Walter.Hunger <= 0)
+            {
+                var secondsInHunger = (float)actionDuration;
+                if (previousHunger > 0)
+                {
+                    //calcutate time
+                    var timeToZero = previousHunger / (9.375f / 60);
+                    secondsInHunger = actionDuration - timeToZero;
+                }
+                this.Walter.Health -= 1.25f * secondsInHunger;
+            }
         }
     }
 
-    public class Stats
+    public class Clock
     {
+        private const int SEGMENT_TIME = 30;
+        private const int HALF_SEGMENT = 15;
+        private const int NUMBER_SEGMENT = 16;
+        private const int SECONDS_IN_DAY = NUMBER_SEGMENT * SEGMENT_TIME;
+
+        private static readonly int[][] DAYS_CONFIGURATION = new int[][]
+        {
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {6 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {6 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {6 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME}
+        };
+
+        private Season season = Season.Autaumn;
+        private MoonPhase moonPhase = MoonPhase.WaxingNewMoon;
+        private DayPhase dayPhase;
+
+        private int _currentDay;
+
+        //DuskStart //_currentDuskStart //_currentNightStart
+        //private int[] dayConfiguration = new int[3];
+
+
+        private int _currentDuskStart; //numeroSegments*30sec
+        private int _currentNightStart; //numeroSegments*30sec
+
+        private int _currentSecond;
+
+        public void setTime(int currentTick, int currentDay)
+        {
+            _currentDay = currentDay;
+            _currentSecond = currentTick * SEGMENT_TIME + HALF_SEGMENT;
+            setupDayConfiguration(currentDay);
+        }
+
+        public Clock deepCopy()
+        {
+            var toReturn = new Clock();
+            toReturn.season = this.season;
+            toReturn.moonPhase = this.moonPhase;
+            toReturn.dayPhase = this.dayPhase;
+            toReturn._currentDay = this._currentDay;
+            toReturn._currentDuskStart = this._currentDuskStart;
+            toReturn._currentNightStart = this._currentNightStart;
+            toReturn._currentSecond = this._currentSecond;
+
+            return toReturn;
+        }
+
+        private void setupDayConfiguration(int currentDay)
+        {
+            if (_currentDay > 40)
+            {
+                throw new NotImplementedException();
+            }
+
+            var day = DAYS_CONFIGURATION[_currentDay];
+            _currentDuskStart = day[0];
+            _currentNightStart = day[1];
+        }
+
+        public int[] advanceTime(int numberSeconds)
+        {
+            var toReturn = new int[3] {0, 0, 0};
+
+            //var numberDays = numberSeconds / SECONDS_IN_DAY;
+            var previous = _currentSecond;
+            var nextSec = _currentSecond + numberSeconds;
+            _currentSecond = nextSec % SECONDS_IN_DAY;
+            while (nextSec > 0)
+            {
+                if (nextSec > _currentDuskStart)
+                {
+                    toReturn[0] += _currentDuskStart - previous;
+                    previous = _currentDuskStart;
+                    dayPhase = DayPhase.Dusk;
+                }
+
+                if (nextSec > _currentNightStart)
+                {
+                    toReturn[1] += _currentNightStart - previous;
+                    previous = _currentNightStart;
+                    dayPhase = DayPhase.Night;
+                }
+
+                if (nextSec > SECONDS_IN_DAY)
+                {
+                    toReturn[2] += SECONDS_IN_DAY - previous;
+                    previous = 0;
+                    _currentDay++;
+                    //MOON++?
+                    //Season++?
+                    dayPhase = DayPhase.Day;
+                }
+
+                nextSec -= SECONDS_IN_DAY;
+            }
+
+            return toReturn;
+
+        }
+
+        //internal array DaysConfig { }
+        internal enum Season
+        {
+            Autaumn
+        }
+
+        internal enum MoonPhase
+        {
+            WaxingNewMoon,
+            WaxingCrescent,
+            WaxingHalfMoon,
+            WaxingGibbous,
+            FullMoon,
+            WaningGibous,
+            WaningHalf,
+            WaningCrescent,
+            WaningNewMoon
+        }
+
+        internal enum DayPhase
+        {
+            Day,
+            Dusk,
+            Night
+        }
     }
 }

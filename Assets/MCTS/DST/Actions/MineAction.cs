@@ -49,7 +49,7 @@ namespace MCTS.DST.Actions
             return base.CanExecute(worldModel) && worldModel.GotAxeEquiped();
         }
 
-        public override double GetDuration(WorldModel worldModel)
+        public override int GetDuration(WorldModel worldModel)
         {
             return base.GetDuration(worldModel) + 1;
         }

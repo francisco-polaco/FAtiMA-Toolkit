@@ -23,9 +23,9 @@ namespace MCTS.DST.Actions
             return "BUILD " + ToBuild.PrefabName; 
         }
 
-        public override double GetDuration(WorldModel worldModel) {
+        public override int GetDuration(WorldModel worldModel) {
             //TODO
-            return 0.1f;
+            return 0;
         }
 
         public override bool CanExecute(WorldModel worldModel)

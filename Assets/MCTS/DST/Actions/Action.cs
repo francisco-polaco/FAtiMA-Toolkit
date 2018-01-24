@@ -35,14 +35,10 @@ namespace MCTS.DST.Actions
         public int Id { get; set; }
         public double Duration { get; set; }
 
-        public virtual double GetDuration(WorldModel worldModel)
+        public virtual int GetDuration(WorldModel worldModel)
         {
-            //TODO FIXME 
-            //TODO FIXME 
-            //var guid = "1";
-            //TODO FIXME 
-            //TODO FIXME 
-            return 0;//worldModel.getRealDistanceToWalter(objPosition);
+            //MCTS time to process
+            return 2;
         }
 
         public virtual bool CanExecute(WorldModel worldModel)
@@ -62,9 +58,11 @@ namespace MCTS.DST.Actions
 
         public virtual void ApplyActionEffects(WorldModel worldModel)
         {
-            Console.WriteLine("Apply Action");
-            Console.WriteLine("ACTION: " + this.GetDuration(worldModel));
-            worldModel.Walter.WalkedDistance += this.GetDuration(worldModel);
+            var actionDuration = this.GetDuration(worldModel);
+            //Console.WriteLine("Apply Action");
+            //Console.WriteLine("ACTION: " + actionDuration);
+            worldModel.advanceTime(actionDuration);
+            worldModel.Walter.WalkedDistance += actionDuration;
         }
 
         public virtual string GetDstInterpretableAction() {

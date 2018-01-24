@@ -44,7 +44,22 @@ namespace MCTS.DST.WorldModels
 #endif
 
                 //Console.WriteLine("Clock7");
-                var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToArray();//.SelectMany(p => p.Item2).ToArray();
+                var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToList();//.SelectMany(p => p.Item2).ToArray();
+
+                
+                var currentSegmentProperty = knowledgeBase.AskProperty((Name)"World(CurrentSegment)");
+                if (currentSegmentProperty != null)
+                {
+                    var value = currentSegmentProperty.Value.GetValue();
+
+                    Console.WriteLine("segmento " + currentSegmentProperty.ToString() + " - " + value.ToString());
+                    this.clock.setTime(int.Parse(value.ToString()), 0);
+                }
+                else
+                {
+                    Console.WriteLine("FUCKING NULL");
+                }
+
                 foreach (var single_pair in pair)
                 {
                     var belief_value = single_pair.Item1.Value.GetValue();
@@ -59,8 +74,7 @@ namespace MCTS.DST.WorldModels
                         break;
                     }
 
-                    //Console.WriteLine("World[x] Property: " + belief_property);
-                    //Console.WriteLine("World[x] Value: " + belief_value);
+                    Console.WriteLine("World[x] Property: " + belief_property + "Value: " + belief_value);
                 }
 
                 //Below Does not Work TODO

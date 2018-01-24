@@ -16,9 +16,9 @@ namespace MCTS.DST.WorldModels
         public double WalkedDistance { get; set; } = 0;
         public EquipableObject EquipedObject { get; set; } = EquipableObject.None;
         private List<Pair<string, int>> _inventory = new List<Pair<string, int>>();
-        public int Hunger { get; set; }
-        public int Health { get; set; }
-        public int Sanity { get; set; }
+        public float Hunger { get; set; }
+        public float Health { get; set; }
+        public float Sanity { get; set; }
 
         //TODO update generateClone 
         public Character GenerateClone() {
@@ -41,6 +41,7 @@ namespace MCTS.DST.WorldModels
         public bool IsInventoryFull(string entityType, int quantity = 1)
         {
             var hasObject = InventoryHasObject(entityType);
+            Console.WriteLine((_inventory.Count + " - " + Maxinvsize));
             if (!hasObject && _inventory.Count >= Maxinvsize)
             {
                 return true;
