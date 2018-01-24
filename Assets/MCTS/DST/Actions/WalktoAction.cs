@@ -7,7 +7,8 @@ namespace MCTS.DST.Actions
     internal class WalktoAction : Action
     {
         protected Vector2i TargetPosition;
-        private Vector2i prevPos;
+        private const double Speed = 4d;
+
         public WalktoAction(Vector2i position) : base("WALKTO")
         {
             this.TargetPosition = position;
@@ -24,10 +25,9 @@ namespace MCTS.DST.Actions
         
         public override double GetDuration(WorldModel worldModel)
         {
-            prevPos = new Vector2i(worldModel.Walter.WalterPosition.x,worldModel.Walter.WalterPosition.y);
             var distance = worldModel.getRealDistanceToWalter(TargetPosition);
-            return base.GetDuration(worldModel) + distance;
-            //return base.GetDuration(worldModel);
+            var timeTaken = distance / Speed;
+            return base.GetDuration(worldModel) + timeTaken;
         }
 
         public override void ApplyActionEffects(WorldModel worldModel)
