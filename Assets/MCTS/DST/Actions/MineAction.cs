@@ -51,7 +51,7 @@ namespace MCTS.DST.Actions
 
         public override double GetDuration(WorldModel worldModel)
         {
-            return base.GetDuration(worldModel);
+            return base.GetDuration(worldModel) + 1;
         }
 
         public override string GetDstInterpretableAction() {
