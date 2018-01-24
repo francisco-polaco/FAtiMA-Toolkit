@@ -25,7 +25,7 @@ namespace MCTS.DST.Actions
 
         public override double GetDuration(WorldModel worldModel) {
             //TODO
-            return 0.00001f;
+            return 0.1f;
         }
 
         public override bool CanExecute(WorldModel worldModel)

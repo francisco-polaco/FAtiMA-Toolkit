@@ -39,15 +39,10 @@ namespace MCTS.DST.Actions
         {
             //TODO FIXME 
             //TODO FIXME 
-            var guid = "1";
+            //var guid = "1";
             //TODO FIXME 
             //TODO FIXME 
-
-            var objPosition = worldModel.GetPosition(guid);
-            //var walterPosition = worldModel.GetWalterPosition();
-
-
-            return worldModel.getRealDistanceToWalter(objPosition);
+            return 0;//worldModel.getRealDistanceToWalter(objPosition);
         }
 
         public virtual bool CanExecute(WorldModel worldModel)

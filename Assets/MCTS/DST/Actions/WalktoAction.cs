@@ -7,10 +7,9 @@ namespace MCTS.DST.Actions
     internal class WalktoAction : Action
     {
         protected Vector2i TargetPosition;
-
+        private Vector2i prevPos;
         public WalktoAction(Vector2i position) : base("WALKTO")
         {
-           // _guid = guid;
             this.TargetPosition = position;
         }
 
@@ -20,13 +19,14 @@ namespace MCTS.DST.Actions
 
         public override string GetXmlName()
         {
-            return "WalktoAction " + TargetPosition + " " + EntityType??"" ;
+            return "WalktoAction " + (EntityType??"") + " dist: " + prevPos + " -> " + TargetPosition;
         }
-
+        
         public override double GetDuration(WorldModel worldModel)
         {
-            worldModel.Walter.WalterPosition = TargetPosition;
-            return base.GetDuration(worldModel) + worldModel.getRealDistanceToWalter(TargetPosition);
+            prevPos = new Vector2i(worldModel.Walter.WalterPosition.x,worldModel.Walter.WalterPosition.y);
+            var distance = worldModel.getRealDistanceToWalter(TargetPosition);
+            return base.GetDuration(worldModel) + distance;
             //return base.GetDuration(worldModel);
         }
 
@@ -34,6 +34,8 @@ namespace MCTS.DST.Actions
         {
             Console.WriteLine("Apply WalkToAction");
             base.ApplyActionEffects(worldModel);
+            //THE REST
+            worldModel.Walter.WalterPosition = TargetPosition;
         }
         //    //worldModel.RemovePickableObject(_guid);
         //    //worldModel.walkedDistanced(TargetPosition);
