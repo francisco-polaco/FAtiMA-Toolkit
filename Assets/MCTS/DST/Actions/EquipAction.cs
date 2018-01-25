@@ -47,12 +47,12 @@ namespace MCTS.DST.Actions
 
         public override string GetDstInterpretableAction() {
             //return "Action("+Name+", "+invobject + ", " + posx + ", " + posz + ", " + recipe+")";
-            return "Action("+Name+", -, -, -, -)";
+            return "Action("+Name+", "+TargetGuid+", -, -, -)";
         }
 
         public override string GetTarget()
         {
-            return base.TargetGuid;
+            return "-";
         }
     }
 }
