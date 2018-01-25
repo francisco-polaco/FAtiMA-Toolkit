@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="DST\Actions\BuildAction.cs" />
     <Compile Include="DST\Actions\Action.cs" />
+    <Compile Include="DST\Actions\CharlieAttack.cs" />
     <Compile Include="DST\Actions\MineAction.cs" />
     <Compile Include="DST\Actions\ChopAction.cs" />
     <Compile Include="DST\Actions\CollectAction.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="DST\Actions\Recipes\Pickaxe.cs" />
     <Compile Include="DST\Actions\Recipes\Recipe.cs" />
     <Compile Include="DST\Actions\Recipes\RecipesManager.cs" />
+    <Compile Include="DST\Actions\StaySamePlace.cs" />
     <Compile Include="DST\Actions\WanderAction.cs" />
     <Compile Include="DST\DSTHelper.cs" />
     <Compile Include="DST\Objects\DSTObject.cs" />

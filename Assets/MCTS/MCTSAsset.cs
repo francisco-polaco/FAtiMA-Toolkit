@@ -88,8 +88,6 @@ namespace MCTS
                 Console.WriteLine("..Enter to continue execution..");
                 Console.ReadLine();
                 throw e;
-
-
             }
 
             //This is just an example of how to always return the action "Pick" with target "Wood1"
