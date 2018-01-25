@@ -126,6 +126,11 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.InInventory = true;
                         }
+                        if (properties.Item1.Equals("Equippable"))
+                        {
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
+                            pickable.Equippable = true;
+                        }
                     } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
                         //guid = null;
@@ -197,6 +202,11 @@ namespace MCTS.DST.WorldModels
                         if (holder.InInventory) {
                             this.Walter.AddToInventoryKB(holder.GetEntityType(),holder.quantity);
                             //toBeNamed(holder, _knownInInventoryObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.Equippable)
+                        {
+                            toBeNamed(holder, _knownEquippableObjects);
                             flagIsAnything = true;
                         }
 

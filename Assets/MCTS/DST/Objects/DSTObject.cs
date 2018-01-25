@@ -23,6 +23,7 @@ namespace MCTS.DST.Objects
         public bool DigWorkable { get; set; } = false;
         public bool MineWorkable { get; set; } = false;
         public bool InInventory { get; set; } = false;
+        public bool Equippable { get; set; }
         public int quantity { get; set; } = 0;
 
         private bool PosXSet { get; set; }

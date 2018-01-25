@@ -22,8 +22,13 @@ namespace MCTS.DST.Actions
         }
 
         public override int GetDuration(WorldModel worldModel) {
-            //TODO
-            return 0;
+            if(worldModel.Walter.InventoryHasObject(EntityType))
+                return 0;
+            else
+            {
+                
+                return int.MaxValue;
+            }
         }
 
         public override bool CanExecute(WorldModel worldModel)
@@ -43,6 +48,11 @@ namespace MCTS.DST.Actions
         public override string GetDstInterpretableAction() {
             //return "Action("+Name+", "+invobject + ", " + posx + ", " + posz + ", " + recipe+")";
             return "Action("+Name+", -, -, -, -)";
+        }
+
+        public override string GetTarget()
+        {
+            return base.TargetGuid;
         }
     }
 }

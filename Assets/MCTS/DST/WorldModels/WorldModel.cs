@@ -21,6 +21,7 @@ namespace MCTS.DST.WorldModels
         protected Dictionary<string, List<DSTObject>> _knownDiggableObjects;
         protected Dictionary<string, List<DSTObject>> _knownMineableObjects;
         protected Dictionary<string, List<DSTObject>> _knownInInventoryObjects;
+        protected Dictionary<string, List<DSTObject>> _knownEquippableObjects;
 
         private int _actionIndex = 0;
         private List<Action> _canExecuteActions = null;
@@ -39,6 +40,7 @@ namespace MCTS.DST.WorldModels
             _knownDiggableObjects = new Dictionary<string, List<DSTObject>>();
             _knownMineableObjects = new Dictionary<string, List<DSTObject>>();
             _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>();
+            _knownEquippableObjects = new Dictionary<string, List<DSTObject>>();
             Walter = new Character();
             clock = new MCTS.DST.WorldModels.Clock();
         }
@@ -53,6 +55,7 @@ namespace MCTS.DST.WorldModels
             _knownDiggableObjects = wm._knownDiggableObjects;
             _knownMineableObjects = wm._knownMineableObjects;
             _knownInInventoryObjects = wm._knownInInventoryObjects;
+            _knownEquippableObjects = wm._knownEquippableObjects;
             Walter = wm.Walter.GenerateClone();
             clock = wm.clock.deepCopy();
             //Walter.WalterPosition = wm.Walter.WalterPosition;
@@ -161,16 +164,17 @@ namespace MCTS.DST.WorldModels
             }
 
 
-            //foreach (var objHolder in _knownEquipableObjects)
-            //{
-            //    Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-            //    var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-            //        objHolder.Value[0].GetEntityType());
-            //    possibleActions.Add(actionTempHolder);
+            foreach (var objHolder in _knownEquippableObjects)
+            {
+                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
+                    objHolder.Value[0].GetEntityType());
+                possibleActions.Add(actionTempHolder);
 
-            //    //_possibleActions[i] = actionTempHolder;
-            //    //i++;
-            //}
+                //_possibleActions[i] = actionTempHolder;
+                //i++;
+            }
+
             //possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
 
             _possibleActions = possibleActions.ToArray();
