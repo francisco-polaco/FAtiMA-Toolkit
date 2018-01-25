@@ -63,7 +63,7 @@ namespace MCTS.DST.Actions
         {
             // todo: ver se tenho machado no mundo
             //Console.WriteLine("Entrei aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+worldModel.GotAxeEquiped());
-            return base.CanExecute(worldModel) && worldModel.GotAxeEquiped();
+            return base.CanExecute(worldModel) && worldModel.Walter.EquipedObject == EquipableObject.Axe;
         }
 
         //public override bool CanExecute()

@@ -43,7 +43,7 @@ namespace MCTS.DST.Actions
 
         public override string GetDstInterpretableAction()
         {
-            if (TargetGuid == null || TargetGuid != "-")
+            if (TargetGuid == null || string.Equals(TargetGuid, "-", StringComparison.Ordinal))
             {
                 return "Action(" + Name + ", -, " + TargetPosition.x + ", " + TargetPosition.y + ", -)";
             }

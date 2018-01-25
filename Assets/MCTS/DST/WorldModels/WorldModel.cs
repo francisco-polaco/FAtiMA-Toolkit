@@ -160,6 +160,17 @@ namespace MCTS.DST.WorldModels
                 possibleActions.Add(actionTempHolder);
             }
 
+
+            //foreach (var objHolder in _knownEquipableObjects)
+            //{
+            //    Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+            //    var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+            //        objHolder.Value[0].GetEntityType());
+            //    possibleActions.Add(actionTempHolder);
+
+            //    //_possibleActions[i] = actionTempHolder;
+            //    //i++;
+            //}
             //possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
 
             _possibleActions = possibleActions.ToArray();
@@ -299,16 +310,7 @@ namespace MCTS.DST.WorldModels
             Walter.WalterPosition = positionWalkedTo;
         }
 
-        public void EquipObject(EquipableObject equipable)
-        {
-            Walter.EquipedObject = equipable;
-        }
-
-        public bool GotAxeEquiped()
-        {
-            return false;
-            //return _equipedObject == EquipableObject.Axe;
-        }
+     
 
         public void AddPickableObject(DSTObject obj)
         {
@@ -366,6 +368,7 @@ namespace MCTS.DST.WorldModels
             Walter.makeSureMin();
         }
 
+        
     }
 
     public class Clock

@@ -46,7 +46,7 @@ namespace MCTS.DST.Actions
         public override bool CanExecute(WorldModel worldModel)
         {
             // todo: ver se tenho pickaxe no mundo
-            return base.CanExecute(worldModel) && worldModel.GotAxeEquiped();
+            return base.CanExecute(worldModel) && worldModel.Walter.EquipedObject == EquipableObject.Pickaxe;
         }
 
         public override int GetDuration(WorldModel worldModel)

@@ -40,6 +40,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
             return toReturn;
         }
 
+
         public void makeSureMin()
         {
             Hunger = (Hunger < 0 ? 0 : Hunger);
@@ -217,7 +218,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
                 .Select(item => item.Item2).Sum();
         }
 
-        public void RemoveFromInventory(string entityType, int quantity)
+        public void RemoveFromInventory(string entityType, int quantity = 1)
         {   
             
             foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType)))
@@ -266,12 +267,87 @@ namespace MCTS.DST.WorldModels.CharacterModel
 
         #endregion
 
+        #region equip
+
+
+
+
+        public bool CanEquip(string entityType)
+        {
+             return CanUnequip() && InventoryHasObject(entityType);
+        }
+
+        public void Equip(string entityType)
+        {
+            if (entityType.Equals("axe"))
+            {
+                EquipAxe();
+            }else if (entityType.Equals("pickaxe"))
+            {
+                EquipPickAxe();
+            }else if (entityType.Equals("torch"))
+            {
+                EquipTorch();
+            }
+        }
 
         public void EquipAxe()
         {
+            Unequip();
             EquipedObject = EquipableObject.Axe;
+            RemoveFromInventory("axe");
         }
 
+        public void EquipPickAxe()
+        {
+            Unequip();
+
+            EquipedObject = EquipableObject.Pickaxe;
+            RemoveFromInventory("pickaxe");
+        }
+
+        public void EquipTorch()
+        {
+            Unequip();
+
+            EquipedObject = EquipableObject.Torch;
+            RemoveFromInventory("torch");
+        }
+        public void Unequip()
+        {
+            switch (EquipedObject)
+            {
+                case EquipableObject.Axe:
+                    AddToInventory("axe");
+                    break;
+                case EquipableObject.Pickaxe:
+                    AddToInventory("pickaxe");
+                    break;
+                case EquipableObject.Torch:
+                    AddToInventory("torch");
+                    break;
+                default:
+                    return;
+            }
+
+            EquipedObject = EquipableObject.None;
+        }
+
+        public bool CanUnequip()
+        {
+            switch (EquipedObject)
+            {
+                case EquipableObject.Axe:
+                    return IsInventoryFull("axe");
+                case EquipableObject.Pickaxe:
+                    return IsInventoryFull("pickaxe");
+                case EquipableObject.Torch:
+                    return IsInventoryFull("torch");
+            }
+
+            return true;
+        }
+        #endregion
 
         public void SetStats(int health = -1, int hunger = -1, int sanity = -1)
         {

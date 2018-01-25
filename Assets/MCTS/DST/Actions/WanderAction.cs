@@ -14,8 +14,8 @@ namespace MCTS.DST.Actions
         {
             //FIXME: acho que as coordenadas estao bue grandes
             var r = new Random();
-            var x = r.Next(100) >= 50 ? -r.Next(150) : r.Next(150);
-            var y = r.Next(100) >= 50 ? -r.Next(150) : r.Next(150);
+            var x = r.Next(100) >= 50 ? -r.Next(50) : r.Next(50);
+            var y = r.Next(100) >= 50 ? -r.Next(50) : r.Next(50);
             TargetPosition = walterPosition + new Vector2i(x, y);
         }
 

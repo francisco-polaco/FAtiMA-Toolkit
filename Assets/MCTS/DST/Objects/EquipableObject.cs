@@ -4,7 +4,8 @@
     {
         None,
         Axe,
-        Pickaxe
+        Pickaxe,
+        Torch
     }
 
 }

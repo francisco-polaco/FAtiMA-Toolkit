@@ -107,23 +107,23 @@ namespace MCTS.DST.WorldModels
                     if (belief.Value.Equals((Name)"True")) {
                         var properties = GetBeliefName_InsideParentesis(belief.Name.ToString());
                         if (properties.Item1.Equals("Pickable")) {
-                            var pickable = FindOrCreatePickable(properties.Item2);
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.PickWorkable = true;
                         }
                         if (properties.Item1.Equals("Collectable")) {
-                            var pickable = FindOrCreatePickable(properties.Item2);
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.CollectWorkable = true;
                         }
                         if (properties.Item1.Equals("ChopWorkable")) {
-                            var pickable = FindOrCreatePickable(properties.Item2);
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.ChopWorkable  = true;
                         }
                         if (properties.Item1.Equals("MineWorkable")) {
-                            var pickable = FindOrCreatePickable(properties.Item2);
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.MineWorkable = true;
                         }
                         if (properties.Item1.Equals("InInventory")) {
-                            var pickable = FindOrCreatePickable(properties.Item2);
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.InInventory = true;
                         }
                     } else if (belief.Value.Equals((Name)"False")) {
@@ -135,7 +135,7 @@ namespace MCTS.DST.WorldModels
                             //ITEM1 -> "Entity"
                             //ITEM2 -> type,guid
                             var pairEntityTypeGuid = GetPairEntityNameGuid(pairBeliefName_Parentisis.Item2);
-                            var pickable = FindOrCreatePickable(pairEntityTypeGuid.Item2);
+                            var pickable = FindOrCreateDSTObject(pairEntityTypeGuid.Item2);
                             pickable.SetEntityType(pairEntityTypeGuid.Item1);
                             var quantity = int.Parse(belief.Value.ToString());
                             pickable.quantity = quantity;
@@ -144,14 +144,14 @@ namespace MCTS.DST.WorldModels
                             //"PosX(117209)": "212, 1",
                             //ITEM1 -> "PosX"
                             //ITEM2 -> guid
-                            var pickable = FindOrCreatePickable(guid);
+                            var pickable = FindOrCreateDSTObject(guid);
                             pickable.SetPosX(int.Parse(belief.Value.ToString()));
                         } else if (pairBeliefName_Parentisis.Item1.Equals("PosZ")) {
                             var guid = pairBeliefName_Parentisis.Item2;
                             //"PosZ(117209)": "212, 1",
                             //ITEM1 -> "PosZ"
                             //ITEM2 -> guid
-                            var pickable = FindOrCreatePickable(guid);
+                            var pickable = FindOrCreateDSTObject(guid);
                             pickable.SetPosZ(int.Parse(belief.Value.ToString()));
                         }
                     }
@@ -257,7 +257,7 @@ namespace MCTS.DST.WorldModels
             list.Add(toInsert);
         }
 
-        public DSTObject FindOrCreatePickable(string guid)
+        public DSTObject FindOrCreateDSTObject(string guid)
         {
             DSTObject holder = null;
             _temporaryHolders.TryGetValue(guid, out holder);
