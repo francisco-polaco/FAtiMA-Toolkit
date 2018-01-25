@@ -195,7 +195,7 @@ namespace MCTS.DST.WorldModels
                             flagIsAnything = true;
                         }
                         if (holder.InInventory) {
-                            this.Walter.AddToInventory(holder.GetEntityType(),holder.quantity);
+                            this.Walter.AddToInventoryKB(holder.GetEntityType(),holder.quantity);
                             //toBeNamed(holder, _knownInInventoryObjects);
                             flagIsAnything = true;
                         }

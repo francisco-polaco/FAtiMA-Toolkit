@@ -6,6 +6,7 @@ using MCTS.Math;
 using Action = MCTS.DST.Actions.Action;
 using MCTS.DST.Actions;
 using MCTS.DST.Actions.Recipes;
+using MCTS.DST.WorldModels.CharacterModel;
 
 namespace MCTS.DST.WorldModels
 {
@@ -159,7 +160,7 @@ namespace MCTS.DST.WorldModels
                 possibleActions.Add(actionTempHolder);
             }
 
-            possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
+            //possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
 
             _possibleActions = possibleActions.ToArray();
         }

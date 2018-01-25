@@ -74,9 +74,13 @@
     <Compile Include="DST\Actions\PickupAction.cs" />
     <Compile Include="DST\Objects\EquipableObject.cs" />
     <Compile Include="DST\Reward.cs" />
+    <Compile Include="DST\WorldModels\CharacterModel\StackTable.cs" />
+    <Compile Include="DST\WorldModels\CharacterModel\StackTorch.cs" />
+    <Compile Include="DST\WorldModels\CharacterModel\StackPickaxe.cs" />
+    <Compile Include="DST\WorldModels\CharacterModel\StackQuantity.cs" />
     <Compile Include="DST\WorldModels\CurrentWorldModel.cs" />
     <Compile Include="DST\WorldModels\FutureWorldModel.cs" />
-    <Compile Include="DST\WorldModels\Character.cs" />
+    <Compile Include="DST\WorldModels\CharacterModel\Character.cs" />
     <Compile Include="DST\WorldModels\WorldModel.cs" />
     <Compile Include="DST\MCTSNode.cs" />
     <Compile Include="DST\MCTSAlgorithm.cs" />

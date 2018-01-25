@@ -31,16 +31,18 @@ namespace MCTS.DST.Actions
         public override bool CanExecute(WorldModel worldModel)
         {
             //Has Slot in Inventory
-            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName,1))
-            {
-                return false;
-            }
+            
             foreach (var ingredient in ToBuild.Ingredients)
             {
                 if (!worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2))
                 {
                     return false;
                 }
+            }
+            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName, 1) || 
+                worldModel.Walter.HasSlotVacatedAfterRemoval(ToBuild.PrefabName))
+            {
+                return false;
             }
             return true;
         }
@@ -58,6 +60,11 @@ namespace MCTS.DST.Actions
         public override void ApplyActionEffects(WorldModel worldModel)
         {
             base.ApplyActionEffects(worldModel);
+            foreach (var ingredient in ToBuild.Ingredients)
+            {
+                worldModel.Walter.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
+            }
+            worldModel.Walter.AddToInventory(ToBuild.PrefabName);
         }
 
         public override string GetDstInterpretableAction() {

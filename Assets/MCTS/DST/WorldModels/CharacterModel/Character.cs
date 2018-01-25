@@ -5,20 +5,21 @@ using MCTS.DST.Objects;
 using MCTS.Math;
 using Utilities;
 
-namespace MCTS.DST.WorldModels
+namespace MCTS.DST.WorldModels.CharacterModel
 {
     public class Character
     {
         private const int MAX_HEALTH = 150;
         private const int MAX_HUNGER = 150;
         private const int MAX_SANITY = 200;
-        private const int Maxinvsize = 15;
-        private const int MaxSizeStackForItem = 20;
+        private const int MaxInventorySize = 15;
+        private const int MaxDefaultStackSize = 20;
 
         public Vector2i WalterPosition = new Vector2i();
         public double WalkedDistance { get; set; } = 0;
         public EquipableObject EquipedObject { get; set; } = EquipableObject.None;
         private List<Pair<string, int>> _inventory = new List<Pair<string, int>>();
+        private StackTable _stackTable = new StackTable();
         public float Hunger { get; set; }
         public float Health { get; set; }
         public float Sanity { get; set; }
@@ -55,21 +56,42 @@ namespace MCTS.DST.WorldModels
 
         #region inventory
 
-       
+        public bool HasSlotVacatedAfterRemoval(string entityType, int quantity = 1)
+        {
+            int maxSizeStackForItem;
+            try
+            {
+                maxSizeStackForItem = _stackTable.GetStackSize(entityType);
+            }
+            catch (StackTable.EntityTypeUnknownException)
+            {
+                maxSizeStackForItem = MaxDefaultStackSize;
+            }
+            return NumberOfObjectsInInventory(entityType) % maxSizeStackForItem - quantity <= 0;
+        }
 
         public bool IsInventoryFull(string entityType, int quantity = 1)
         {
             var hasObject = InventoryHasObject(entityType);
-            Console.WriteLine((_inventory.Count + " - " + Maxinvsize));
-            if (!hasObject && _inventory.Count >= Maxinvsize)
+            Console.WriteLine("Inventory: " + _inventory.Count + " - " + MaxInventorySize);
+            if (!hasObject && _inventory.Count >= MaxInventorySize)
             {
                 return true;
             }
             else if (hasObject)
             {
-                foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < MaxSizeStackForItem).ToList())
+                int maxSizeStackForItem;
+                try
+                {
+                    maxSizeStackForItem = _stackTable.GetStackSize(entityType);
+                }
+                catch (StackTable.EntityTypeUnknownException)
+                {
+                    maxSizeStackForItem = MaxDefaultStackSize;
+                }
+                foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem).ToList())
                 {   // elements are copied
-                    var remainingToStack = MaxSizeStackForItem - pair.Item2;
+                    var remainingToStack = maxSizeStackForItem - pair.Item2;
                     if (quantity > remainingToStack)
                     {
                         pair.Item2 += remainingToStack;
@@ -91,18 +113,63 @@ namespace MCTS.DST.WorldModels
             return false;
         }
 
+        public void AddToInventoryKB(string entityType, int quantity = 1)
+        {
+            var hasObject = InventoryHasObject(entityType);
+            if (hasObject)
+            {
+                int maxSizeStackForItem;
+                try
+                {
+                    maxSizeStackForItem = _stackTable.GetStackSize(entityType);
+                }
+                catch (StackTable.EntityTypeUnknownException)
+                {
+                    maxSizeStackForItem = MaxDefaultStackSize;
+                }
+                foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem))
+                {
+                    var remainingToStack = maxSizeStackForItem - pair.Item2;
+                    if (quantity > remainingToStack)
+                    {
+                        pair.Item2 += remainingToStack;
+                        quantity -= remainingToStack;
+                    }
+                    else
+                    {
+                        pair.Item2 += quantity;
+                        quantity = 0;
+                    }
+                }
+            }
+            else
+            {
+                _inventory.Add(new Pair<string, int>(entityType, quantity));
+            }
+        }
+
         public void AddToInventory(string entityType, int quantity = 1)
         {
             var hasObject = InventoryHasObject(entityType);
-            if (!hasObject && _inventory.Count >= Maxinvsize)
+            if (!hasObject && _inventory.Count >= MaxInventorySize)
             {
                 throw new InventoryFullException();
             }
             else if(hasObject)
             {
-                foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < MaxSizeStackForItem))
+                int maxSizeStackForItem;
+                try
                 {
-                    var remainingToStack = MaxSizeStackForItem - pair.Item2;
+                    maxSizeStackForItem = _stackTable.GetStackSize(entityType);
+                }
+                catch (StackTable.EntityTypeUnknownException)
+                {
+                    maxSizeStackForItem = MaxDefaultStackSize;
+                }
+                foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem))
+                {
+                    var remainingToStack = maxSizeStackForItem - pair.Item2;
+                    Console.WriteLine(remainingToStack);
                     if (quantity > remainingToStack)
                     {
                         pair.Item2 += remainingToStack;
@@ -117,7 +184,7 @@ namespace MCTS.DST.WorldModels
 
                 if (quantity > 0)
                 {
-                    throw new InventoryFullException();
+                    throw new InventoryFullException(entityType);
                 }
             }
             else
@@ -181,6 +248,16 @@ namespace MCTS.DST.WorldModels
 
         public class InventoryFullException : Exception
         {
+            public InventoryFullException()
+            {
+            }
+
+            public InventoryFullException(string entityType)
+            {
+                this.Message = entityType;
+            }
+
+            public override string Message { get; }
         }
 
         public class ItemQuantityOverflowException : Exception
@@ -206,23 +283,6 @@ namespace MCTS.DST.WorldModels
         public void ReceiveDamage(int damage)
         {
             Health -= damage;
-        }
-    }
-
-    public class StackTable
-    {
-        private Dictionary<string, int> _stackSize = new Dictionary<string, int>();
-
-        public int GetStackSize(string entityType)
-        {
-            if (_stackSize.ContainsKey(entityType))
-                return _stackSize[entityType];
-            else
-                throw new EntityTypeUnknownException();
-        }
-
-        public class EntityTypeUnknownException : Exception
-        {
         }
     }
 }
