@@ -11,6 +11,8 @@ namespace MCTS.DST.WorldModels
 {
     public class WorldModel
     {
+        private const int CHARLIE_ATTACK_FREQUENCY = 6;//every x segunds
+
         protected Dictionary<string, List<DSTObject>> _knownPickableObjects;
         protected Dictionary<string, List<DSTObject>> _knownCollectableObjects;
         protected Dictionary<string, List<DSTObject>> _knownChopableObjects;
@@ -155,8 +157,9 @@ namespace MCTS.DST.WorldModels
             {
                 var actionTempHolder = new BuildAction(recipe);
                 possibleActions.Add(actionTempHolder);
-
             }
+
+            possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
 
             _possibleActions = possibleActions.ToArray();
         }
@@ -319,8 +322,8 @@ namespace MCTS.DST.WorldModels
 
         public void advanceTime(int actionDuration)
         {
-            //verify stats are on max
-            //TODO
+            //verify stats are below max values
+            Walter.makeSureMax();
 
             var amounts = this.clock.advanceTime(actionDuration);
             var previousHunger = this.Walter.Hunger;
@@ -337,7 +340,31 @@ namespace MCTS.DST.WorldModels
                 }
                 this.Walter.Health -= 1.25f * secondsInHunger;
             }
+
+            this.Walter.Sanity = this.Walter.Sanity - amounts[1] * (5.0f / 60);
+
+            //LIGHT STUFF :D
+            //assumindo sem fontes de luz
+            var noLight = true;
+            if (noLight)//aka no light)
+            {
+                this.Walter.Sanity -= amounts[2] * (50.0f / 60);
+                var number_night_attacks = amounts[2] / CHARLIE_ATTACK_FREQUENCY;
+                if (number_night_attacks > 0)
+                {
+                    CharlieAttack attack = new CharlieAttack();
+                    while (number_night_attacks > 0) 
+                    {
+                        attack.ApplyActionEffects(this);
+                        number_night_attacks--;
+                    }
+                }
+            } 
+
+            //verify stats are on min (above 0)
+            Walter.makeSureMin();
         }
+
     }
 
     public class Clock

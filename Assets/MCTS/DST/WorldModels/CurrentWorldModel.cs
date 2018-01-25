@@ -60,6 +60,16 @@ namespace MCTS.DST.WorldModels
                     Console.WriteLine("FUCKING NULL");
                 }
 
+                #region GET_STATS
+                var walterHealth = knowledgeBase.AskProperty((Name)"Health(Walter)");
+                var walterHunger = knowledgeBase.AskProperty((Name)"Hunger(Walter)");
+                var walterSanity = knowledgeBase.AskProperty((Name)"Sanity(Walter)");
+                Walter.SetStats((walterHealth != null ? int.Parse(walterHealth.Value.GetValue().ToString()) : -1),
+                    (walterHunger != null ? int.Parse(walterHunger.Value.GetValue().ToString()) : -1),
+                    (walterSanity != null ? int.Parse(walterSanity.Value.GetValue().ToString()) : -1));
+                #endregion
+
+
                 foreach (var single_pair in pair)
                 {
                     var belief_value = single_pair.Item1.Value.GetValue();

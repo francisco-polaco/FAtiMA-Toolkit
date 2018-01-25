@@ -9,6 +9,9 @@ namespace MCTS.DST.WorldModels
 {
     public class Character
     {
+        private const int MAX_HEALTH = 150;
+        private const int MAX_HUNGER = 150;
+        private const int MAX_SANITY = 200;
         private const int Maxinvsize = 15;
         private const int MaxSizeStackForItem = 20;
 
@@ -34,6 +37,20 @@ namespace MCTS.DST.WorldModels
 
 
             return toReturn;
+        }
+
+        public void makeSureMin()
+        {
+            Hunger = (Hunger < 0 ? 0 : Hunger);
+            Health = (Health < 0 ? 0 : Health);
+            Sanity = (Sanity < 0 ? 0 : Sanity);
+        }
+
+        public void makeSureMax()
+        {
+            Hunger = (Hunger > MAX_HUNGER ? MAX_HUNGER : Hunger);
+            Health = (Health > MAX_HEALTH ? MAX_HEALTH : Health);
+            Sanity = (Sanity > MAX_SANITY ? MAX_SANITY : Sanity);
         }
 
         #region inventory
@@ -177,5 +194,16 @@ namespace MCTS.DST.WorldModels
         }
 
 
+        public void SetStats(int health = -1, int hunger = -1, int sanity = -1)
+        {
+            Health = health < 0 ? MAX_HEALTH : health;
+            Hunger = hunger < 0 ? MAX_HUNGER : hunger;
+            Sanity = sanity < 0 ? MAX_SANITY : sanity;
+        }
+
+        public void ReceiveDamage(int damage)
+        {
+            Health -= damage;
+        }
     }
 }
