@@ -38,6 +38,8 @@ namespace MCTS.DST.WorldModels
 
         #region inventory
 
+       
+
         public bool IsInventoryFull(string entityType, int quantity = 1)
         {
             var hasObject = InventoryHasObject(entityType);
@@ -177,5 +179,22 @@ namespace MCTS.DST.WorldModels
         }
 
 
+    }
+
+    public class StackTable
+    {
+        private Dictionary<string, int> _stackSize = new Dictionary<string, int>();
+
+        public int GetStackSize(string entityType)
+        {
+            if (_stackSize.ContainsKey(entityType))
+                return _stackSize[entityType];
+            else
+                throw new EntityTypeUnknownException();
+        }
+
+        public class EntityTypeUnknownException : Exception
+        {
+        }
     }
 }
