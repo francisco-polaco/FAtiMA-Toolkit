@@ -69,11 +69,16 @@
     <Compile Include="DST\Actions\StaySamePlace.cs" />
     <Compile Include="DST\Actions\WanderAction.cs" />
     <Compile Include="DST\DSTHelper.cs" />
+    <Compile Include="DST\Objects\ClockDate.cs" />
     <Compile Include="DST\Objects\DSTObject.cs" />
+    <Compile Include="DST\Objects\Fire\Campfire.cs" />
+    <Compile Include="DST\Objects\Fire\Firepit.cs" />
+    <Compile Include="DST\Objects\Fire\Fuel.cs" />
     <Compile Include="DST\Objects\GameObject.cs" />
     <Compile Include="DST\Actions\WalktoAction.cs" />
     <Compile Include="DST\Actions\PickupAction.cs" />
     <Compile Include="DST\Objects\EquipableObject.cs" />
+    <Compile Include="DST\Objects\Fire\LightSource.cs" />
     <Compile Include="DST\Reward.cs" />
     <Compile Include="DST\WorldModels\CharacterModel\StackTable.cs" />
     <Compile Include="DST\WorldModels\CharacterModel\StackTorch.cs" />

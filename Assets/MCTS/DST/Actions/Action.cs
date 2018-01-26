@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using MCTS.DST.WorldModels;
+using Utilities;
 using WellFormedNames;
 
 namespace MCTS.DST.Actions
@@ -38,7 +40,7 @@ namespace MCTS.DST.Actions
         public virtual int GetDuration(WorldModel worldModel)
         {
             //MCTS time to process
-            return 2;
+            return 0;
         }
 
         public virtual bool CanExecute(WorldModel worldModel)
@@ -72,6 +74,11 @@ namespace MCTS.DST.Actions
         
         public virtual string GetTarget() {
             return TargetGuid;
+        }
+
+        public virtual List<Pair<string, string>> SaveToKb()
+        {
+            return new List<Pair<string, string>>();
         }
     }
 }

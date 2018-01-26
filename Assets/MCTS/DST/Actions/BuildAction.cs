@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using MCTS.DST.Actions.Recipes;
+using MCTS.DST.Objects;
 using MCTS.DST.WorldModels;
+using MCTS.Math;
+using Utilities;
 using WellFormedNames;
 
 namespace MCTS.DST.Actions
@@ -10,7 +14,8 @@ namespace MCTS.DST.Actions
         //Action(BUILD, -, [posx], [posz], [recipe]) = [target]
 
         private Recipe ToBuild;
-
+        private ClockDate actionTimestamp;
+        private Vector2i walterPosition;
         public BuildAction(Recipe toBuild) : base("BUILD","-",toBuild.PrefabName)
         {
             ToBuild = toBuild;
@@ -24,27 +29,22 @@ namespace MCTS.DST.Actions
         }
 
         public override int GetDuration(WorldModel worldModel) {
-            //TODO
-            return 0;
+            return 1;
         }
 
         public override bool CanExecute(WorldModel worldModel)
         {
             //Has Slot in Inventory
-            var newchar = worldModel.Walter.GenerateClone();
-
+            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName,1))
+            {
+                return false;
+            }
             foreach (var ingredient in ToBuild.Ingredients)
             {
                 if (!worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2))
                 {
                     return false;
                 }
-                newchar.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
-            }
-
-            if (newchar.IsInventoryFull(ToBuild.PrefabName, 1))
-            {
-                return false;
             }
             return true;
         }
@@ -61,17 +61,40 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
+
+            actionTimestamp = worldModel.clock.GetTimestamp();
+            walterPosition = worldModel.Walter.WalterPosition;
             base.ApplyActionEffects(worldModel);
-            foreach (var ingredient in ToBuild.Ingredients)
-            {
-                worldModel.Walter.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
-            }
-            worldModel.Walter.AddToInventory(ToBuild.PrefabName);
         }
 
         public override string GetDstInterpretableAction() {
             //return "Action("+Name+", "+invobject + ", " + posx + ", " + posz + ", " + recipe+")";
             return "Action("+Name+", -, -, -, "+ToBuild.PrefabName+")";
+        }
+
+        public override List<Pair<string, string>> SaveToKb()
+        {
+            var toReturn = base.SaveToKb();
+            var timeToAdd = 0;
+            if (ToBuild.PrefabName.Equals("campfire"))
+            {
+                timeToAdd = 180;
+                //180 sec
+            } else if(ToBuild.PrefabName.Equals("firepit"))
+            {
+                timeToAdd = 135;
+                //135 sec
+            } else if (ToBuild.PrefabName.Equals("torch"))
+            {
+                timeToAdd = 75;
+                //75 seconds
+            }
+
+            if (timeToAdd > 0)
+            {
+                var belief = new Pair<string, string>();
+            }
+            return toReturn;
         }
     }
 }

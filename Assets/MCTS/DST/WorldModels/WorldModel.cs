@@ -298,14 +298,12 @@ namespace MCTS.DST.WorldModels
 
         public int getSquaredDistanceToWalter(Vector2i obj)
         {
-            var x = (int) Walter.WalterPosition.x - obj.x;
-            var y = (int) Walter.WalterPosition.y - obj.y;
-            return x * x + y * y;
+            return DSTHelper.getSquaredDistance(Walter.WalterPosition, obj);
         }
 
         public double getRealDistanceToWalter(Vector2i obj)
         {
-            return System.Math.Sqrt(getSquaredDistanceToWalter(obj));
+            return DSTHelper.getRealDistance(Walter.WalterPosition, obj);
         }
 
         public virtual void walkedDistanced(Vector2i positionWalkedTo)
@@ -377,11 +375,10 @@ namespace MCTS.DST.WorldModels
 
     public class Clock
     {
-        private const int SEGMENT_TIME = 30;
-        private const int HALF_SEGMENT = 15;
-        private const int NUMBER_SEGMENT = 16;
-        private const int SECONDS_IN_DAY = NUMBER_SEGMENT * SEGMENT_TIME;
-
+        private static int SEGMENT_TIME = 30;
+        private static int HALF_SEGMENT = 15;
+        private static int NUMBER_SEGMENT = 16;
+        public static int SECONDS_IN_DAY = NUMBER_SEGMENT * SEGMENT_TIME;
         private static readonly int[][] DAYS_CONFIGURATION = new int[][]
         {
             new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
@@ -503,8 +500,8 @@ namespace MCTS.DST.WorldModels
                     toReturn[2] += SECONDS_IN_DAY - previous;
                     previous = 0;
                     _currentDay++;
-                    //MOON++?
-                    //Season++?
+                    //TODO MOON++?
+                    //TODO Season++?
                     dayPhase = DayPhase.Day;
                 }
 
@@ -514,6 +511,12 @@ namespace MCTS.DST.WorldModels
             return toReturn;
 
         }
+
+        public ClockDate GetTimestamp()
+        {
+            return new ClockDate() {Day = _currentDay, Second = _currentSecond};
+        }
+        
 
         //internal array DaysConfig { }
         internal enum Season

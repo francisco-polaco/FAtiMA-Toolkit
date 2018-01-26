@@ -32,7 +32,6 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            Console.WriteLine("Apply WalkToAction");
             base.ApplyActionEffects(worldModel);
             //THE REST
             worldModel.Walter.WalterPosition = TargetPosition;
