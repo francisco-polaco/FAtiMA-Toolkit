@@ -360,5 +360,22 @@ namespace MCTS.DST.WorldModels.CharacterModel
         {
             Health -= damage;
         }
+
+        public void Eat(string entityType, int quantity = 1)
+        {
+            float increaseHealth = 0, increaseHunger = 0;
+            if (entityType.Equals("carrot"))
+            {
+                increaseHunger = 12.5f;
+                increaseHealth = 1f;
+            }
+            // add more cases
+            // add more cases
+            for (var i = 0; i < quantity; i++)
+            {
+                Health += increaseHealth;
+                Hunger += increaseHunger;
+            }
+        }
     }
 }

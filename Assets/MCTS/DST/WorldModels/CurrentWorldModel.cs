@@ -131,6 +131,11 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.Equippable = true;
                         }
+                        if (properties.Item1.Equals("IsEatable"))
+                        {
+                            var pickable = FindOrCreateDSTObject(properties.Item2);
+                            pickable.IsEatable = true;
+                        }
                     } else if (belief.Value.Equals((Name)"False")) {
                         //Ignore the False
                         //guid = null;
@@ -207,6 +212,11 @@ namespace MCTS.DST.WorldModels
                         if (holder.Equippable)
                         {
                             toBeNamed(holder, _knownEquippableObjects);
+                            flagIsAnything = true;
+                        }
+                        if (holder.IsEatable)
+                        {
+                            toBeNamed(holder, _knownEatableObjects);
                             flagIsAnything = true;
                         }
 

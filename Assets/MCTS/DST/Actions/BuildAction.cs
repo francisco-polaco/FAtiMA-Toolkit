@@ -64,6 +64,16 @@ namespace MCTS.DST.Actions
 
             actionTimestamp = worldModel.clock.GetTimestamp();
             walterPosition = worldModel.Walter.WalterPosition;
+            foreach (var ingredient in ToBuild.Ingredients)
+            {
+                worldModel.Walter.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
+            }
+            worldModel.Walter.AddToInventory(EntityType);
+            if(worldModel.Walter.EquipedObject == EquipableObject.None)
+            {
+                worldModel.Walter.Equip(EntityType);
+            }
+
             base.ApplyActionEffects(worldModel);
         }
 
@@ -92,7 +102,7 @@ namespace MCTS.DST.Actions
 
             if (timeToAdd > 0)
             {
-                var belief = new Pair<string, string>();
+               // var belief = new Pair<string, string>();
             }
             return toReturn;
         }

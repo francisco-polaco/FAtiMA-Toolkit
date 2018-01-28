@@ -33,6 +33,7 @@ namespace MCTS.DST.Objects
         public int SquaredDistance { get; private set; }
 
         public string Guid { get; }
+        public bool IsEatable { get; set; }
 
         public int GetPosX()
         {

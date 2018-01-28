@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DST\Actions\EatAction.cs" />
     <Compile Include="DST\Actions\EquipAction.cs" />
     <Compile Include="DST\Actions\BuildAction.cs" />
     <Compile Include="DST\Actions\Action.cs" />

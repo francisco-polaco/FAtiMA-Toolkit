@@ -22,6 +22,7 @@ namespace MCTS.DST.WorldModels
         protected Dictionary<string, List<DSTObject>> _knownMineableObjects;
         protected Dictionary<string, List<DSTObject>> _knownInInventoryObjects;
         protected Dictionary<string, List<DSTObject>> _knownEquippableObjects;
+        protected Dictionary<string, List<DSTObject>> _knownEatableObjects;
 
         private int _actionIndex = 0;
         private List<Action> _canExecuteActions = null;
@@ -41,6 +42,7 @@ namespace MCTS.DST.WorldModels
             _knownMineableObjects = new Dictionary<string, List<DSTObject>>();
             _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>();
             _knownEquippableObjects = new Dictionary<string, List<DSTObject>>();
+            _knownEatableObjects = new Dictionary<string, List<DSTObject>>();
             Walter = new Character();
             clock = new MCTS.DST.WorldModels.Clock();
         }
@@ -56,6 +58,7 @@ namespace MCTS.DST.WorldModels
             _knownMineableObjects = wm._knownMineableObjects;
             _knownInInventoryObjects = wm._knownInInventoryObjects;
             _knownEquippableObjects = wm._knownEquippableObjects;
+            _knownEatableObjects = wm._knownEatableObjects;
             Walter = wm.Walter.GenerateClone();
             clock = wm.clock.deepCopy();
             //Walter.WalterPosition = wm.Walter.WalterPosition;
@@ -170,9 +173,13 @@ namespace MCTS.DST.WorldModels
                 var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
-
-                //_possibleActions[i] = actionTempHolder;
-                //i++;
+            }
+            foreach (var objHolder in _knownEatableObjects)
+            {
+                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
+                    objHolder.Value[0].GetEntityType());
+                possibleActions.Add(actionTempHolder);
             }
 
             //possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
