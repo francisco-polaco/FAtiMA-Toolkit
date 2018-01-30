@@ -6,6 +6,7 @@ using MCTS.Math;
 using Action = MCTS.DST.Actions.Action;
 using MCTS.DST.Actions;
 using MCTS.DST.Actions.Recipes;
+using MCTS.DST.Objects.Fire;
 using MCTS.DST.WorldModels.CharacterModel;
 
 namespace MCTS.DST.WorldModels
@@ -23,6 +24,8 @@ namespace MCTS.DST.WorldModels
         protected Dictionary<string, List<DSTObject>> _knownInInventoryObjects;
         protected Dictionary<string, List<DSTObject>> _knownEquippableObjects;
         protected Dictionary<string, List<DSTObject>> _knownEatableObjects;
+        protected LightSourcesManager _lightsManager = new LightSourcesManager();
+        
 
         private int _actionIndex = 0;
         private List<Action> _canExecuteActions = null;
@@ -43,6 +46,7 @@ namespace MCTS.DST.WorldModels
             _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>();
             _knownEquippableObjects = new Dictionary<string, List<DSTObject>>();
             _knownEatableObjects = new Dictionary<string, List<DSTObject>>();
+            _lightsManager = new LightSourcesManager();
             Walter = new Character();
             clock = new MCTS.DST.WorldModels.Clock();
         }
@@ -59,6 +63,7 @@ namespace MCTS.DST.WorldModels
             _knownInInventoryObjects = wm._knownInInventoryObjects;
             _knownEquippableObjects = wm._knownEquippableObjects;
             _knownEatableObjects = wm._knownEatableObjects;
+            _lightsManager = wm._lightsManager;
             Walter = wm.Walter.GenerateClone();
             clock = wm.clock.deepCopy();
             //Walter.WalterPosition = wm.Walter.WalterPosition;
@@ -99,6 +104,8 @@ namespace MCTS.DST.WorldModels
                 {
                     Console.WriteLine(a);
                 }
+
+
 
 
                 if (_canExecuteActions.ToArray().Length == 0)
@@ -159,6 +166,17 @@ namespace MCTS.DST.WorldModels
                 //_possibleActions[i] = actionTempHolder;
                 //i++;
             }
+            foreach (var light in _lightsManager._sources)
+            {
+
+                var actionTempHolder = new WalktoAction(light.SourcePosition,light.fireOBj.Guid,light.fireOBj.GetEntityType());
+
+                possibleActions.Add(actionTempHolder);
+
+                //_possibleActions[i] = actionTempHolder;
+                //i++;
+            }
+            //_knownLightSourceObjects
 
             foreach (var recipe in _recipesManager.CraftRecipes)
             {

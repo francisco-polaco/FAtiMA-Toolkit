@@ -34,6 +34,7 @@ namespace MCTS.DST.Objects
 
         public string Guid { get; }
         public bool IsEatable { get; set; }
+        public bool IsLightSource { get; set; }
 
         public int GetPosX()
         {

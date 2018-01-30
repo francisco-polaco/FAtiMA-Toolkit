@@ -90,8 +90,7 @@ namespace MCTS.DST.Actions
             {
                 timeToAdd = 180;
                 //180 sec
-            } else if(ToBuild.PrefabName.Equals("firepit"))
-            {
+            } else if(ToBuild.PrefabName.Equals("firepit")) {
                 timeToAdd = 135;
                 //135 sec
             } else if (ToBuild.PrefabName.Equals("torch"))
@@ -102,7 +101,9 @@ namespace MCTS.DST.Actions
 
             if (timeToAdd > 0)
             {
-               // var belief = new Pair<string, string>();
+               var belief_name = ToBuild.PrefabName + "(" + walterPosition.x +"_" +walterPosition.y+"_"+timeToAdd+")";
+                var belief_value = DateTime.Now+"";
+               var belief = new Pair<string, string>(belief_name,belief_value) ;
             }
             return toReturn;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MCTS.Math;
 
 namespace MCTS.DST.Objects.Fire {
@@ -7,6 +8,12 @@ namespace MCTS.DST.Objects.Fire {
     {
         public Vector2i SourcePosition;
         public int SecondsRemaining;
+        public FireDstObject fireOBj;
+
+        public LightSource(FireDstObject obj)
+        {
+            fireOBj = obj;
+        }
 
         public bool CloseEnoughToLight(Vector2i walterPosition)
         {
@@ -24,8 +31,8 @@ namespace MCTS.DST.Objects.Fire {
 
     public class LightSourcesManager
     {
-        private readonly List<LightSource> _sources = new List<LightSource>();
-        private int _torchTime;
+        public readonly List<LightSource> _sources = new List<LightSource>();
+        private int _torchTime = 0;
         
         public int HowManyTimeInDarkness(int timeToPass, bool torchWasEquipped, Vector2i walterStartPosition, Vector2i walterEndPosition)
         {
@@ -68,20 +75,39 @@ namespace MCTS.DST.Objects.Fire {
             return inDarkness;
         }
 
-        public void addNewLightSource(DSTObject lightSource)
+        public void PassTime(int timeToPass, bool torchEquiped, bool torchInInventory)
         {
+            foreach (var lightSource in _sources)
+            {
+                lightSource.PassTime(timeToPass);
+            }
+
+            if (torchEquiped)
+            {
+                _torchTime -= timeToPass;
+            }
+            else if(!torchInInventory)
+            {
+                _torchTime = 0;
+            }
+
+        }
+
+        public void addNewLightSource(FireDstObject lightSource)
+        {
+            string entType = lightSource.GetEntityType();
             //position
             //name
             //timeToBurn
-            if (lightSource.GetEntityType().Equals("campfire"))
-            {
-                //TODO
-            } else if (lightSource.GetEntityType().Equals("firepit")) {
-                //TODO
-            } else if (lightSource.GetEntityType().Equals("torch")) {
-                //TODO
-            } else
-            {
+
+            if (entType.Equals("campfire")) {
+                _sources.Add(new Campfire(lightSource.GetPosition(),120/* lightSource.TimeToBurn*/,lightSource));
+            } else if (entType.Equals("firepit")) {
+                _sources.Add(new Firepit(lightSource.GetPosition(),0/* lightSource.TimeToBurn*/, lightSource));
+            } else if (entType.Equals("torch")) {
+                _torchTime += lightSource.TimeToBurn;
+            } else {
+                Debug.WriteLine("Unknown light source " + entType);
                 //dont know what source is that...
                 throw new NotImplementedException();
             }

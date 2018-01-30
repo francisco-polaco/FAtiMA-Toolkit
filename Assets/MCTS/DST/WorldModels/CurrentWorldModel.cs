@@ -6,6 +6,7 @@ using MCTS.DST.Objects;
 using Utilities;
 using WellFormedNames;
 using System.Linq;
+using MCTS.DST.Objects.Fire;
 
 namespace MCTS.DST.WorldModels
 {
@@ -145,10 +146,19 @@ namespace MCTS.DST.WorldModels
                             //ITEM1 -> "Entity"
                             //ITEM2 -> type,guid
                             var pairEntityTypeGuid = GetPairEntityNameGuid(pairBeliefName_Parentisis.Item2);
-                            var pickable = FindOrCreateDSTObject(pairEntityTypeGuid.Item2);
+                            DSTObject pickable = FindOrCreateDSTObject(pairEntityTypeGuid.Item2);
+
+                            if (pairEntityTypeGuid.Item1.Equals("campfire"))
+                            {
+                                pickable = (FireDstObject) pickable;
+                                pickable.IsLightSource = true;
+                                _temporaryHolders[pickable.Guid] = pickable;
+                            }
+
                             pickable.SetEntityType(pairEntityTypeGuid.Item1);
                             var quantity = int.Parse(belief.Value.ToString());
                             pickable.quantity = quantity;
+
                         } else if (pairBeliefName_Parentisis.Item1.Equals("PosX")) {
                             var guid = pairBeliefName_Parentisis.Item2;
                             //"PosX(117209)": "212, 1",
@@ -166,6 +176,12 @@ namespace MCTS.DST.WorldModels
                         }
                     }
                 }
+                //var campfires = knowledgeBase.AskPossibleProperties((Name)"campfire([x])", Name.SELF_SYMBOL, null).ToList();//.SelectMany(p => p.Item2).ToArray();
+                //foreach (var campfire in campfires)
+                //{
+                //    var 
+                //}
+
                 //--------------
                 //--PARSE DONE--
                 //--------------
@@ -219,6 +235,11 @@ namespace MCTS.DST.WorldModels
                             toBeNamed(holder, _knownEatableObjects);
                             flagIsAnything = true;
                         }
+                        if (holder.IsLightSource) {
+                            _lightsManager.addNewLightSource(holder as FireDstObject);
+                            flagIsAnything = true;
+                        }
+
 
                         if (!flagIsAnything)
                         {

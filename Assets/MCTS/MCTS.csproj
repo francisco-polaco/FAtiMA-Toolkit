@@ -73,6 +73,7 @@
     <Compile Include="DST\Objects\ClockDate.cs" />
     <Compile Include="DST\Objects\DSTObject.cs" />
     <Compile Include="DST\Objects\Fire\Campfire.cs" />
+    <Compile Include="DST\Objects\Fire\FireDstObject.cs" />
     <Compile Include="DST\Objects\Fire\Firepit.cs" />
     <Compile Include="DST\Objects\Fire\Fuel.cs" />
     <Compile Include="DST\Objects\GameObject.cs" />
