@@ -195,7 +195,7 @@ namespace MCTS.DST.WorldModels
             foreach (var objHolder in _knownEatableObjects)
             {
                 Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
+                var actionTempHolder = new EatAction(objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
             }

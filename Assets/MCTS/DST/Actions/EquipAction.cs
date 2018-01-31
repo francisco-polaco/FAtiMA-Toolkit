@@ -34,7 +34,8 @@ namespace MCTS.DST.Actions
         public override bool CanExecute(WorldModel worldModel)
         {
             //Has Slot in Inventory
-            return worldModel.Walter.CanEquip(EntityType);
+            return false;
+            // return worldModel.Walter.CanEquip(EntityType);
         }
 
 

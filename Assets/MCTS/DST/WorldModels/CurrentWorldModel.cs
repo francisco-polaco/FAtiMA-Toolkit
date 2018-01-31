@@ -132,7 +132,7 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.Equippable = true;
                         }
-                        if (properties.Item1.Equals("IsEatable"))
+                        if (properties.Item1.Equals("Edible"))
                         {
                             var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.IsEatable = true;
