@@ -23,7 +23,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
         public float Hunger { get; set; }
         public float Health { get; set; }
         public float Sanity { get; set; }
-
+         
         //TODO update generateClone 
         public Character GenerateClone() {
             var toReturn = new Character();
@@ -74,7 +74,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
         public bool IsInventoryFull(string entityType, int quantity = 1)
         {
             var hasObject = InventoryHasObject(entityType);
-            Console.WriteLine("Inventory: " + _inventory.Count + " - " + MaxInventorySize);
+            //Console.WriteLine("Inventory: " + _inventory.Count + " - " + MaxInventorySize);
             if (!hasObject && _inventory.Count >= MaxInventorySize)
             {
                 return true;
@@ -170,7 +170,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
                 foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem))
                 {
                     var remainingToStack = maxSizeStackForItem - pair.Item2;
-                    Console.WriteLine(remainingToStack);
+                    //Console.WriteLine(remainingToStack);
                     if (quantity > remainingToStack)
                     {
                         pair.Item2 += remainingToStack;
@@ -295,23 +295,18 @@ namespace MCTS.DST.WorldModels.CharacterModel
         {
             Unequip();
             EquipedObject = EquipableObject.Axe;
-            RemoveFromInventory("axe");
         }
 
         public void EquipPickAxe()
         {
             Unequip();
-
             EquipedObject = EquipableObject.Pickaxe;
-            RemoveFromInventory("pickaxe");
         }
 
         public void EquipTorch()
         {
             Unequip();
-
             EquipedObject = EquipableObject.Torch;
-            RemoveFromInventory("torch");
         }
         public void Unequip()
         {

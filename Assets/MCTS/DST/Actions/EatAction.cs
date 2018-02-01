@@ -20,11 +20,10 @@ namespace MCTS.DST.Actions
         {
             return "EAT ";
         }
-
+          
         public override int GetDuration(WorldModel worldModel) {
-            return 1;
+            return base.GetDuration(worldModel)+1; 
         }
-
         public override bool CanExecute(WorldModel worldModel)
         {
             //Has Slot in Inventory

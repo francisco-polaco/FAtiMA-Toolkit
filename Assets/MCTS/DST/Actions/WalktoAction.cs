@@ -56,5 +56,9 @@ namespace MCTS.DST.Actions
             return TargetGuid ?? "-";
         }
 
+        public override Vector2i GetTargetPosition() {
+            return TargetPosition;
+        }
+
     }
 }

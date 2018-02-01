@@ -13,7 +13,6 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            Console.WriteLine("Apply Pickup");
 
             base.ApplyActionEffects(worldModel);
             worldModel.RemovePickableObject(EntityType, TargetGuid);
@@ -31,19 +30,19 @@ namespace MCTS.DST.Actions
         //    return base.CanExecute();
         //}
 
-        public override void Execute()
-        {
-            base.Execute();
-        }
-
+    
         public override int GetDuration(WorldModel worldModel)
         {
             return base.GetDuration(worldModel);
         }
-
+         
         public override string GetDstInterpretableAction() {
                 return "Action(" + "PICKUP" + ", -, -, -, -)";
         }
+        public override string GetXmlName() {
+            return "PickUp " + (EntityType ?? "") + " -> " + TargetPosition;
+        }
+
     }
 
     //internal class PickableObject : GameObject

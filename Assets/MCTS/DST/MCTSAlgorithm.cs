@@ -15,7 +15,7 @@ namespace MCTS.DST
         {
             InProgress = false;
             // this.CurrentStateWorldModel = currentStateWorldModel;
-            MaxIterations = 1000;
+            MaxIterations = 300;
             MaxIterationsProcessedPerFrame = MaxIterations +1;
             RandomGenerator = new Random();
             TotalProcessingTime = 0;
@@ -39,8 +39,7 @@ namespace MCTS.DST
         private CurrentWorldModel CurrentStateWorldModel { get; set; }
         private MCTSNode InitialNode { get; set; }
         protected Random RandomGenerator { get; set; }
-
-
+        
         public void InitializeDecisionMakingProcess(KB knowledgeBase)
         {
             Console.WriteLine("InitializeDecisionMakingProcess");
@@ -121,7 +120,7 @@ namespace MCTS.DST
             }
             return null;
         }
-
+         
         private MCTSNode Selection(MCTSNode initialNode)
         {
             Action nextAction;
@@ -163,7 +162,8 @@ namespace MCTS.DST
                         PlayerID = currentPlayoutState.GetNextPlayer(),
                         Value = 0
                     };
-                var childModel = currentPlayoutState.RecycleWorldModel();
+                //var childModel = currentPlayoutState.RecycleWorldModel();
+                var childModel = currentPlayoutState.GenerateChildWorldModel();
                 action.ApplyActionEffects(childModel);
                 childModel.CalculateNextPlayer();
                 currentPlayoutState = childModel;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MCTS.DST.WorldModels;
+using MCTS.Math;
 using Utilities;
 using WellFormedNames;
 
@@ -10,7 +11,6 @@ namespace MCTS.DST.Actions
     {
         private static int _actionId;
         private string xmlName = "";
-
         public abstract string GetXmlName();
         //{
         //    return GetDstInterpretableAction() + GetTarget();
@@ -40,7 +40,7 @@ namespace MCTS.DST.Actions
         public virtual int GetDuration(WorldModel worldModel)
         {
             //MCTS time to process
-            return 0;
+            return 1;
         }
 
         public virtual bool CanExecute(WorldModel worldModel)
@@ -54,16 +54,13 @@ namespace MCTS.DST.Actions
         //    return true;
         //}
 
-        public virtual void Execute()
-        {
-        }
 
         public virtual void ApplyActionEffects(WorldModel worldModel)
         {
             var actionDuration = this.GetDuration(worldModel);
             //Console.WriteLine("Apply Action");
             //Console.WriteLine("ACTION: " + actionDuration);
-            worldModel.advanceTime(actionDuration);
+            worldModel.advanceTime(actionDuration,this);
             worldModel.Walter.WalkedDistance += actionDuration;
         }
 
@@ -79,6 +76,10 @@ namespace MCTS.DST.Actions
         public virtual List<Pair<string, string>> SaveToKb()
         {
             return new List<Pair<string, string>>();
+        }
+
+        public virtual Vector2i GetTargetPosition() {
+            return new Vector2i(Int32.MinValue,Int32.MinValue);
         }
     }
 }

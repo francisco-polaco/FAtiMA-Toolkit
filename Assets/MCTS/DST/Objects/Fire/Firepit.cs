@@ -4,7 +4,7 @@ namespace MCTS.DST.Objects.Fire
 {
     class Firepit : LightSource {
 
-        public Firepit(Vector2i vector2i, int timeToBurn, FireDstObject obj) : base(obj){
+        public Firepit(Vector2i vector2i, int timeToBurn, DSTObject obj) : base(obj){
             this.SourcePosition = vector2i;
             this.SecondsRemaining = timeToBurn;
 

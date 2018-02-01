@@ -102,103 +102,77 @@ namespace MCTS.DST.WorldModels
 
                 foreach (Action a in _canExecuteActions.ToArray())
                 {
-                    Console.WriteLine(a);
+                    //Console.WriteLine(a);
                 }
 
 
-
-
-                if (_canExecuteActions.ToArray().Length == 0)
-                {
-                    // lets wonder a bit
-                    // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
-                    // agr so anda ao calhas e vai para narnia
-                    Console.WriteLine("no action -> lets wonder");
-                    _canExecuteActions.Add(new WanderAction(Walter.WalterPosition));
-                }
             }
 
             return _canExecuteActions.ToArray();
         }
 
+
         private void calculateActions()
         {
             var possibleActions = new List<Action>();
-            //_possibleActions = new Action[numberActions];
-            //var i = 0;
             foreach (var objHolder in _knownPickableObjects)
             {
-                //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
                 var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
-                //_possibleActions[i] = actionTempHolder;
-                //i++;
             }
 
             foreach (var objHolder in _knownCollectableObjects)
             {
-                //Console.WriteLine("Action - " + objHolder.Key + " :pos: " + objHolder.Value[0].GetPosition() + " :guid: " + objHolder.Value[0].Guid );
                 var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
-                //_possibleActions[i] = actionTempHolder;
-                //i++;
             }
-
             foreach (var objHolder in _knownChopableObjects)
             {
-                //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
                 var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
-                //_possibleActions[i] = actionTempHolder;
-                //i++;
             }
-
             foreach (var objHolder in _knownMineableObjects)
             {
-                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
                 var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
-
-                //_possibleActions[i] = actionTempHolder;
-                //i++;
             }
             foreach (var light in _lightsManager._sources)
             {
-
                 var actionTempHolder = new WalktoAction(light.SourcePosition,light.fireOBj.Guid,light.fireOBj.GetEntityType());
-
                 possibleActions.Add(actionTempHolder);
-
-                //_possibleActions[i] = actionTempHolder;
-                //i++;
             }
-            //_knownLightSourceObjects
-
             foreach (var recipe in _recipesManager.CraftRecipes)
             {
                 var actionTempHolder = new BuildAction(recipe);
                 possibleActions.Add(actionTempHolder);
             }
-
-
             foreach (var objHolder in _knownEquippableObjects)
             {
-                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
                 var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
             }
             foreach (var objHolder in _knownEatableObjects)
             {
-                Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
+                //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
                 var actionTempHolder = new EatAction(objHolder.Value[0].Guid,
                     objHolder.Value[0].GetEntityType());
                 possibleActions.Add(actionTempHolder);
             }
+
+            //if (_canExecuteActions.ToArray().Length == 0) {
+            //    // lets wonder a bit
+            //    // TODO AMARAL E VICENTE isto provavelmente nao e assim, mas queria fazer algo mais fixe
+            //    // agr so anda ao calhas e vai para narnia
+            //    Console.WriteLine("no action -> lets wonder");
+            possibleActions.Add(new WanderAction(Walter.WalterPosition));
+            //}
 
             //possibleActions.Add(new StaySamePlace(Walter.WalterPosition));
 
@@ -211,10 +185,10 @@ namespace MCTS.DST.WorldModels
             //Console.WriteLine("GetNextAction");
             Action action = null;
             var actions = GetExecutableActions();
-            foreach (Action a in actions)
-            {
-                //  Console.WriteLine(a);
-            }
+            //foreach (Action a in actions)
+            //{
+            //    //  Console.WriteLine(a);
+            //}
 
             //Console.WriteLine(_actionIndex);
             //Console.WriteLine(actions.Length);
@@ -331,12 +305,8 @@ namespace MCTS.DST.WorldModels
             return DSTHelper.getRealDistance(Walter.WalterPosition, obj);
         }
 
-        public virtual void walkedDistanced(Vector2i positionWalkedTo)
-        {
-            Walter.WalkedDistance += getRealDistanceToWalter(positionWalkedTo);
-            Walter.WalterPosition = positionWalkedTo;
-        }
 
+         
      
 
         public void AddPickableObject(DSTObject obj)
@@ -350,7 +320,7 @@ namespace MCTS.DST.WorldModels
             orderedList.Insert(0, obj);
         }
 
-        public void advanceTime(int actionDuration)
+        public void advanceTime(int actionDuration, Action action)
         {
             //verify stats are below max values
             Walter.makeSureMax();
@@ -374,12 +344,17 @@ namespace MCTS.DST.WorldModels
             this.Walter.Sanity = this.Walter.Sanity - amounts[1] * (5.0f / 60);
 
             //LIGHT STUFF :D
-            //assumindo sem fontes de luz
-            var noLight = true;
-            if (noLight)//aka no light)
+            var target = action.GetTargetPosition();
+            if (target.x == Int32.MinValue && target.y == Int32.MinValue)
+            {
+                target = this.GetWalterPosition();
+            }
+            var timeInDarkeDarkness = _lightsManager.HowManyTimeInDarkness(amounts[2], false, this.GetWalterPosition(), target);
+            _lightsManager.PassTime(actionDuration, false, false);
+            if (timeInDarkeDarkness > 0)//aka no light)
             {
                 this.Walter.Sanity -= amounts[2] * (50.0f / 60);
-                var number_night_attacks = amounts[2] / CHARLIE_ATTACK_FREQUENCY;
+                var number_night_attacks = (amounts[2] / CHARLIE_ATTACK_FREQUENCY )+1;
                 if (number_night_attacks > 0)
                 {
                     CharlieAttack attack = new CharlieAttack();
@@ -468,6 +443,17 @@ namespace MCTS.DST.WorldModels
             _currentDay = currentDay;
             _currentSecond = currentTick * SEGMENT_TIME + HALF_SEGMENT;
             setupDayConfiguration(currentDay);
+            if (_currentSecond > _currentNightStart)
+            {
+                dayPhase = DayPhase.Night;
+            }else if (_currentSecond > _currentDuskStart)
+            {
+                dayPhase = DayPhase.Dusk;
+            }
+            else
+            {
+                dayPhase = DayPhase.Day;
+            }
         }
 
         public Clock deepCopy()
@@ -486,52 +472,128 @@ namespace MCTS.DST.WorldModels
 
         private void setupDayConfiguration(int currentDay)
         {
-            if (_currentDay > 40)
+            
+            if (currentDay > 40 || currentDay < 0)
             {
                 throw new NotImplementedException();
             }
+
+            _currentDay = currentDay;
 
             var day = DAYS_CONFIGURATION[_currentDay];
             _currentDuskStart = day[0];
             _currentNightStart = day[1];
         }
-
+         
         public int[] advanceTime(int numberSeconds)
         {
+
             var toReturn = new int[3] {0, 0, 0};
 
-            //var numberDays = numberSeconds / SECONDS_IN_DAY;
             var previous = _currentSecond;
             var nextSec = _currentSecond + numberSeconds;
             _currentSecond = nextSec % SECONDS_IN_DAY;
-            while (nextSec > 0)
-            {
-                if (nextSec > _currentDuskStart)
+
+            while(nextSec>0){
+                if (dayPhase == DayPhase.Day)
                 {
-                    toReturn[0] += _currentDuskStart - previous;
-                    previous = _currentDuskStart;
-                    dayPhase = DayPhase.Dusk;
+                    if (nextSec > _currentDuskStart)
+                    {
+                        toReturn[0] += _currentDuskStart - previous;
+                        previous = _currentDuskStart;
+                        dayPhase = DayPhase.Dusk;
+                    }
+                    else
+                    {
+                        toReturn[0] += nextSec - previous;
+                    }
                 }
 
-                if (nextSec > _currentNightStart)
+                if (dayPhase == DayPhase.Dusk)
                 {
-                    toReturn[1] += _currentNightStart - previous;
-                    previous = _currentNightStart;
-                    dayPhase = DayPhase.Night;
+                    if (nextSec > _currentNightStart)
+                    {
+                        toReturn[1] += _currentNightStart - previous;
+                        previous = _currentNightStart;
+                        dayPhase = DayPhase.Night;
+                    }
+                    else
+                    {
+                        toReturn[1] += nextSec - previous;
+                    }
                 }
 
-                if (nextSec > SECONDS_IN_DAY)
+                if (dayPhase == DayPhase.Night)
                 {
-                    toReturn[2] += SECONDS_IN_DAY - previous;
-                    previous = 0;
-                    _currentDay++;
-                    //TODO MOON++?
-                    //TODO Season++?
-                    dayPhase = DayPhase.Day;
+                    if (nextSec > SECONDS_IN_DAY)
+                    {
+                        toReturn[2] += SECONDS_IN_DAY - previous;
+                        previous = 0;
+                        _currentDay++;
+                        setupDayConfiguration(_currentDay);
+                        //TODO MOON++?
+                        //TODO Season++?
+                        dayPhase = DayPhase.Day;
+                    }
+                    else
+                    {
+                        toReturn[2] += nextSec - previous;
+                    }
                 }
 
                 nextSec -= SECONDS_IN_DAY;
             }
+
+             
+
+
+            ////var numberDays = numberSeconds / SECONDS_IN_DAY;
+            //var previous = _currentSecond;
+            //var nextSec = _currentSecond + numberSeconds;
+            //_currentSecond = nextSec % SECONDS_IN_DAY;
+            //while (nextSec > 0)
+            //{
+            //    if (nextSec > _currentDuskStart)
+            //    {
+            //        if (dayPhase.Equals(DayPhase.Day))
+            //        {
+            //            toReturn[0] += _currentDuskStart - previous;
+            //            previous = _currentDuskStart;
+            //            dayPhase = DayPhase.Dusk;
+            //        } else if (dayPhase.Equals(DayPhase.Day)) {
+                        
+            //        }
+            //    }
+            //    //If current phase is day and time is not enough to push dusk
+            //    else
+            //    {
+            //        toReturn[0] += nextSec - previous;
+            //        if (dayPhase.Equals(DayPhase.Day))
+            //        {
+            //            Console.WriteLine("Not day phase");
+            //        }
+            //    }
+
+            //    if (nextSec > _currentNightStart)
+            //    {
+            //        toReturn[1] += _currentNightStart - previous;
+            //        previous = _currentNightStart;
+            //        dayPhase = DayPhase.Night;
+            //    }
+
+            //    if (nextSec > SECONDS_IN_DAY)
+            //    {
+            //        toReturn[2] += SECONDS_IN_DAY - previous;
+            //        previous = 0;
+            //        _currentDay++;
+            //        setupDayConfiguration(_currentDay);
+            //        //TODO MOON++?
+            //        //TODO Season++?
+            //        dayPhase = DayPhase.Day;
+            //    }
+
+            //    nextSec -= SECONDS_IN_DAY;
+            //}
 
             return toReturn;
 

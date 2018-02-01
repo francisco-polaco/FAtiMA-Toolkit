@@ -10,6 +10,7 @@ namespace MCTS.DST.Objects
         private string entityType;
         private int posX;
         private int posZ;
+        public bool inSight = false;
 
         public DSTObject(string guid)
         {
@@ -35,6 +36,7 @@ namespace MCTS.DST.Objects
         public string Guid { get; }
         public bool IsEatable { get; set; }
         public bool IsLightSource { get; set; }
+        public int TimeToBurn { get; set; }
 
         public int GetPosX()
         {

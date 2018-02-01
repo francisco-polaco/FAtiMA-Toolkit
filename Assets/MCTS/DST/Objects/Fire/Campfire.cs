@@ -6,7 +6,7 @@ namespace MCTS.DST.Objects.Fire
     {
 
 
-        public Campfire(Vector2i vector2i, int timeToBurn, FireDstObject obj) : base(obj) {
+        public Campfire(Vector2i vector2i, int timeToBurn, DSTObject obj) : base(obj) {
             this.SourcePosition = vector2i;
             this.SecondsRemaining = timeToBurn;
         }

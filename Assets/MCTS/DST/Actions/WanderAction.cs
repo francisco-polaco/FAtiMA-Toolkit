@@ -9,16 +9,13 @@ namespace MCTS.DST.Actions
         {
             return "WANDER";
         }
-
         public WanderAction(Vector2i walterPosition) : base(walterPosition)
         {
             //FIXME: acho que as coordenadas estao bue grandes
             var r = new Random();
-            var x = r.Next(100) >= 50 ? -r.Next(50) : r.Next(50);
-            var y = r.Next(100) >= 50 ? -r.Next(50) : r.Next(50);
+            var x = r.Next(100) >= 50 ? -r.Next(15) : r.Next(15);
+            var y = r.Next(100) >= 50 ? -r.Next(15) : r.Next(15);
             TargetPosition = walterPosition + new Vector2i(x, y);
         }
-
-        
     }
 }

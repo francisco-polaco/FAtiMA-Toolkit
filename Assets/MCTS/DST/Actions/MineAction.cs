@@ -18,8 +18,7 @@ namespace MCTS.DST.Actions
             {
                 _toMine = new Boulder();
             }
-            else
-            {
+            else {
                 _toMine = new EmptyMineableStuff();
                 Console.WriteLine("TO_MINE: " +entityType + " unknown");
             }

@@ -12,7 +12,6 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-            Console.WriteLine("Apply Collect");
             base.ApplyActionEffects(worldModel);
             worldModel.RemoveCollectableObject(EntityType, TargetGuid);
         }

@@ -63,6 +63,8 @@
     <Compile Include="DST\Actions\MineAction.cs" />
     <Compile Include="DST\Actions\ChopAction.cs" />
     <Compile Include="DST\Actions\CollectAction.cs" />
+    <Compile Include="DST\Actions\Recipes\Campfire.cs" />
+    <Compile Include="DST\Actions\Recipes\Axe.cs" />
     <Compile Include="DST\Actions\Recipes\Torch.cs" />
     <Compile Include="DST\Actions\Recipes\Pickaxe.cs" />
     <Compile Include="DST\Actions\Recipes\Recipe.cs" />

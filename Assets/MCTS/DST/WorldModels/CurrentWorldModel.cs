@@ -45,22 +45,35 @@ namespace MCTS.DST.WorldModels
 #endif
 
                 //Console.WriteLine("Clock7");
-                var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToList();//.SelectMany(p => p.Item2).ToArray();
 
                 
                 var currentSegmentProperty = knowledgeBase.AskProperty((Name)"World(CurrentSegment)");
+                var currentDayProperty  = knowledgeBase.AskProperty((Name)"World(Cycle)");
+
+                int segment = 0;
+                int dia = 0;
+
                 if (currentSegmentProperty != null)
                 {
-                    var value = currentSegmentProperty.Value.GetValue();
-
-                    Console.WriteLine("segmento " + currentSegmentProperty.ToString() + " - " + value.ToString());
-                    this.clock.setTime(int.Parse(value.ToString()), 0);
-                }
-                else
+                    var segValue = currentSegmentProperty.Value.GetValue();
+                    Console.WriteLine("segmento: " + currentSegmentProperty.ToString() + " - " + segValue.ToString());
+                    segment = int.Parse(segValue.ToString());
+                } else
                 {
-                    Console.WriteLine("FUCKING NULL");
+                    Console.WriteLine("FUCKING Seg NULL");
                 }
 
+                if (currentDayProperty != null)
+                {
+                    var dayValue = currentDayProperty.Value.GetValue();
+                    Console.WriteLine("     dia: " + currentDayProperty.ToString() + " - " + dayValue.ToString());
+                    dia = int.Parse(dayValue.ToString());
+                } else
+                {
+                    Console.WriteLine("FUCKING DAY NULL");
+                }
+                this.clock.setTime(segment,dia);
+                
                 #region GET_STATS
                 var walterHealth = knowledgeBase.AskProperty((Name)"Health(Walter)");
                 var walterHunger = knowledgeBase.AskProperty((Name)"Hunger(Walter)");
@@ -70,23 +83,84 @@ namespace MCTS.DST.WorldModels
                     (walterSanity != null ? int.Parse(walterSanity.Value.GetValue().ToString()) : -1));
                 #endregion
 
-
-                foreach (var single_pair in pair)
+                var walterEquiped = knowledgeBase.AskPossibleProperties((Name)"IsEquipped([x], hands)", Name.SELF_SYMBOL, null).ToList();
+                if (walterEquiped.Count > 1)
                 {
-                    var belief_value = single_pair.Item1.Value.GetValue();
-                    string belief_property = "";
-                    foreach (var sub_array in single_pair.Item2) {
+                    //throw new NotImplementedException();
+                }
+
+                var equiped_guid = "";
+                foreach (var pair in walterEquiped)
+                {
+                    var belief_value = pair.Item1.Value.GetValue();
+                    //string belief_property = "";
+                    if (!Boolean.Parse(belief_value.ToString()))
+                    {
+                        //belief is false
+                        continue;
+                    }
+                    foreach (var sub_array in pair.Item2)
+                    {
                         foreach (var sub in sub_array)
                         {
                             //Console.WriteLine("new sub: " + sub.SubValue.Value.GetNTerm(0));
-                            belief_property = sub.SubValue.Value.GetNTerm(0).ToString();
+                            equiped_guid = sub.SubValue.Value.GetNTerm(0).ToString();
+                        }
+                    }
+                    //var pairBeliefName_Parentisis = GetBeliefName_InsideParentesis(belief_property.ToString());
+                    //if (pairBeliefName_Parentisis.Item1.Equals("IsEquipped"))
+                    //{
+                    //    //ITEM1 -> "IsEquipped"
+                    //    //ITEM2 -> type,guid
+                    //    var pairEntityTypeGuid = GetPairEntityNameGuid(pairBeliefName_Parentisis.Item2);
+                    //    equiped_guid = pairEntityTypeGuid.Item2;
+                    //}
+                }
+
+                //GET ENTITY BELIEF
+                if (equiped_guid != "")
+                {
+                    var equipedGUID = knowledgeBase.AskPossibleProperties((Name) ("Entity(" + equiped_guid + ", [x])"),
+                        Name.SELF_SYMBOL, null).ToList();
+                    var equipedType = "";
+                    foreach (var pair in equipedGUID)
+                    {
+                        var belief_value = pair.Item1.Value.GetValue();
+                        string belief_property = "";
+                        foreach (var sub_array in pair.Item2)
+                        {
+                            foreach (var sub in sub_array)
+                            {
+                                //Console.WriteLine("new sub: " + sub.SubValue.Value.GetNTerm(0));
+                                equipedType = sub.SubValue.Value.GetNTerm(0).ToString();
+                                break;
+                            }
+
                             break;
                         }
-                        break;
                     }
-
-                    Console.WriteLine("World[x] Property: " + belief_property + "Value: " + belief_value);
+                    this.Walter.Equip(equipedType);
+                    Console.WriteLine("Equiped: " + equipedType + " " + equiped_guid);
                 }
+
+
+                //var pair = knowledgeBase.AskPossibleProperties((Name)"World([x])", Name.SELF_SYMBOL, null).ToList();//.SelectMany(p => p.Item2).ToArray();
+                //foreach (var single_pair in pair)
+                //{
+                //    var belief_value = single_pair.Item1.Value.GetValue();
+                //    string belief_property = "";
+                //    foreach (var sub_array in single_pair.Item2) {
+                //        foreach (var sub in sub_array)
+                //        {
+                //            //Console.WriteLine("new sub: " + sub.SubValue.Value.GetNTerm(0));
+                //            belief_property = sub.SubValue.Value.GetNTerm(0).ToString();
+                //            break;
+                //        }
+                //        break;
+                //    }
+
+                //    Console.WriteLine("World[x] Property: " + belief_property + "Value: " + belief_value);
+                //}
 
                 //Below Does not Work TODO
                 //Console.WriteLine("Walter Atempt");
@@ -150,10 +224,17 @@ namespace MCTS.DST.WorldModels
 
                             if (pairEntityTypeGuid.Item1.Equals("campfire"))
                             {
-                                pickable = (FireDstObject) pickable;
                                 pickable.IsLightSource = true;
+                                pickable.TimeToBurn = 120;
                                 _temporaryHolders[pickable.Guid] = pickable;
-                            }
+                            } 
+                            //else if ()
+                            //{
+
+                            //} else if ()
+                            //{
+
+                            //}
 
                             pickable.SetEntityType(pairEntityTypeGuid.Item1);
                             var quantity = int.Parse(belief.Value.ToString());
@@ -168,11 +249,17 @@ namespace MCTS.DST.WorldModels
                             pickable.SetPosX(int.Parse(belief.Value.ToString()));
                         } else if (pairBeliefName_Parentisis.Item1.Equals("PosZ")) {
                             var guid = pairBeliefName_Parentisis.Item2;
+
                             //"PosZ(117209)": "212, 1",
                             //ITEM1 -> "PosZ"
                             //ITEM2 -> guid
                             var pickable = FindOrCreateDSTObject(guid);
                             pickable.SetPosZ(int.Parse(belief.Value.ToString()));
+                        } else if (pairBeliefName_Parentisis.Item1.Equals("InSight"))
+                        {
+                            var guid = pairBeliefName_Parentisis.Item2;
+                            var pickable = FindOrCreateDSTObject(guid);
+                            pickable.inSight = true;
                         }
                     }
                 }
@@ -181,7 +268,6 @@ namespace MCTS.DST.WorldModels
                 //{
                 //    var 
                 //}
-
                 //--------------
                 //--PARSE DONE--
                 //--------------
@@ -195,7 +281,6 @@ namespace MCTS.DST.WorldModels
                         {
                             continue;
                         }
-
                         if (holder.PickWorkable) {
                             toBeNamed(holder, _knownPickableObjects);
                             flagIsAnything = true;
@@ -234,9 +319,11 @@ namespace MCTS.DST.WorldModels
                         {
                             toBeNamed(holder, _knownEatableObjects);
                             flagIsAnything = true;
-                        }
-                        if (holder.IsLightSource) {
-                            _lightsManager.addNewLightSource(holder as FireDstObject);
+                        } 
+                        if (holder.IsLightSource && holder.inSight) {
+                            //get our detailed info
+
+                            _lightsManager.addNewLightSource(holder);
                             flagIsAnything = true;
                         }
 

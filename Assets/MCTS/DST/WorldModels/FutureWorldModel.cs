@@ -26,16 +26,41 @@ namespace MCTS.DST.WorldModels
             return new FutureWorldModel(this);
         }
 
+        public override WorldModel RecycleWorldModel()
+        {
+            this.depth++;
+            return this;
+        }
+
+
 
         //Stops Playout
         public override bool IsTerminal()
         {
-            return depth > 1;
+            return Walter.Health <= 0 || depth > 30; //|| Walter.WalkedDistance > 30; //depth > 5;
         }
 
         public override float GetScore()
         {
-            return 10 / (float) Walter.WalkedDistance;
+            var score = 0;
+            if (Walter.Health > 0)
+            {
+                score += 200;
+            }
+
+            if (Walter.Hunger > 30)
+            {
+                score += 50;
+            }
+
+            if (Walter.Sanity > 50)
+            {
+                score += 50;
+            }
+
+            return score/300;
+            //return Walter.Health + Walter.Hunger + Walter.Sanity + Walter.WalkedDistance*;
+            //return 10 / (float) Walter.WalkedDistance;
         }
 
 

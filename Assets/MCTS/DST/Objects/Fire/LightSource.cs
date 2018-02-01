@@ -8,16 +8,16 @@ namespace MCTS.DST.Objects.Fire {
     {
         public Vector2i SourcePosition;
         public int SecondsRemaining;
-        public FireDstObject fireOBj;
+        public DSTObject fireOBj;
 
-        public LightSource(FireDstObject obj)
+        public LightSource(DSTObject obj)
         {
             fireOBj = obj;
         }
 
         public bool CloseEnoughToLight(Vector2i walterPosition)
         {
-            return DSTHelper.getRealDistance(walterPosition, SourcePosition) < 2;
+            return DSTHelper.getRealDistance(walterPosition, SourcePosition) < 4;
         }
         public void PassTime(int timeToPass) {
             this.SecondsRemaining -= timeToPass;
@@ -60,7 +60,6 @@ namespace MCTS.DST.Objects.Fire {
                         inDarkness = System.Math.Min(inDarkness, timeToPass - 1);
                     }
 
-                    lightSource.PassTime(timeToPass);
                 }
             }
 
@@ -68,8 +67,6 @@ namespace MCTS.DST.Objects.Fire {
             {
                 var torchDarkTime = _torchTime >= timeToPass ? 0 : (timeToPass - _torchTime);
                 inDarkness = System.Math.Min(inDarkness, torchDarkTime);
-
-                _torchTime -= timeToPass;
             }
 
             return inDarkness;
@@ -93,7 +90,7 @@ namespace MCTS.DST.Objects.Fire {
 
         }
 
-        public void addNewLightSource(FireDstObject lightSource)
+        public void addNewLightSource(DSTObject lightSource)
         {
             string entType = lightSource.GetEntityType();
             //position
@@ -111,6 +108,6 @@ namespace MCTS.DST.Objects.Fire {
                 //dont know what source is that...
                 throw new NotImplementedException();
             }
-        }
+        } 
     }
 }
