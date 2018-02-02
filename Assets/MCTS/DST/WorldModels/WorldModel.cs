@@ -54,15 +54,15 @@ namespace MCTS.DST.WorldModels
         public WorldModel(WorldModel wm)
         {
             _actionIndex = 0;
-            _knownPickableObjects = wm._knownPickableObjects;
-            _knownCollectableObjects = wm._knownCollectableObjects;
-            _knownChopableObjects = wm._knownChopableObjects;
-            _knownHammerableObjects = wm._knownHammerableObjects;
-            _knownDiggableObjects = wm._knownDiggableObjects;
-            _knownMineableObjects = wm._knownMineableObjects;
-            _knownInInventoryObjects = wm._knownInInventoryObjects;
-            _knownEquippableObjects = wm._knownEquippableObjects;
-            _knownEatableObjects = wm._knownEatableObjects;
+            _knownPickableObjects = new Dictionary<string, List<DSTObject>>(wm._knownPickableObjects);
+            _knownCollectableObjects = new Dictionary<string, List<DSTObject>>(wm._knownCollectableObjects);
+            _knownChopableObjects = new Dictionary<string, List<DSTObject>>(wm._knownChopableObjects);
+            _knownHammerableObjects = new Dictionary<string, List<DSTObject>>(wm._knownHammerableObjects);
+            _knownDiggableObjects = new Dictionary<string, List<DSTObject>>(wm._knownDiggableObjects);
+            _knownMineableObjects = new Dictionary<string, List<DSTObject>>(wm._knownMineableObjects);
+            _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>(wm._knownInInventoryObjects);
+            _knownEquippableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEquippableObjects);
+            _knownEatableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEatableObjects);
             _lightsManager = wm._lightsManager;
             Walter = wm.Walter.GenerateClone();
             clock = wm.clock.deepCopy();
@@ -117,29 +117,42 @@ namespace MCTS.DST.WorldModels
             var possibleActions = new List<Action>();
             foreach (var objHolder in _knownPickableObjects)
             {
-                var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
 
             foreach (var objHolder in _knownCollectableObjects)
             {
-                var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
             foreach (var objHolder in _knownChopableObjects)
             {
-                var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
+                
             }
             foreach (var objHolder in _knownMineableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
             foreach (var light in _lightsManager._sources)
             {
@@ -154,16 +167,22 @@ namespace MCTS.DST.WorldModels
             foreach (var objHolder in _knownEquippableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
             foreach (var objHolder in _knownEatableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new EatAction(objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new EatAction(objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
 
             //if (_canExecuteActions.ToArray().Length == 0) {

@@ -57,19 +57,19 @@ namespace MCTS.DST.WorldModels.CharacterModel
 
         #region inventory
 
-        public bool HasSlotVacatedAfterRemoval(string entityType, int quantity = 1)
-        {
-            int maxSizeStackForItem;
-            try
-            {
-                maxSizeStackForItem = _stackTable.GetStackSize(entityType);
-            }
-            catch (StackTable.EntityTypeUnknownException)
-            {
-                maxSizeStackForItem = MaxDefaultStackSize;
-            }
-            return NumberOfObjectsInInventory(entityType) % maxSizeStackForItem - quantity <= 0;
-        }
+        //public bool HasSlotVacatedAfterRemoval(string entityType, int quantity = 1)
+        //{
+        //    int maxSizeStackForItem;
+        //    try
+        //    {
+        //        maxSizeStackForItem = _stackTable.GetStackSize(entityType);
+        //    }
+        //    catch (StackTable.EntityTypeUnknownException)
+        //    {
+        //        maxSizeStackForItem = MaxDefaultStackSize;
+        //    }
+        //    return NumberOfObjectsInInventory(entityType) % maxSizeStackForItem - quantity <= 0;
+        //}
 
         public bool IsInventoryFull(string entityType, int quantity = 1)
         {
@@ -90,7 +90,10 @@ namespace MCTS.DST.WorldModels.CharacterModel
                 {
                     maxSizeStackForItem = MaxDefaultStackSize;
                 }
-                foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem).ToList())
+
+                var invCopy = _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem)
+                    .ToList();
+                foreach (var pair in invCopy)
                 {   // elements are copied
                     var remainingToStack = maxSizeStackForItem - pair.Item2;
                     if (quantity > remainingToStack)
@@ -105,7 +108,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
                     }
                 }
 
-                if (quantity > 0)
+                if (quantity > 0 && invCopy.Count >= MaxInventorySize)
                 {
                     return true;
                 }
@@ -183,15 +186,13 @@ namespace MCTS.DST.WorldModels.CharacterModel
                     }
                 }
 
-                if (quantity > 0)
+                if(quantity > 0)
                 {
-                    throw new InventoryFullException(entityType);
+                    if (_inventory.Count >= MaxInventorySize)
+                        throw new InventoryFullException(entityType);
                 }
             }
-            else
-            {
-                _inventory.Add(new Pair<string, int>(entityType, quantity));
-            }
+            _inventory.Add(new Pair<string, int>(entityType, quantity));
         }
 
 
@@ -274,38 +275,43 @@ namespace MCTS.DST.WorldModels.CharacterModel
 
         public bool CanEquip(string entityType)
         {
-             return CanUnequip() && InventoryHasObject(entityType);
+             return InventoryHasObject(entityType) && CanUnequip();
         }
 
         public void Equip(string entityType)
         {
             if (entityType.Equals("axe"))
             {
+                RemoveFromInventory(entityType);
+                Unequip();
                 EquipAxe();
-            }else if (entityType.Equals("pickaxe"))
+            }
+            else if (entityType.Equals("pickaxe"))
             {
+                RemoveFromInventory(entityType);
+                Unequip();
                 EquipPickAxe();
-            }else if (entityType.Equals("torch"))
+            }
+            else if (entityType.Equals("torch"))
             {
+                RemoveFromInventory(entityType);
+                Unequip();
                 EquipTorch();
             }
         }
 
-        public void EquipAxe()
+        private void EquipAxe()
         {
-            Unequip();
             EquipedObject = EquipableObject.Axe;
         }
 
-        public void EquipPickAxe()
+        private void EquipPickAxe()
         {
-            Unequip();
             EquipedObject = EquipableObject.Pickaxe;
         }
 
-        public void EquipTorch()
+        private void EquipTorch()
         {
-            Unequip();
             EquipedObject = EquipableObject.Torch;
         }
         public void Unequip()
@@ -338,9 +344,14 @@ namespace MCTS.DST.WorldModels.CharacterModel
                     return IsInventoryFull("pickaxe");
                 case EquipableObject.Torch:
                     return IsInventoryFull("torch");
+                default:
+                    return true;
             }
+        }
 
-            return true;
+        public bool IsUnequiped()
+        {
+            return EquipedObject == EquipableObject.None;
         }
         #endregion
 

@@ -78,9 +78,6 @@ namespace MCTS
 
                 var mctsAlgorithm = new MCTSAlgorithm();
                 mctsAlgorithm.InitializeDecisionMakingProcess(kbCloned);
-                //var action = "PICK(" + CurrentWorldModel.guid + ")";
-                // var action = mctsAlgorithm.ChooseAction();
-
                 action = mctsAlgorithm.ChooseAction();
 
             } catch (Exception e) {
