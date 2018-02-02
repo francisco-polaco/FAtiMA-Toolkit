@@ -85,6 +85,7 @@
     <Compile Include="DST\Objects\Fire\LightSource.cs" />
     <Compile Include="DST\Reward.cs" />
     <Compile Include="DST\WorldModels\CharacterModel\StackTable.cs" />
+    <Compile Include="DST\WorldModels\CharacterModel\StackAxe.cs" />
     <Compile Include="DST\WorldModels\CharacterModel\StackTorch.cs" />
     <Compile Include="DST\WorldModels\CharacterModel\StackPickaxe.cs" />
     <Compile Include="DST\WorldModels\CharacterModel\StackQuantity.cs" />

@@ -117,29 +117,42 @@ namespace MCTS.DST.WorldModels
             var possibleActions = new List<Action>();
             foreach (var objHolder in _knownPickableObjects)
             {
-                var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new PickupAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
 
             foreach (var objHolder in _knownCollectableObjects)
             {
-                var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new CollectAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
             foreach (var objHolder in _knownChopableObjects)
             {
-                var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new ChopAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
+                
             }
             foreach (var objHolder in _knownMineableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new MineAction(objHolder.Value[0].GetPosition(), objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
             foreach (var light in _lightsManager._sources)
             {
@@ -154,16 +167,22 @@ namespace MCTS.DST.WorldModels
             foreach (var objHolder in _knownEquippableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new EquipAction(objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
             foreach (var objHolder in _knownEatableObjects)
             {
                 //Console.WriteLine(objHolder.Key + " " + objHolder.Value[0].GetEntityType());
-                var actionTempHolder = new EatAction(objHolder.Value[0].Guid,
-                    objHolder.Value[0].GetEntityType());
-                possibleActions.Add(actionTempHolder);
+                if (objHolder.Value.Count != 0)
+                {
+                    var actionTempHolder = new EatAction(objHolder.Value[0].Guid,
+                        objHolder.Value[0].GetEntityType());
+                    possibleActions.Add(actionTempHolder);
+                }
             }
 
             //if (_canExecuteActions.ToArray().Length == 0) {

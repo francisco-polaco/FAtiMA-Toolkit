@@ -33,10 +33,7 @@ namespace MCTS.DST.Actions
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            //Has Slot in Inventory
-            //return false;
             return worldModel.Walter.CanEquip(EntityType);
-            //CanEquip(EntityType);
         }
 
 
@@ -45,7 +42,6 @@ namespace MCTS.DST.Actions
         {
             base.ApplyActionEffects(worldModel);
             worldModel.Walter.Equip(EntityType);
-            worldModel.Walter.RemoveFromInventory(EntityType);
 
         }
 

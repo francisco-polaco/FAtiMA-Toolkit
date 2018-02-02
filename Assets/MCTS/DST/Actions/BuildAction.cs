@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MCTS.DST.Actions.Recipes;
 using MCTS.DST.Objects;
 using MCTS.DST.WorldModels;
@@ -35,18 +36,12 @@ namespace MCTS.DST.Actions
         public override bool CanExecute(WorldModel worldModel)
         {
             //Has Slot in Inventory
-            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName,1))
+            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName))
             {
                 return false;
             }
-            foreach (var ingredient in ToBuild.Ingredients)
-            {
-                if (!worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2))
-                {
-                    return false;
-                }
-            }
-            return true;
+
+            return ToBuild.Ingredients.All(ingredient => worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2));
         }
 
 
@@ -69,7 +64,7 @@ namespace MCTS.DST.Actions
                 worldModel.Walter.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
             }
             worldModel.Walter.AddToInventory(EntityType);
-            if(worldModel.Walter.EquipedObject == EquipableObject.None)
+            if(worldModel.Walter.IsUnequiped() && worldModel.Walter.CanEquip(EntityType))
             {
                 worldModel.Walter.Equip(EntityType);
             }
