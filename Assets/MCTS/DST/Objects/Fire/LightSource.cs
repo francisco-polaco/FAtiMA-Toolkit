@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using MCTS.Math;
+using Utilities;
 
 namespace MCTS.DST.Objects.Fire {
     public abstract class LightSource
@@ -13,6 +15,14 @@ namespace MCTS.DST.Objects.Fire {
         public LightSource(DSTObject obj)
         {
             fireOBj = obj;
+        }
+
+        public LightSource(LightSource lightSource)
+        {
+            var position = lightSource.SourcePosition;
+            SourcePosition = new Vector2i(position.x, position.y);
+            SecondsRemaining = lightSource.SecondsRemaining;
+            fireOBj = lightSource.fireOBj;
         }
 
         public bool CloseEnoughToLight(Vector2i walterPosition)
@@ -27,13 +37,24 @@ namespace MCTS.DST.Objects.Fire {
 
         public abstract bool CanAddFuel();
         public abstract void AddFuel(Fuel fuel);
+
+        public abstract LightSource generateClone();
     }
 
     public class LightSourcesManager
     {
         public readonly List<LightSource> _sources = new List<LightSource>();
         private int _torchTime = 0;
-        
+
+        public LightSourcesManager(LightSourcesManager lightsManager)
+        {
+            _sources = lightsManager._sources.Select(slot => slot.generateClone()).ToList();
+            _torchTime = lightsManager._torchTime;
+        }
+
+        public LightSourcesManager() {
+        }
+
         public int HowManyTimeInDarkness(int timeToPass, bool torchWasEquipped, Vector2i walterStartPosition, Vector2i walterEndPosition)
         {
             int inDarkness = timeToPass;

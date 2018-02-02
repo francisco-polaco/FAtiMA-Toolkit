@@ -11,6 +11,9 @@ namespace MCTS.DST.Objects.Fire
             this.SecondsRemaining = timeToBurn;
         }
 
+        public Campfire(LightSource lightSource) : base(lightSource) {
+        }
+
         public override bool CanAddFuel()
         {
             return SecondsRemaining > 0;
@@ -19,6 +22,11 @@ namespace MCTS.DST.Objects.Fire
         public override void AddFuel(Fuel fuel)
         {
             SecondsRemaining += fuel.FuelTime;
+        }
+
+        public override LightSource generateClone()
+        {
+            return new Campfire(this);
         }
     }
 }

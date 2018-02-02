@@ -10,11 +10,19 @@ namespace MCTS.DST.Objects.Fire
 
         }
 
+        public Firepit(LightSource lightSource) : base(lightSource) {
+        }
+
         public override bool CanAddFuel() {
             return true;
         }
         public override void AddFuel(Fuel fuel) {
             SecondsRemaining += fuel.FuelTime*2;
+        }
+
+        public override LightSource generateClone()
+        {
+            return new Firepit(this);
         }
     }
 }

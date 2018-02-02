@@ -15,7 +15,7 @@ namespace MCTS.DST.WorldModels
     {
         private const int CHARLIE_ATTACK_FREQUENCY = 6;//every x segunds
 
-        protected Dictionary<string, List<DSTObject>> _knownPickableObjects;
+        public Dictionary<string, List<DSTObject>> _knownPickableObjects;
         protected Dictionary<string, List<DSTObject>> _knownCollectableObjects;
         protected Dictionary<string, List<DSTObject>> _knownChopableObjects;
         protected Dictionary<string, List<DSTObject>> _knownHammerableObjects;
@@ -24,9 +24,9 @@ namespace MCTS.DST.WorldModels
         protected Dictionary<string, List<DSTObject>> _knownInInventoryObjects;
         protected Dictionary<string, List<DSTObject>> _knownEquippableObjects;
         protected Dictionary<string, List<DSTObject>> _knownEatableObjects;
-        protected LightSourcesManager _lightsManager = new LightSourcesManager();
+        protected LightSourcesManager _lightsManager;
         
-
+         
         private int _actionIndex = 0;
         private List<Action> _canExecuteActions = null;
         private Action[] _possibleActions = null;
@@ -63,7 +63,7 @@ namespace MCTS.DST.WorldModels
             _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>(wm._knownInInventoryObjects);
             _knownEquippableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEquippableObjects);
             _knownEatableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEatableObjects);
-            _lightsManager = wm._lightsManager;
+            _lightsManager = new LightSourcesManager(wm._lightsManager);
             Walter = wm.Walter.GenerateClone();
             clock = wm.clock.deepCopy();
             //Walter.WalterPosition = wm.Walter.WalterPosition;
@@ -82,7 +82,7 @@ namespace MCTS.DST.WorldModels
         }
 
         public virtual Action[] GetExecutableActions()
-        {
+        { 
             //Console.WriteLine("All possible actions: size " + _possibleActions.Length);
             if (_canExecuteActions == null)
             {
@@ -363,27 +363,28 @@ namespace MCTS.DST.WorldModels
             this.Walter.Sanity = this.Walter.Sanity - amounts[1] * (5.0f / 60);
 
             //LIGHT STUFF :D
-            var target = action.GetTargetPosition();
-            if (target.x == Int32.MinValue && target.y == Int32.MinValue)
+            if (amounts[2] > 0)
             {
-                target = this.GetWalterPosition();
-            }
-            var timeInDarkeDarkness = _lightsManager.HowManyTimeInDarkness(amounts[2], false, this.GetWalterPosition(), target);
-            _lightsManager.PassTime(actionDuration, false, false);
-            if (timeInDarkeDarkness > 0)//aka no light)
-            {
-                this.Walter.Sanity -= amounts[2] * (50.0f / 60);
-                var number_night_attacks = (amounts[2] / CHARLIE_ATTACK_FREQUENCY )+1;
-                if (number_night_attacks > 0)
+                var target = action.GetTargetPosition();
+                if (target.x == Int32.MinValue && target.y == Int32.MinValue) {
+                    target = this.GetWalterPosition();
+                }
+                var timeInDarkeDarkness = _lightsManager.HowManyTimeInDarkness(amounts[2], false, this.GetWalterPosition(), target);
+                _lightsManager.PassTime(actionDuration, false, false);
+                if (timeInDarkeDarkness > 0)//aka no light)
                 {
-                    CharlieAttack attack = new CharlieAttack();
-                    while (number_night_attacks > 0) 
-                    {
-                        attack.ApplyActionEffects(this);
-                        number_night_attacks--;
+                    this.Walter.Sanity -= amounts[2] * (50.0f / 60);
+                    var number_night_attacks = (amounts[2] / CHARLIE_ATTACK_FREQUENCY) + 1;
+                    if (number_night_attacks > 0) {
+                        CharlieAttack attack = new CharlieAttack();
+                        while (number_night_attacks > 0) {
+                            attack.ApplyActionEffects(this);
+                            number_night_attacks--;
+                        }
                     }
                 }
-            } 
+            }
+            
 
             //verify stats are on min (above 0)
             Walter.makeSureMin();

@@ -29,6 +29,7 @@ namespace MCTS.DST.WorldModels
         public override WorldModel RecycleWorldModel()
         {
             this.depth++;
+            base.RecycleWorldModel();
             return this;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using KnowledgeBase;
 using MCTS.DST.WorldModels;
 using Action = MCTS.DST.Actions.Action;
@@ -43,7 +44,7 @@ namespace MCTS.DST
         public void InitializeDecisionMakingProcess(KB knowledgeBase)
         {
             Console.WriteLine("InitializeDecisionMakingProcess");
-
+             
             MaxPlayoutDepthReached = 0;
             MaxSelectionDepthReached = 0;
             CurrentIterations = 0;
@@ -151,7 +152,13 @@ namespace MCTS.DST
         }
 
         private Reward Playout(WorldModel currentPlayoutState)
-        {
+        {  
+            var oldState = currentPlayoutState;
+            currentPlayoutState = currentPlayoutState.GenerateChildWorldModel();
+            var firstKey = currentPlayoutState._knownPickableObjects.Keys.ElementAt(0);
+            var remove = currentPlayoutState._knownPickableObjects.Remove(firstKey);
+
+            
             while (!currentPlayoutState.IsTerminal())
             {
                 //this.PlayoutNodes++;
@@ -163,7 +170,7 @@ namespace MCTS.DST
                         Value = 0
                     };
                 //var childModel = currentPlayoutState.RecycleWorldModel();
-                var childModel = currentPlayoutState.GenerateChildWorldModel();
+                var childModel = currentPlayoutState.RecycleWorldModel();
                 action.ApplyActionEffects(childModel);
                 childModel.CalculateNextPlayer();
                 currentPlayoutState = childModel;

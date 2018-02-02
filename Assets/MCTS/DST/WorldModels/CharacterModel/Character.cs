@@ -189,10 +189,20 @@ namespace MCTS.DST.WorldModels.CharacterModel
                 if(quantity > 0)
                 {
                     if (_inventory.Count >= MaxInventorySize)
+                    {
                         throw new InventoryFullException(entityType);
+
+                    }
+                    else
+                    {
+                        _inventory.Add(new Pair<string, int>(entityType, quantity));
+                    }
                 }
             }
-            _inventory.Add(new Pair<string, int>(entityType, quantity));
+            else
+            {
+                _inventory.Add(new Pair<string, int>(entityType, quantity));
+            }
         }
 
 
