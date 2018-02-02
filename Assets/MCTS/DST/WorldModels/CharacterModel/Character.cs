@@ -206,12 +206,12 @@ namespace MCTS.DST.WorldModels.CharacterModel
         }
 
 
-        public bool InventoryHasObject(string entityType)
-        {
-            return _inventory.Find(p => p.Item1.Equals(entityType)) != null;
-        }
+        //public bool InventoryHasObject(string entityType)
+        //{
+        //    return _inventory.Find(p => p.Item1.Equals(entityType)) != null;
+        //}
 
-        public bool InventoryHasObject(string entityType, int quantity)
+        public bool InventoryHasObject(string entityType, int quantity = 1)
         {
             return NumberOfObjectsInInventory(entityType) >= quantity;
         }
