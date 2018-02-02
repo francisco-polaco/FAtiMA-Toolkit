@@ -108,9 +108,16 @@ namespace MCTS.DST.WorldModels.CharacterModel
                     }
                 }
 
-                if (quantity > 0 && invCopy.Count >= MaxInventorySize)
+                if (quantity > 0 )
                 {
-                    return true;
+                    if (_inventory.Count >= MaxInventorySize)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
 

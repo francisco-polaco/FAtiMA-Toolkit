@@ -35,14 +35,25 @@ namespace MCTS.DST.Actions
 
         public override bool CanExecute(WorldModel worldModel)
         {
-            //Has Slot in Inventory
-            if (worldModel.Walter.IsInventoryFull(ToBuild.PrefabName))
+
+            if (ToBuild.Ingredients.All(ingredient =>
+                worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2)))
             {
-                return false;
+                var newChar = worldModel.Walter.GenerateClone();
+                foreach (var ingredient in ToBuild.Ingredients)
+                {
+                    newChar.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
+                }
+
+                if (!newChar.IsInventoryFull(ToBuild.PrefabName))
+                {
+                    return true;
+                }
             }
 
-            return ToBuild.Ingredients.All(ingredient => worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2));
+            return false;
         }
+
 
 
         //Should not be needed

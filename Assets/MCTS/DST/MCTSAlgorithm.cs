@@ -155,8 +155,8 @@ namespace MCTS.DST
         {  
             var oldState = currentPlayoutState;
             currentPlayoutState = currentPlayoutState.GenerateChildWorldModel();
-            var firstKey = currentPlayoutState._knownPickableObjects.Keys.ElementAt(0);
-            var remove = currentPlayoutState._knownPickableObjects.Remove(firstKey);
+            //var firstKey = currentPlayoutState._knownPickableObjects.Keys.ElementAt(0);
+            //var remove = currentPlayoutState._knownPickableObjects.Remove(firstKey);
 
             
             while (!currentPlayoutState.IsTerminal())
