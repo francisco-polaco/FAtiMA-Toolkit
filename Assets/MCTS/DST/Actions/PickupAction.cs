@@ -16,7 +16,7 @@ namespace MCTS.DST.Actions
 
             base.ApplyActionEffects(worldModel);
             worldModel.RemovePickableObject(EntityType, TargetGuid);
-            worldModel.Walter.AddToInventory(TargetGuid);
+            worldModel.Walter.AddToInventory(EntityType);
         }
 
 
