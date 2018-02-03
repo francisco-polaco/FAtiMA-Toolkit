@@ -93,22 +93,22 @@ namespace MCTS.DST.WorldModels.CharacterModel
 
                 var invCopy = _inventory.FindAll(p => p.Item1.Equals(entityType) && p.Item2 < maxSizeStackForItem)
                     .ToList();
+                var temporaryQuantity = quantity;
                 foreach (var pair in invCopy)
                 {   // elements are copied
-                    var remainingToStack = maxSizeStackForItem - pair.Item2;
-                    if (quantity > remainingToStack)
+                    if (temporaryQuantity > 0)
                     {
-                        pair.Item2 += remainingToStack;
-                        quantity -= remainingToStack;
+                        var remainingToStack = maxSizeStackForItem - pair.Item2;
+                        if (quantity > remainingToStack) {
+                            temporaryQuantity -= remainingToStack;
+                        } else {
+                            temporaryQuantity = 0;
+                        }
                     }
-                    else
-                    {
-                        pair.Item2 += quantity;
-                        quantity = 0;
-                    }
-                }
 
-                if (quantity > 0 )
+                } 
+
+                if (temporaryQuantity > 0 )
                 {
                     if (_inventory.Count >= MaxInventorySize)
                     {
@@ -217,7 +217,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
         //{
         //    return _inventory.Find(p => p.Item1.Equals(entityType)) != null;
         //}
-
+         
         public bool InventoryHasObject(string entityType, int quantity = 1)
         {
             return NumberOfObjectsInInventory(entityType) >= quantity;
@@ -237,25 +237,25 @@ namespace MCTS.DST.WorldModels.CharacterModel
         }
 
         public void RemoveFromInventory(string entityType, int quantity = 1)
-        {   
+        {    
             
             foreach (var pair in _inventory.FindAll(p => p.Item1.Equals(entityType)))
             {
-                if (quantity < 0)
+                if (quantity > 0)
                 {
-                    throw new ItemQuantityOverflowException();
+                    if (quantity > pair.Item2) {
+                        quantity -= pair.Item2;
+                        pair.Item2 = 0;
+                    } else {
+                        var itemQuantity = pair.Item2;
+                        pair.Item2 -= quantity;
+                        quantity -= itemQuantity;
+                    }
                 }
 
-                if (quantity > pair.Item2)
+                if (pair.Item2 == 0)
                 {
-                    quantity -= pair.Item2;
                     _inventory.Remove(pair);
-                }
-                else
-                {
-                    var itemQuantity = pair.Item2;
-                    pair.Item2 -= quantity;
-                    quantity -= itemQuantity;
                 }
             }
         }
@@ -288,7 +288,14 @@ namespace MCTS.DST.WorldModels.CharacterModel
         #region equip
 
 
-
+        public bool IsObjectEquipable(string entityType)
+        {
+            if (entityType.Equals("axe") || entityType.Equals("pickaxe") || entityType.Equals("torch"))
+            {
+                return true;
+            }
+            return false;
+        }
 
         public bool CanEquip(string entityType)
         {

@@ -26,6 +26,11 @@ namespace MCTS.DST.Actions
 
         public override string GetXmlName()
         {
+            //MEGA HACK
+            if (EntityType.Equals("campfire"))
+            {
+                return "BUILD-STRUCTURE " + ToBuild.PrefabName;
+            }
             return "BUILD " + ToBuild.PrefabName; 
         }
 
@@ -39,18 +44,42 @@ namespace MCTS.DST.Actions
             if (ToBuild.Ingredients.All(ingredient =>
                 worldModel.Walter.InventoryHasObject(ingredient.Item1, ingredient.Item2)))
             {
+                //MEGA HACK
+                if (EntityType.Equals("campfire"))
+                {
+                    return true;
+                }
+
                 var newChar = worldModel.Walter.GenerateClone();
                 foreach (var ingredient in ToBuild.Ingredients)
                 {
                     newChar.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
                 }
 
-                if (!newChar.IsInventoryFull(ToBuild.PrefabName))
+                if (newChar.IsObjectEquipable(EntityType))
+                {
+                    if (newChar.IsUnequiped())
+                    {
+                        return true;
+                    }
+                    else if (newChar.CanUnequip())
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }else if (!newChar.IsInventoryFull(EntityType))
                 {
                     return true;
                 }
+                else
+                {
+                    return false;
+                }
             }
-
+             
             return false;
         }
 
@@ -67,24 +96,52 @@ namespace MCTS.DST.Actions
 
         public override void ApplyActionEffects(WorldModel worldModel)
         {
-
+            base.ApplyActionEffects(worldModel);
             actionTimestamp = worldModel.clock.GetTimestamp();
             walterPosition = worldModel.Walter.WalterPosition;
             foreach (var ingredient in ToBuild.Ingredients)
             {
                 worldModel.Walter.RemoveFromInventory(ingredient.Item1, ingredient.Item2);
             }
-            worldModel.Walter.AddToInventory(EntityType);
-            if(worldModel.Walter.IsUnequiped() && worldModel.Walter.CanEquip(EntityType))
+
+            if (EntityType.Equals("campfire"))
             {
-                worldModel.Walter.Equip(EntityType);
+                var lightDST = new DSTObject(Guid.NewGuid().ToString());
+                lightDST.IsLightSource = true;
+                lightDST.SetEntityType("campfire");
+                var WalterPosition = worldModel.Walter.WalterPosition;;
+                lightDST.SetPosX(WalterPosition.x);
+                lightDST.SetPosZ(WalterPosition.y);
+
+                worldModel.AddLightSource(lightDST);
+                return;
             }
 
-            base.ApplyActionEffects(worldModel);
+             
+            if (worldModel.Walter.IsObjectEquipable(EntityType)) {
+                if (worldModel.Walter.IsUnequiped())
+                {
+                    worldModel.Walter.Equip(EntityType);
+                }
+                else
+                {
+                    worldModel.Walter.Unequip();
+                    worldModel.Walter.Equip(EntityType);
+                }
+            } 
+            else
+            {
+                worldModel.Walter.AddToInventory(EntityType);
+            }
+
         }
 
         public override string GetDstInterpretableAction() {
             //return "Action("+Name+", "+invobject + ", " + posx + ", " + posz + ", " + recipe+")";
+            if (EntityType.Equals("campfire"))
+            {
+                return "Action(" + Name + ", -, "+walterPosition.x+","+walterPosition.y+", " + ToBuild.PrefabName + ")";
+            }
             return "Action("+Name+", -, -, -, "+ToBuild.PrefabName+")";
         }
 
@@ -112,6 +169,6 @@ namespace MCTS.DST.Actions
                var belief = new Pair<string, string>(belief_name,belief_value) ;
             }
             return toReturn;
-        }
+        } 
     }
 }

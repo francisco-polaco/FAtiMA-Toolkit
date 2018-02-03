@@ -38,12 +38,12 @@ namespace MCTS.DST.WorldModels
         //Stops Playout
         public override bool IsTerminal()
         {
-            return Walter.Health <= 0 || depth > 30; //|| Walter.WalkedDistance > 30; //depth > 5;
-        }
+            return Walter.Health <= 0 || Walter.WalkedDistance > 480; //|| Walter.WalkedDistance > 30; //depth > 5;
+        } 
 
         public override float GetScore()
-        {
-            var score = 0;
+        { 
+            double score = 0;
             if (Walter.Health > 0)
             {
                 score += 200;
@@ -59,7 +59,9 @@ namespace MCTS.DST.WorldModels
                 score += 50;
             }
 
-            return score/300;
+            score += Walter.WalkedDistance * 2.0f;
+
+            return (int) (score/400);
             //return Walter.Health + Walter.Hunger + Walter.Sanity + Walter.WalkedDistance*;
             //return 10 / (float) Walter.WalkedDistance;
         }

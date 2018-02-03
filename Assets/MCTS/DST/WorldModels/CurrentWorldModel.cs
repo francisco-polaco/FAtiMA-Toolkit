@@ -185,7 +185,8 @@ namespace MCTS.DST.WorldModels
                             var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.PickWorkable = true;
                         }
-                        if (properties.Item1.Equals("Collectable")) {
+                        if (properties.Item1.Equals("Collectable"))
+                        { 
                             var pickable = FindOrCreateDSTObject(properties.Item2);
                             pickable.CollectWorkable = true;
                         }
@@ -220,6 +221,19 @@ namespace MCTS.DST.WorldModels
                             //ITEM1 -> "Entity"
                             //ITEM2 -> type,guid
                             var pairEntityTypeGuid = GetPairEntityNameGuid(pairBeliefName_Parentisis.Item2);
+                            Console.WriteLine(pairEntityTypeGuid); 
+
+                            //HACK FOR COLLECTABLE STUFF
+                            var entityTypeName = pairEntityTypeGuid.Item1;
+                            if (entityTypeName.Equals("grass"))
+                            {
+                                pairEntityTypeGuid.Item1 = "cutgrass";
+                            }else if (entityTypeName.Equals("sapling"))
+                            {
+                                pairEntityTypeGuid.Item1 = "twigs";
+                            }
+                            Console.WriteLine("After: "+pairEntityTypeGuid); 
+
                             DSTObject pickable = FindOrCreateDSTObject(pairEntityTypeGuid.Item2);
 
                             if (pairEntityTypeGuid.Item1.Equals("campfire"))

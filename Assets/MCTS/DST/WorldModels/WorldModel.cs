@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using MCTS.DST.Objects;
 using MCTS.Math;
@@ -54,6 +55,8 @@ namespace MCTS.DST.WorldModels
         public WorldModel(WorldModel wm)
         {
             _actionIndex = 0;
+            _possibleActions = null;
+            _canExecuteActions = null;
             _knownPickableObjects = new Dictionary<string, List<DSTObject>>(wm._knownPickableObjects);
             _knownCollectableObjects = new Dictionary<string, List<DSTObject>>(wm._knownCollectableObjects);
             _knownChopableObjects = new Dictionary<string, List<DSTObject>>(wm._knownChopableObjects);
@@ -70,9 +73,12 @@ namespace MCTS.DST.WorldModels
             //Walter.EquipedObject = wm.Walter.EquipedObject;
             //Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + Walter.WalterPosition);
         }
-
+         
         public virtual WorldModel RecycleWorldModel()
         {
+            _actionIndex = 0;
+            _possibleActions = null;
+            _canExecuteActions = null;
             return this;
         }
 
@@ -334,9 +340,18 @@ namespace MCTS.DST.WorldModels
             if (orderedList == null)
             {
                 orderedList = new List<DSTObject>();
+                _knownPickableObjects.Add(obj.GetEntityType(), orderedList);
             }
 
-            orderedList.Insert(0, obj);
+            orderedList.Insert(0, obj); 
+        }
+
+        public void AddLightSource(DSTObject lightSource)
+        {
+            if (lightSource.IsLightSource)
+            {
+                _lightsManager.addNewLightSource(lightSource);
+            }
         }
 
         public void advanceTime(int actionDuration, Action action)
@@ -401,47 +416,47 @@ namespace MCTS.DST.WorldModels
         public static int SECONDS_IN_DAY = NUMBER_SEGMENT * SEGMENT_TIME;
         private static readonly int[][] DAYS_CONFIGURATION = new int[][]
         {
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {8 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {7 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {6 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {6 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {6 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 6 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME},
-            new int[] {5 * SEGMENT_TIME, 7 * SEGMENT_TIME}
-        };
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {8 * SEGMENT_TIME, 8 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {7 * SEGMENT_TIME, 7 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {6 * SEGMENT_TIME, 6 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {6 * SEGMENT_TIME, 6 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {6 * SEGMENT_TIME, 6 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 5 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 6 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 7 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 7 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 7 * SEGMENT_TIME},
+            new int[] {5 * SEGMENT_TIME, 5 * SEGMENT_TIME + 7 * SEGMENT_TIME}
+        }; 
 
         private Season season = Season.Autaumn;
         private MoonPhase moonPhase = MoonPhase.WaxingNewMoon;

@@ -16,7 +16,7 @@ namespace MCTS.DST
         {
             InProgress = false;
             // this.CurrentStateWorldModel = currentStateWorldModel;
-            MaxIterations = 300;
+            MaxIterations = 2000; 
             MaxIterationsProcessedPerFrame = MaxIterations +1;
             RandomGenerator = new Random();
             TotalProcessingTime = 0;
@@ -152,34 +152,33 @@ namespace MCTS.DST
         }
 
         private Reward Playout(WorldModel currentPlayoutState)
-        {  
-            var oldState = currentPlayoutState;
-            currentPlayoutState = currentPlayoutState.GenerateChildWorldModel();
+        {   
+            var newState = currentPlayoutState.GenerateChildWorldModel();
             //var firstKey = currentPlayoutState._knownPickableObjects.Keys.ElementAt(0);
             //var remove = currentPlayoutState._knownPickableObjects.Remove(firstKey);
 
             
-            while (!currentPlayoutState.IsTerminal())
+            while (!newState.IsTerminal())
             {
                 //this.PlayoutNodes++;
-                var action = GuidedAction(currentPlayoutState);
+                var action = GuidedAction(newState);
                 if (action == null)
                     return new Reward
                     {
-                        PlayerID = currentPlayoutState.GetNextPlayer(),
+                        PlayerID = newState.GetNextPlayer(),
                         Value = 0
                     };
                 //var childModel = currentPlayoutState.RecycleWorldModel();
-                var childModel = currentPlayoutState.RecycleWorldModel();
+                var childModel = newState.RecycleWorldModel();
                 action.ApplyActionEffects(childModel);
                 childModel.CalculateNextPlayer();
-                currentPlayoutState = childModel;
-            }
+                newState = childModel;
+            } 
 
             return new Reward
             {
-                PlayerID = currentPlayoutState.GetNextPlayer(),
-                Value = currentPlayoutState.GetScore()
+                PlayerID = newState.GetNextPlayer(),
+                Value = newState.GetScore()
             };
         }
 
