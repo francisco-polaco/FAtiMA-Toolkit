@@ -44,10 +44,10 @@ namespace MCTS.DST.WorldModels
         public override float GetScore()
         { 
             double score = 0;
-            if (Walter.Health > 0)
-            {
-                score += 200;
-            }
+            //if (Walter.Health > 0)
+            //{
+            //    score += 200;
+            //}
 
             if (Walter.Hunger > 30)
             {
@@ -58,10 +58,30 @@ namespace MCTS.DST.WorldModels
             {
                 score += 50;
             }
+             
+            //if (Walter.WalkedDistance > 0)
+            //{
+            //    score += (-(Walter.WalkedDistance / 480) + 1) * 100;
 
-            score += Walter.WalkedDistance * 2.0f;
+            //}
 
-            return (int) (score/400);
+            if (Walter.TimeInNight > 0)
+            {
+                score += 100;
+                score += Convert.ToSingle(Walter.TimeInNight)/ 60 * 100;
+            }
+
+            if (Walter.TimeInNight >= 60)
+            {
+                score += 200;
+            }
+
+            if ((Convert.ToSingle(score) / 500.0f) > 1)
+            {
+                Console.WriteLine("Rip");
+            }
+
+            return (Convert.ToSingle(score)/500.0f);  
             //return Walter.Health + Walter.Hunger + Walter.Sanity + Walter.WalkedDistance*;
             //return 10 / (float) Walter.WalkedDistance;
         }

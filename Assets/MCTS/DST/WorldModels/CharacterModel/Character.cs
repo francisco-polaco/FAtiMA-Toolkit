@@ -23,7 +23,8 @@ namespace MCTS.DST.WorldModels.CharacterModel
         public float Hunger { get; set; }
         public float Health { get; set; }
         public float Sanity { get; set; }
-         
+        public int TimeInNight { get; set; }
+
         //TODO update generateClone 
         public Character GenerateClone() {
             var toReturn = new Character();
@@ -359,15 +360,15 @@ namespace MCTS.DST.WorldModels.CharacterModel
         }
 
         public bool CanUnequip()
-        {
+        { 
             switch (EquipedObject)
             {
                 case EquipableObject.Axe:
-                    return IsInventoryFull("axe");
+                    return !IsInventoryFull("axe");
                 case EquipableObject.Pickaxe:
-                    return IsInventoryFull("pickaxe");
+                    return !IsInventoryFull("pickaxe");
                 case EquipableObject.Torch:
-                    return IsInventoryFull("torch");
+                    return !IsInventoryFull("torch");
                 default:
                     return true;
             }

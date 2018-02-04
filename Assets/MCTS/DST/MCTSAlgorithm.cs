@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using KnowledgeBase;
@@ -10,13 +11,15 @@ namespace MCTS.DST
 {
     public class MCTSAlgorithm
     {
+        private int TimeInNight=0;
+        private int WinsNight60=0;
         public const float C = 1.4f;
 
         public MCTSAlgorithm()
         {
             InProgress = false;
             // this.CurrentStateWorldModel = currentStateWorldModel;
-            MaxIterations = 2000; 
+            MaxIterations = 500;   
             MaxIterationsProcessedPerFrame = MaxIterations +1;
             RandomGenerator = new Random();
             TotalProcessingTime = 0;
@@ -78,9 +81,15 @@ namespace MCTS.DST
             var rootNode = InitialNode;
             //MCTSNode rootNode =  new MCTSNode(CurrentStateWorldModel.GenerateChildWorldModel());
             //Console.WriteLine("0");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
                 while (CurrentIterationsInFrame < MaxIterationsProcessedPerFrame
                        && CurrentIterations < MaxIterations) {
-                    //Console.WriteLine("1");
+                //Console.WriteLine("1");
+
+                    Stopwatch sw2= new Stopwatch();
+                    sw2.Start();
+
                     selectedNode = Selection(rootNode);
                     //Console.WriteLine("2");
                     reward = Playout(selectedNode.State);
@@ -89,7 +98,13 @@ namespace MCTS.DST
                     CurrentIterations++;
                     CurrentIterationsInFrame++;
                     //Console.WriteLine("++");
+
+
+                    sw2.Stop(); 
+                    Console.WriteLine(CurrentIterations + " --- "+sw2.ElapsedMilliseconds);
                 }
+            sw.Stop();
+            Console.WriteLine("FinalTime: "+sw.ElapsedMilliseconds+"\nTimesInNight: "+TimeInNight+"\nWinsNight60: "+WinsNight60);
             
             //var frameEnd = Time.realtimeSinceStartup;
             //var thisFrameTime = frameEnd - frameBegin;
@@ -173,7 +188,16 @@ namespace MCTS.DST
                 action.ApplyActionEffects(childModel);
                 childModel.CalculateNextPlayer();
                 newState = childModel;
-            } 
+            }
+
+            if (newState.Walter.TimeInNight > 0)
+            {
+                TimeInNight++;
+            }
+            if (newState.Walter.TimeInNight ==60)
+            {
+                WinsNight60++;
+            }
 
             return new Reward
             {
@@ -201,6 +225,10 @@ namespace MCTS.DST
             {
                 node.N++;
                 node.Q += reward.Value;
+                if (reward.Value > node.bestQ) 
+                {
+                    node.bestQ = reward.Value;
+                }
                 node = node.Parent;
             }
         }
@@ -267,6 +295,6 @@ namespace MCTS.DST
             var numero = initialNode.RecursiveNumberOfChilds();
             File.WriteAllText(@"C:\treeXml\tree.xml", xmlTree);
             //Debug.Log("Escrita Arvore");
-        }
+        } 
     }
 }

@@ -7,6 +7,8 @@ namespace MCTS.DST
 {
     public class MCTSNode
     {
+        public float bestQ = 0;
+
         public MCTSNode(WorldModel state)
         {
             State = state;
@@ -22,7 +24,7 @@ namespace MCTS.DST
         public float Q { get; set; }
 
         public string ToXML(int depth)
-        {
+        { 
             //if (ChildNodes.Count > 0) {
             //    toReturn += tabSpaces + " <Number_Childs> " + ChildNodes.Count + " </Number_Childs>";
             //}
@@ -34,6 +36,7 @@ namespace MCTS.DST
             toReturn += tabSpaces + " <N>" + N + "</N>";
             toReturn += tabSpaces + " <Q>" + Q + "</Q>";
             toReturn += tabSpaces + " <Q_N_div>" + Q / N + "</Q_N_div>";
+            toReturn += tabSpaces + "<bestQ>" + bestQ + "</bestQ>";
             toReturn += tabSpaces + " <Terminal>" + State.IsTerminal() + "</Terminal>";
             if (Parent != null)
             {

@@ -57,15 +57,39 @@ namespace MCTS.DST.WorldModels
             _actionIndex = 0;
             _possibleActions = null;
             _canExecuteActions = null;
-            _knownPickableObjects = new Dictionary<string, List<DSTObject>>(wm._knownPickableObjects);
-            _knownCollectableObjects = new Dictionary<string, List<DSTObject>>(wm._knownCollectableObjects);
-            _knownChopableObjects = new Dictionary<string, List<DSTObject>>(wm._knownChopableObjects);
-            _knownHammerableObjects = new Dictionary<string, List<DSTObject>>(wm._knownHammerableObjects);
-            _knownDiggableObjects = new Dictionary<string, List<DSTObject>>(wm._knownDiggableObjects);
-            _knownMineableObjects = new Dictionary<string, List<DSTObject>>(wm._knownMineableObjects);
-            _knownInInventoryObjects = new Dictionary<string, List<DSTObject>>(wm._knownInInventoryObjects);
-            _knownEquippableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEquippableObjects);
-            _knownEatableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEatableObjects);
+            //_knownPickableObjects = new Dictionary<string, List<DSTObject>>(wm._knownPickableObjects);
+
+            _knownPickableObjects = deepCopyDictionary(wm._knownPickableObjects);
+            _knownCollectableObjects = deepCopyDictionary(wm._knownCollectableObjects);
+            _knownChopableObjects = deepCopyDictionary(wm._knownChopableObjects);
+            _knownHammerableObjects = deepCopyDictionary(wm._knownHammerableObjects);
+            _knownDiggableObjects = deepCopyDictionary(wm._knownDiggableObjects);
+            _knownMineableObjects = deepCopyDictionary(wm._knownMineableObjects);
+            _knownInInventoryObjects = deepCopyDictionary(wm._knownInInventoryObjects);
+            _knownEquippableObjects = deepCopyDictionary(wm._knownEquippableObjects);
+            _knownEatableObjects = deepCopyDictionary(wm._knownEatableObjects); 
+             
+            //var knownPickableObjects = new Dictionary<string, List<DSTObject>>();
+            //foreach (var entry in wm._knownPickableObjects) 
+            //{
+            //    Console.WriteLine(entry.Key+" - "+entry.Value); 
+            //    var newList = new List<DSTObject>(); 
+            //    foreach (var entryList in entry.Value)
+            //    { 
+            //        newList.Add(entryList);
+            //    }
+            //    knownPickableObjects.Add(entry.Key,newList);
+            //}   
+            //Console.WriteLine(knownPickableObjects + " : " + _knownPickableObjects + "----"+ knownPickableObjects.Equals(_knownPickableObjects));
+
+            //_knownCollectableObjects = new Dictionary<string, List<DSTObject>>(wm._knownCollectableObjects);
+            //_knownChopableObjects = new Dictionary<string, List<DSTObject>>(wm._knownChopableObjects);
+            //_knownHammerableObjects = new Dictionary<string, List<DSTObject>>(wm._knownHammerableObjects);
+            //_knownDiggableObjects = new Dictionary<string, List<DSTObject>>(wm._knownDiggableObjects);
+            //_knownMineableObjects = new Dictionary<string, List<DSTObject>>(wm._knownMineableObjects);
+            //_knownInInventoryObjects = new Dictionary<string, List<DSTObject>>(wm._knownInInventoryObjects);
+            //_knownEquippableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEquippableObjects);
+            //_knownEatableObjects = new Dictionary<string, List<DSTObject>>(wm._knownEatableObjects);
             _lightsManager = new LightSourcesManager(wm._lightsManager);
             Walter = wm.Walter.GenerateClone();
             clock = wm.clock.deepCopy();
@@ -73,7 +97,22 @@ namespace MCTS.DST.WorldModels
             //Walter.EquipedObject = wm.Walter.EquipedObject;
             //Console.WriteLine("WorldModel creation: knownObjects size " + _knownPickableObjects.Keys.Count + " Walter position: " + Walter.WalterPosition);
         }
-         
+
+        private Dictionary<string, List<DSTObject>> deepCopyDictionary(Dictionary<string, List<DSTObject>> toCopy)
+        {
+            var temporaryCopyDictionary = new Dictionary<string, List<DSTObject>>();
+            foreach (var entry in toCopy) {
+                var temporaryCopyList = new List<DSTObject>();
+                foreach (var entryList in entry.Value) {
+                    temporaryCopyList.Add(entryList);
+                }
+                temporaryCopyDictionary.Add(entry.Key, temporaryCopyList);
+            }
+
+            return temporaryCopyDictionary;
+        }
+
+
         public virtual WorldModel RecycleWorldModel()
         {
             _actionIndex = 0;
@@ -389,14 +428,24 @@ namespace MCTS.DST.WorldModels
                 if (timeInDarkeDarkness > 0)//aka no light)
                 {
                     this.Walter.Sanity -= amounts[2] * (50.0f / 60);
-                    var number_night_attacks = (amounts[2] / CHARLIE_ATTACK_FREQUENCY) + 1;
-                    if (number_night_attacks > 0) {
-                        CharlieAttack attack = new CharlieAttack();
-                        while (number_night_attacks > 0) {
-                            attack.ApplyActionEffects(this);
-                            number_night_attacks--;
-                        }
-                    }
+                    //var number_night_attacks = (amounts[2] / CHARLIE_ATTACK_FREQUENCY) + 1;
+                    //if (number_night_attacks > 0) {
+                    //    CharlieAttack attack = new CharlieAttack();
+                    //    while (number_night_attacks > 0) {
+                    //        attack.ApplyActionEffects(this);
+                    //        number_night_attacks--;
+                    //    }
+                    //}
+                    this.Walter.Health = 0; 
+                }
+
+                if (Walter.Health > 0)
+                {
+                    Walter.TimeInNight += amounts[2];
+                    if (Walter.TimeInNight > 60)
+                    {
+                        Console.WriteLine("Rip");
+                    } 
                 }
             }
             
@@ -475,7 +524,7 @@ namespace MCTS.DST.WorldModels
 
         public void setTime(int currentTick, int currentDay)
         {
-            _currentDay = currentDay;
+            _currentDay = currentDay; 
             _currentSecond = currentTick * SEGMENT_TIME + HALF_SEGMENT;
             setupDayConfiguration(currentDay);
             if (_currentSecond > _currentNightStart)
@@ -559,8 +608,8 @@ namespace MCTS.DST.WorldModels
                 }
 
                 if (dayPhase == DayPhase.Night)
-                {
-                    if (nextSec > SECONDS_IN_DAY)
+                { 
+                    if (nextSec >= SECONDS_IN_DAY)
                     {
                         toReturn[2] += SECONDS_IN_DAY - previous;
                         previous = 0;
