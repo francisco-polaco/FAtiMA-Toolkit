@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using MCTS.DST;
 using MCTS.DST.WorldModels;
 using WellFormedNames;
+using Action = MCTS.DST.Actions.Action;
 
 namespace MCTS
 {
@@ -15,11 +16,14 @@ namespace MCTS
     {
         private static readonly Name MCTS_DYNAMIC_PROPERTY_NAME = Name.BuildName("MCTS");
         private KB m_kb;
+        private MCTSAlgorithm mcts = null;
+        private Action _lastAction = null;
 
 
         public MCTSAsset()
         {
             m_kb = null;
+            mcts = new MCTSBiasedAlgorithm();
 #if DEBUG
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var buildDateTime = version.ToString();
@@ -60,32 +64,65 @@ namespace MCTS
         //This is where the main body of the MCTS Search must be implemented
         private IEnumerable<DynamicPropertyResult> MCTSSearch(IQueryContext context, Name actionVar, Name targetVar)
         {
-            //How to clone the KB with our JSON serializer
-            var jsonSerializer = new JSONSerializer();
-            var memStream = new MemoryStream();
-            var json = jsonSerializer.SerializeToJson(this.m_kb);
-            var kbCloned = jsonSerializer.DeserializeFromJson<KB>(json);
+            DST.Actions.Action action = null;
 
-            #if PRINTKB
+            if (!mcts.InProgress)
+            {
+                //How to clone the KB with our JSON serializer
+                var jsonSerializer = new JSONSerializer();
+                var memStream = new MemoryStream();
+                var json = jsonSerializer.SerializeToJson(this.m_kb);
+                var kbCloned = jsonSerializer.DeserializeFromJson<KB>(json);
+
+#if PRINTKB
                 Console.WriteLine(json.ToString());
                 Console.ReadLine();
-            #endif
+#endif
 
-            //var deepKbClone = DeepClone(m_kb);
+                //var deepKbClone = DeepClone(m_kb);
 
-            DST.Actions.Action action = null;
-            try {
+                try {
 
-                var mctsAlgorithm = new MCTSAlgorithm();
-                mctsAlgorithm.InitializeDecisionMakingProcess(kbCloned);
-                action = mctsAlgorithm.ChooseAction();
 
-            } catch (Exception e) {
-                Console.WriteLine(e);
-                Console.WriteLine("..Enter to continue execution..");
-                Console.ReadLine();
-                throw e;
+                    mcts.InitializeDecisionMakingProcess(kbCloned);
+                    action = mcts.ChooseAction();
+
+                } catch (Exception e) {
+                    Console.WriteLine(e);
+                    Console.WriteLine("..Enter to continue execution..");
+                    Console.ReadLine();
+                    throw e;
+                }
+
+            } else
+            {
+                try {
+                    action = mcts.ChooseAction();
+                } catch (Exception e) {
+                    Console.WriteLine(e);
+                    Console.WriteLine("..Enter to continue execution..");
+                    Console.ReadLine();
+                    throw e;
+                }
             }
+
+            if (action == null)
+            {
+                if (_lastAction == null) {
+                    throw new NoActionException();
+                } 
+                //else
+                //{
+                //    action = _lastAction;
+                //    _lastAction = null;
+                //}
+            }
+            //else
+            //{
+            //    _lastAction = action;
+            //} 
+
+
 
             //This is just an example of how to always return the action "Pick" with target "Wood1"
             //var actionSub = new Substitution(actionVar, new ComplexValue(Name.BuildName("Action(PICK, -, -, -, -)")));
@@ -100,6 +137,10 @@ namespace MCTS
 
                 yield return new DynamicPropertyResult(new ComplexValue(Name.BuildName(true),1.0f), subSet);
             }
+        }     
+
+        public class NoActionException : Exception
+        {
         }
 
         /// <summary>

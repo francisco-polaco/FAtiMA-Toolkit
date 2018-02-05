@@ -10,7 +10,7 @@ namespace MCTS.DST.WorldModels.CharacterModel
         private readonly Dictionary<string, int> _stackSize = new Dictionary<string, int>();
 
         public StackTable()
-        {
+        { 
             foreach (var type in GetDerivedTypesFor(typeof(StackQuantity)))
             {
                 if(Activator.CreateInstance(type) is StackQuantity obj)

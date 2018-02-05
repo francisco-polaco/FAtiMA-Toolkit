@@ -13,24 +13,24 @@ namespace MCTS.DST
     {
         private int TimeInNight=0;
         private int WinsNight60=0;
-        public const float C = 1.4f;
-
+        public const float C = 1.4f * 500; //500 is max getScore(). Maybe hack
+         
         public MCTSAlgorithm()
         {
             InProgress = false;
             // this.CurrentStateWorldModel = currentStateWorldModel;
-            MaxIterations = 500;   
-            MaxIterationsProcessedPerFrame = MaxIterations +1;
+            MaxIterations = 2000;  
+            MaxIterationsProcessedPerFrame = MaxIterations+1;   
             RandomGenerator = new Random();
-            TotalProcessingTime = 0;
-        }
+            TotalProcessingTime = 0;   
+        }    
 
         public bool InProgress { get; private set; }
         public int MaxIterations { get; set; }
         public int MaxIterationsProcessedPerFrame { get; set; }
         public int MaxPlayoutDepthReached { get; private set; }
         public int MaxSelectionDepthReached { get; private set; }
-        public float TotalProcessingTime { get; }
+        public float TotalProcessingTime { get; protected set; } 
 
         public MCTSNode BestFirstChild { get; set; }
         public Action[] BestActionSequence { get; private set; }
@@ -54,6 +54,9 @@ namespace MCTS.DST
             CurrentIterationsInFrame = 0;
             CurrentStateWorldModel = new CurrentWorldModel(knowledgeBase);
             CurrentStateWorldModel.Initialize();
+            TotalProcessingTime = 0;
+            TimeInNight = 0;
+            WinsNight60 = 0;
             InitialNode = new MCTSNode(CurrentStateWorldModel.GenerateChildWorldModel())
             {
                 Action = null,
@@ -66,11 +69,11 @@ namespace MCTS.DST
             //this.ParcialProcessingTime = 0;
 
             // this.BestActionSequence = new List<GOB.Action>();
-        }
+        }  
 
         public Action ChooseAction()
         {
-            Console.WriteLine("ChooseAction");
+            //Console.WriteLine("ChooseAction");
 
             //var frameBegin = Time.realtimeSinceStartup;
 
@@ -87,33 +90,39 @@ namespace MCTS.DST
                        && CurrentIterations < MaxIterations) {
                 //Console.WriteLine("1");
 
-                    Stopwatch sw2= new Stopwatch();
-                    sw2.Start();
+                    //Stopwatch sw2= new Stopwatch();
+                    //sw2.Start();
 
                     selectedNode = Selection(rootNode);
                     //Console.WriteLine("2");
                     reward = Playout(selectedNode.State);
                     //Console.WriteLine("3");
                     Backpropagate(selectedNode, reward);
-                    CurrentIterations++;
+                    CurrentIterations++; 
                     CurrentIterationsInFrame++;
-                    //Console.WriteLine("++");
+                //Console.WriteLine("++");
 
 
-                    sw2.Stop(); 
-                    Console.WriteLine(CurrentIterations + " --- "+sw2.ElapsedMilliseconds);
-                }
+                //sw2.Stop(); 
+
+
+                Console.WriteLine(CurrentIterations + " --- "+"\nTimesInNight: " + TimeInNight + "\nWinsNight60: " + WinsNight60);
+            }
             sw.Stop();
-            Console.WriteLine("FinalTime: "+sw.ElapsedMilliseconds+"\nTimesInNight: "+TimeInNight+"\nWinsNight60: "+WinsNight60);
+            TotalProcessingTime += sw.ElapsedMilliseconds;
+            Console.WriteLine(CurrentIterations);
+            //Console.WriteLine("FinalTime: "+sw.ElapsedMilliseconds+"\nTimesInNight: "+TimeInNight+"\nWinsNight60: "+WinsNight60);
             
             //var frameEnd = Time.realtimeSinceStartup;
             //var thisFrameTime = frameEnd - frameBegin;
 
             //TotalProcessingTime += thisFrameTime;
             //ParcialProcessingTime += thisFrameTime;
-            if (CurrentIterations >= MaxIterations)
-            {
-                InProgress = false;
+            if (CurrentIterations >= MaxIterations) 
+            { 
+                Console.WriteLine("Final Iterations Time: " + TotalProcessingTime + "\nTimesInNight: " + TimeInNight + "\nWinsNight60: " + WinsNight60);
+
+                InProgress = false; 
                 printXMLTree(rootNode);
 
                 var temp = new List<Action>();
@@ -126,6 +135,12 @@ namespace MCTS.DST
                 }
 
                 BestActionSequence = temp.ToArray();
+                Console.WriteLine("BestSequence");
+                foreach (var action in BestActionSequence)
+                {
+                    Console.WriteLine("Action: "+ action + " --- "+action.GetEntityType());
+                    
+                }
                 var toReturn = BestChild(rootNode);
                 if (toReturn != null)
                 {
@@ -167,16 +182,23 @@ namespace MCTS.DST
         }
 
         private Reward Playout(WorldModel currentPlayoutState)
-        {   
+        {
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
             var newState = currentPlayoutState.GenerateChildWorldModel();
+            //sw.Stop();
+            //Console.WriteLine("playout clone time: " + sw.ElapsedMilliseconds);
             //var firstKey = currentPlayoutState._knownPickableObjects.Keys.ElementAt(0);
             //var remove = currentPlayoutState._knownPickableObjects.Remove(firstKey);
-
-            
+            // sw.Reset();
+            //sw.Start();
             while (!newState.IsTerminal())
             {
+                //sw.Start();
                 //this.PlayoutNodes++;
                 var action = GuidedAction(newState);
+                //sw.Stop();
+                //Console.WriteLine("Rebuild world: " + sw.ElapsedMilliseconds);
                 if (action == null)
                     return new Reward
                     {
@@ -185,10 +207,11 @@ namespace MCTS.DST
                     };
                 //var childModel = currentPlayoutState.RecycleWorldModel();
                 var childModel = newState.RecycleWorldModel();
-                action.ApplyActionEffects(childModel);
+                action.ApplyActionEffects(childModel); 
                 childModel.CalculateNextPlayer();
                 newState = childModel;
             }
+            
 
             if (newState.Walter.TimeInNight > 0)
             {
@@ -215,12 +238,14 @@ namespace MCTS.DST
             //this.TotalPlayoutNodes += lenght;
             //this.PlayoutNodes += lenght;
 
-            var number = RandomGenerator.Next(possibleActions.Length);
+            var number = RandomGenerator.Next(possibleActions.Length); 
             return possibleActions[number];
         }
 
         private void Backpropagate(MCTSNode node, Reward reward)
         {
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
             while (node != null)
             {
                 node.N++;
@@ -231,11 +256,18 @@ namespace MCTS.DST
                 }
                 node = node.Parent;
             }
+            //sw.Stop();
+            //Console.WriteLine("Backpropagate time: "+sw.ElapsedMilliseconds); 
         }
 
         private MCTSNode Expand(MCTSNode parent, Action action)
         {
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
             var childModel = parent.State.GenerateChildWorldModel();
+            //sw.Stop();
+            //Console.WriteLine("Parent clone time: " + sw.ElapsedMilliseconds);
+            //Console.WriteLine("Parent clone time: " + sw.ElapsedMilliseconds);
             action.ApplyActionEffects(childModel);
             childModel.CalculateNextPlayer();
             var child = new MCTSNode(childModel)

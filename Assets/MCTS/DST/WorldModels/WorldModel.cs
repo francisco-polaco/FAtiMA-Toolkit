@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using MCTS.DST.Objects;
@@ -128,6 +129,8 @@ namespace MCTS.DST.WorldModels
 
         public virtual Action[] GetExecutableActions()
         { 
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
             //Console.WriteLine("All possible actions: size " + _possibleActions.Length);
             if (_canExecuteActions == null)
             {
@@ -152,7 +155,8 @@ namespace MCTS.DST.WorldModels
 
 
             }
-
+            //sw.Stop();
+            //Console.WriteLine("GetACTIONS-----------------------------------------------: "+ sw.ElapsedMilliseconds); 
             return _canExecuteActions.ToArray();
         }
 

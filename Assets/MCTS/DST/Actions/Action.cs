@@ -37,17 +37,22 @@ namespace MCTS.DST.Actions
         public int Id { get; set; }
         public double Duration { get; set; }
 
+        public string GetEntityType()
+        {
+            return EntityType;
+        }
+
         public virtual int GetDuration(WorldModel worldModel)
         {
             //MCTS time to process
             //TESTING 
-            return 15; 
+            return 30;  
         }
 
         public virtual bool CanExecute(WorldModel worldModel)
         {
             return true;
-        }
+        } 
 
 
         //Should not be needed
