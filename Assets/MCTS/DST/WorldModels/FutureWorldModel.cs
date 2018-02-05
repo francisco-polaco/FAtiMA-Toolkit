@@ -79,9 +79,9 @@ namespace MCTS.DST.WorldModels
             if ((Convert.ToSingle(score) / 500.0f) > 1)
             {
                 Console.WriteLine("Rip");
-            }
+            } 
 
-            return Convert.ToSingle(score);
+            return (Convert.ToSingle(score)/500);
             //return Walter.Health + Walter.Hunger + Walter.Sanity + Walter.WalkedDistance*;
             //return 10 / (float) Walter.WalkedDistance;
         }

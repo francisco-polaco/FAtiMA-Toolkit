@@ -23,7 +23,7 @@ namespace MCTS
         public MCTSAsset()
         {
             m_kb = null;
-            mcts = new MCTSBiasedAlgorithm();
+            mcts = new MCTSBiasedAlgorithm();   
 #if DEBUG
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var buildDateTime = version.ToString();

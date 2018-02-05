@@ -46,7 +46,7 @@ namespace MCTS.DST.Actions
         {
             //MCTS time to process
             //TESTING 
-            return 30;  
+            return 20;   
         }
 
         public virtual bool CanExecute(WorldModel worldModel)

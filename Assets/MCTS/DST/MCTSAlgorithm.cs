@@ -13,7 +13,7 @@ namespace MCTS.DST
     {
         private int TimeInNight=0;
         private int WinsNight60=0;
-        public const float C = 1.4f * 500; //500 is max getScore(). Maybe hack
+        public const float C = 1.4f;
          
         public MCTSAlgorithm()
         {
@@ -136,7 +136,7 @@ namespace MCTS.DST
 
                 BestActionSequence = temp.ToArray();
                 Console.WriteLine("BestSequence");
-                foreach (var action in BestActionSequence)
+                foreach (var action in BestActionSequence) 
                 {
                     Console.WriteLine("Action: "+ action + " --- "+action.GetEntityType());
                     

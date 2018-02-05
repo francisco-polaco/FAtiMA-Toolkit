@@ -428,7 +428,7 @@ namespace MCTS.DST.WorldModels
                     target = this.GetWalterPosition();
                 }
                 var timeInDarkeDarkness = _lightsManager.HowManyTimeInDarkness(amounts[2], false, this.GetWalterPosition(), target);
-                _lightsManager.PassTime(actionDuration, false, false);
+                //_lightsManager.PassTime(actionDuration, false, false); 
                 if (timeInDarkeDarkness > 0)//aka no light)
                 {
                     this.Walter.Sanity -= amounts[2] * (50.0f / 60);
